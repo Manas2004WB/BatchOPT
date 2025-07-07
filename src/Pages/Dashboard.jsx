@@ -1,15 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { plants as initialPlants } from "../PlantData";
 import heroBg from "../assets/hero-bg.jpg";
 import AddPlantForm from "../components/AddPlantForm";
 import UpdatePlantForm from "../components/UpdateForm";
+import SearchBar from "../components/SearchBar";
+import Pagination from "../components/Pagination";
+import _ from "lodash";
 
 const Dashboard = ({ user }) => {
   const [plantList, setPlantList] = useState(initialPlants);
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedPlant, setSelectedPlant] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const plantsPerPage = 7;
 
+  useEffect(() => {
+    const handler = _.debounce(() => {
+      setDebouncedQuery(searchQuery);
+      setCurrentPage(1); // Reset to first page on new search
+    }, 1000); // 300ms delay
+    handler();
+    // Cleanup debounce on unmount
+    return () => {
+      handler.cancel();
+    };
+  }, [searchQuery]);
+
+  const filteredPlants = plantList.filter((plant) =>
+    plant.plant_name.toLowerCase().includes(debouncedQuery.toLowerCase())
+  );
+  const indexOfLast = currentPage * plantsPerPage;
+  const indexOfFirst = indexOfLast - plantsPerPage;
+  const currentPlants = filteredPlants.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredPlants.length / plantsPerPage);
   const handleAddPlant = (newPlant) => {
     const nextId =
       plantList.length > 0
@@ -37,24 +63,28 @@ const Dashboard = ({ user }) => {
       style={{ backgroundImage: `url(${heroBg})` }}
     >
       <div className="w-full max-w-6xl bg-white/30 backdrop-blur-md shadow-2xl rounded-2xl p-8 overflow-hidden">
-        <div className="flex flex-row gap-10">
+        <div className="flex flex-row gap-10 justify-between">
           <h2 className="text-3xl font-bold text-white drop-shadow mb-2">
             Welcome, {user.username}!
           </h2>
           <p className="text-white drop-shadow mb-1 text-2xl">
-            Role ID: {user.user_role_id}
-          </p>
-          <p className="text-white drop-shadow mb-1 text-2xl">
             Email: {user.email}
           </p>
         </div>
+        <div className="flex flex-row gap-10 justify-around mt-1.5">
+          <button
+            onClick={() => setShowModal(true)}
+            className="mb-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded"
+          >
+            + Add Plant
+          </button>
+          <SearchBar
+            query={searchQuery}
+            setQuery={setSearchQuery}
+            placeholder="Search by plant name..."
+          />
+        </div>
 
-        <button
-          onClick={() => setShowModal(true)}
-          className="mb-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded"
-        >
-          + Add Plant
-        </button>
         {showModal && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">
@@ -77,7 +107,7 @@ const Dashboard = ({ user }) => {
           </div>
         )}
 
-        <div className="overflow-x-auto rounded-lg">
+        <div className="overflow-x-auto rounded-lg min-h-[400px] overflow-auto">
           <table className="min-w-full text-left border border-white/30 backdrop-blur">
             <thead className="bg-cyan-700 text-white">
               <tr>
@@ -87,8 +117,8 @@ const Dashboard = ({ user }) => {
                 <th className="px-4 py-2">Action</th>
               </tr>
             </thead>
-            <tbody className="bg-white/60">
-              {plantList.map((plant) => (
+            <tbody className="bg-white/60 min-h-52">
+              {currentPlants.map((plant) => (
                 <tr
                   key={plant.plant_id}
                   className="border-t border-white/30 hover:bg-white/80 transition"
@@ -130,6 +160,11 @@ const Dashboard = ({ user }) => {
               ))}
             </tbody>
           </table>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
           {showUpdateModal && (
             <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
               <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">

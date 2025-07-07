@@ -4,7 +4,6 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
   const [updatedPlant, setUpdatedPlant] = useState({ ...plant });
   const [error, setError] = useState("");
 
-  // Keep updated when a new plant is passed
   useEffect(() => {
     setUpdatedPlant(plant);
   }, [plant]);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { plants as initialPlants } from "../PlantData";
 import heroBg from "../assets/hero-bg.jpg";
 import AddPlantForm from "../components/AddPlantForm";
@@ -6,6 +6,8 @@ import UpdatePlantForm from "../components/UpdateForm";
 import SearchBar from "../components/SearchBar";
 import Pagination from "../components/Pagination";
 import _ from "lodash";
+import { useNavigate } from "react-router-dom";
+import { FaArrowsAltV, FaSortUp, FaSortDown } from "react-icons/fa";
 
 const Dashboard = ({ user }) => {
   const [plantList, setPlantList] = useState(initialPlants);
@@ -15,7 +17,10 @@ const Dashboard = ({ user }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+
   const plantsPerPage = 7;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handler = _.debounce(() => {
@@ -32,10 +37,30 @@ const Dashboard = ({ user }) => {
   const filteredPlants = plantList.filter((plant) =>
     plant.plant_name.toLowerCase().includes(debouncedQuery.toLowerCase())
   );
+
+  const sortedPlants = useMemo(() => {
+    if (!sortConfig.key) return filteredPlants;
+
+    const sorted = [...filteredPlants].sort((a, b) => {
+      let valA = a[sortConfig.key];
+      let valB = b[sortConfig.key];
+
+      if (typeof valA === "boolean" && typeof valB === "boolean") {
+        valA = valA ? "Active" : "Inactive";
+        valB = valB ? "Active" : "Inactive";
+      }
+      return sortConfig.direction === "asc"
+        ? valA.toString().localeCompare(valB.toString())
+        : valB.toString().localeCompare(valA.toString());
+    });
+    return sorted;
+  }, [filteredPlants, sortConfig]);
+
   const indexOfLast = currentPage * plantsPerPage;
   const indexOfFirst = indexOfLast - plantsPerPage;
-  const currentPlants = filteredPlants.slice(indexOfFirst, indexOfLast);
+  const currentPlants = sortedPlants.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredPlants.length / plantsPerPage);
+
   const handleAddPlant = (newPlant) => {
     const nextId =
       plantList.length > 0
@@ -56,6 +81,21 @@ const Dashboard = ({ user }) => {
     if (!confirm) return;
     setPlantList((prev) => prev.filter((p) => p.plant_id !== id));
   };
+  const handleSort = (key) => {
+    setSortConfig((prev) => {
+      if (prev.key == key) {
+        return {
+          key,
+          direction: prev.direction === "asc" ? "desc" : "asc",
+        };
+      } else {
+        return {
+          key,
+          direction: "asc",
+        };
+      }
+    });
+  };
 
   return (
     <div
@@ -71,7 +111,7 @@ const Dashboard = ({ user }) => {
             Email: {user.email}
           </p>
         </div>
-        <div className="flex flex-row gap-10 justify-around mt-1.5">
+        <div className="flex flex-row gap-10 justify-between mt-1.5">
           <button
             onClick={() => setShowModal(true)}
             className="mb-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded"
@@ -111,9 +151,40 @@ const Dashboard = ({ user }) => {
           <table className="min-w-full text-left border border-white/30 backdrop-blur">
             <thead className="bg-cyan-700 text-white">
               <tr>
-                <th className="px-4 py-2">Plant ID</th>
-                <th className="px-4 py-2">Plant Name</th>
-                <th className="px-4 py-2">Status</th>
+                <th
+                  className="px-4 py-2 cursor-pointer"
+                  onClick={() => handleSort("plant_name")}
+                >
+                  <div className="flex items-center gap-1">
+                    Plant Name
+                    {sortConfig.key === "plant_name" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <FaArrowsAltV className="text-white/70" />
+                    )}
+                  </div>
+                </th>
+                <th
+                  className="px-4 py-2 cursor-pointer"
+                  onClick={() => handleSort("is_active")}
+                >
+                  <div className="flex items-center gap-1">
+                    Status
+                    {sortConfig.key === "is_active" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <FaArrowsAltV className="text-white/70" />
+                    )}
+                  </div>
+                </th>
                 <th className="px-4 py-2">Action</th>
               </tr>
             </thead>
@@ -123,7 +194,6 @@ const Dashboard = ({ user }) => {
                   key={plant.plant_id}
                   className="border-t border-white/30 hover:bg-white/80 transition"
                 >
-                  <td className="px-4 py-2">{plant.plant_id}</td>
                   <td className="px-4 py-2">{plant.plant_name}</td>
                   <td className="px-4 py-2">
                     {plant.is_active ? (
@@ -137,6 +207,21 @@ const Dashboard = ({ user }) => {
                     )}
                   </td>
                   <td className="px-4 py-2 space-x-2">
+                    <button
+                      className={`px-4 py-1 rounded text-sm ${
+                        plant.is_active
+                          ? "bg-green-500 hover:bg-green-600 text-white"
+                          : "bg-gray-400 cursor-not-allowed text-white"
+                      }`}
+                      disabled={!plant.is_active}
+                      onClick={() => {
+                        if (plant.is_active) {
+                          navigate(`/plant/${plant.plant_id}`);
+                        }
+                      }}
+                    >
+                      View
+                    </button>
                     <button
                       className="bg-cyan-600 hover:bg-cyan-800 text-white px-5 py-1 rounded text-sm"
                       onClick={() => {

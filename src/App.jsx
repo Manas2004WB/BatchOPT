@@ -1,7 +1,14 @@
-import React, { useEffect, useState } from "react"
-import Login from "./Pages/Login"
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import Login from "./Pages/Login";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import Dashboard from "./Pages/Dashboard";
+import PlantDetails from "./Pages/PlantDetails";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -11,19 +18,26 @@ const App = () => {
   }, []);
   return (
     <div>
-      
       <Router>
-        <Routes>  
-           <Route path="/" element={
-          user ? <Navigate to="/dashboard" /> : <Login setUser={setUser} />
-          } />
-          <Route path="/dashboard" element={
-          user ? <Dashboard user={user} /> : <Navigate to="/" />
-           } /> 
+        <Routes>
+          <Route
+            path="/"
+            element={
+              user ? <Navigate to="/dashboard" /> : <Login setUser={setUser} />
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={user ? <Dashboard user={user} /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/plant/:id"
+            element={user ? <PlantDetails /> : <Navigate to="/" />}
+          />
         </Routes>
       </Router>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

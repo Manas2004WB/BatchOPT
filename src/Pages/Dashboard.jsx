@@ -7,7 +7,7 @@ import SearchBar from "../components/SearchBar";
 import Pagination from "../components/Pagination";
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
-import { FaArrowsAltV, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaArrowsAltV, FaSortUp, FaSortDown, FaSort } from "react-icons/fa";
 
 const Dashboard = ({ user }) => {
   const [plantList, setPlantList] = useState(initialPlants);
@@ -18,8 +18,8 @@ const Dashboard = ({ user }) => {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [plantPerPage, setPlantPerPage] = useState(10);
 
-  const plantsPerPage = 7;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,10 +56,10 @@ const Dashboard = ({ user }) => {
     return sorted;
   }, [filteredPlants, sortConfig]);
 
-  const indexOfLast = currentPage * plantsPerPage;
-  const indexOfFirst = indexOfLast - plantsPerPage;
+  const indexOfLast = currentPage * plantPerPage;
+  const indexOfFirst = indexOfLast - plantPerPage;
   const currentPlants = sortedPlants.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(filteredPlants.length / plantsPerPage);
+  const totalPages = Math.ceil(filteredPlants.length / plantPerPage);
 
   const handleAddPlant = (newPlant) => {
     const nextId =
@@ -118,6 +118,7 @@ const Dashboard = ({ user }) => {
           >
             + Add Plant
           </button>
+
           <SearchBar
             query={searchQuery}
             setQuery={setSearchQuery}
@@ -147,9 +148,9 @@ const Dashboard = ({ user }) => {
           </div>
         )}
 
-        <div className="overflow-x-auto rounded-lg min-h-[400px] overflow-auto">
+        <div className="overflow-x-auto rounded-lg max-h-[400px] overflow-y-auto border border-white/30">
           <table className="min-w-full text-left border border-white/30 backdrop-blur">
-            <thead className="bg-cyan-700 text-white">
+            <thead className="bg-cyan-700 text-white sticky top-0 z-10">
               <tr>
                 <th
                   className="px-4 py-2 cursor-pointer"
@@ -164,7 +165,7 @@ const Dashboard = ({ user }) => {
                         <FaSortDown />
                       )
                     ) : (
-                      <FaArrowsAltV className="text-white/70" />
+                      <FaSort className="text-white/70" />
                     )}
                   </div>
                 </th>
@@ -181,7 +182,7 @@ const Dashboard = ({ user }) => {
                         <FaSortDown />
                       )
                     ) : (
-                      <FaArrowsAltV className="text-white/70" />
+                      <FaSort className="text-white/70" />
                     )}
                   </div>
                 </th>
@@ -245,11 +246,7 @@ const Dashboard = ({ user }) => {
               ))}
             </tbody>
           </table>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+
           {showUpdateModal && (
             <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
               <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">
@@ -273,6 +270,13 @@ const Dashboard = ({ user }) => {
             </div>
           )}
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+          plantPerPage={plantPerPage}
+          setPlantPerPage={setPlantPerPage}
+        />
       </div>
     </div>
   );

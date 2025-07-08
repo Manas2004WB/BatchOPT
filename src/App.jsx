@@ -12,10 +12,16 @@ import PlantDetails from "./Pages/PlantDetails";
 
 const App = () => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    setLoading(false); // <-- mark loading complete
   }, []);
+  if (loading) return null;
   return (
     <div>
       <Router>
@@ -32,7 +38,7 @@ const App = () => {
           />
           <Route
             path="/plant/:id"
-            element={user ? <PlantDetails /> : <Navigate to="/" />}
+            element={user ? <PlantDetails user={user} /> : <Navigate to="/" />}
           />
         </Routes>
       </Router>

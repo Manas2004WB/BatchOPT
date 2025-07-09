@@ -17,9 +17,9 @@ const PlantDetails = ({ user }) => {
         className="min-h-screen bg-cover bg-center flex items-start justify-center px-4 pt-24"
         style={{ backgroundImage: `url(${heroBg})` }}
       >
-        <div className="w-full max-w-6xl bg-white/30 backdrop-blur-md shadow-2xl rounded-2xl p-8 overflow-hidden">
+        <div className="w-full max-w-7xl bg-white/30 backdrop-blur-md shadow-2xl rounded-2xl p-6 overflow-auto">
           {/* Content Area */}
-          <div className="rounded-lg min-h-[300px]">
+          <div className="rounded-lg min-h-[100px]">
             {activeTab === "tinter" ? (
               <TinterTable user={user} plantId={id} />
             ) : (

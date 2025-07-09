@@ -1,100 +1,128 @@
-import React, { useState } from "react";
-import { skuData as allSkus } from "../Data/SkuData";
-import AddTinterForm from "./AddTinterForm";
-import AddSkuForm from "./AddSkuForm";
+// SkuTable.jsx
+import React from "react";
+import { mapSkuData, formatDate } from "../utility/mapSkuData"; // Adjust path if different
 
-const SkuTable = ({ plantId, user }) => {
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [skuList, setSkuList] = useState(allSkus);
-
-  const filteredSku = skuList.filter((s) => s.plant_id === Number(plantId));
-
-  const handleAddSku = (newSku) => {
-    const nextId =
-      skuList.length > 0 ? Math.max(...skuList.map((s) => s.sku_id)) + 1 : 1;
-
-    const newSkuWithId = {
-      ...newSku,
-      sku_id: nextId,
-      plant_id: Number(plantId),
-    };
-    console.log(newSku);
-    setSkuList([...skuList, newSkuWithId]);
-  };
-
+const SkuTable = ({ plantId }) => {
+  const tableData = mapSkuData(plantId); // Filtered + flattened
+  console.log(tableData);
   return (
     <div className="overflow-x-auto rounded-lg">
-      <button
-        className="mb-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded"
-        onClick={() => setShowAddModal(true)}
-      >
-        + Add SKU
-      </button>
-      {showAddModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">
-            {/* Close button */}
-            <button
-              onClick={() => setShowAddModal(false)}
-              className="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl"
-            >
-              &times;
-            </button>
-
-            {/* Add Plant Form */}
-            <AddSkuForm
-              user={user}
-              plantId={plantId}
-              onAdd={(sku) => {
-                handleAddSku(sku);
-                setShowAddModal(false);
-              }}
-            />
-          </div>
-        </div>
-      )}
-      <table className="min-w-full text-left border border-white/30 backdrop-blur">
-        <thead className="bg-cyan-700 text-white sticky top-0 z-10">
+      <table className="min-w-full text-left border border-white/30 backdrop-blur text-sm">
+        <thead className="bg-cyan-700 text-white sticky top-0 z-10 ">
           <tr>
-            <th className="px-4 py-2">Sku Name</th>
-            <th className="px-4 py-2">Status</th>
-            <th className="px-4 py-2">Updated By</th>
-            <th className="px-4 py-2">Updated At</th>
+            <th className="px-2 py-1">Sr. No</th>
+            <th className="px-2 py-1">SKU Revision</th>
+            <th className="px-2 py-1">SKU Code</th>
+            <th className="px-2 py-1">Batches</th>
+
+            <th className="px-2 py-1">
+              Std. Liquid
+              <br />
+              (L, a, b)
+            </th>
+            <th className="px-2 py-1">
+              Panel Color
+              <br />
+              (L, a, b)
+            </th>
+            <th className="px-2 py-1">
+              Spectro Color
+              <br />
+              (L, a, b)
+            </th>
+
+            <th className="px-2 py-1">Std. Tinters</th>
+            <th className="px-2 py-1">Target dE</th>
+            <th className="px-2 py-1">Last Updated</th>
+            <th className="px-2 py-1">Comments</th>
           </tr>
         </thead>
+
         <tbody className="bg-white/60">
-          {filteredSku.length === 0 ? (
+          {tableData.length === 0 ? (
             <tr>
-              <td colSpan="7" className="text-center py-4 text-gray-500">
-                No Sku data for this plant.
+              <td colSpan="12" className="text-center py-4 text-gray-500">
+                No SKU data available for this plant.
               </td>
             </tr>
           ) : (
-            filteredSku.map((sku) => (
+            tableData.map((row, index) => (
               <tr
-                key={sku.sku_id}
+                key={row.sku_version_id || index}
                 className="border-t border-white/30 hover:bg-white/80 transition"
               >
-                <td className="px-4 py-2">{sku.sku_name}</td>
                 <td className="px-4 py-2">
-                  {sku.is_active ? (
-                    <span className="text-green-600 font-semibold">Active</span>
-                  ) : (
-                    <span className="text-red-500 font-semibold">Inactive</span>
-                  )}
+                  {row.skuRevision === "1" ? row.srNo : null}
                 </td>
-                <td className="px-4 py-2">
-                  {typeof sku.updated_by === "number"
-                    ? sku.updated_by === 1
-                      ? "Berger Admin"
-                      : sku.updated_by === 2
-                      ? "Berger Operator"
-                      : sku.updated_by === 3
-                      ? "Berger Management"
-                      : "Unknown User"
-                    : sku.updated_by}
+                <td className="px-2 py-1">{row.skuRevision}</td>
+                <td className="px-2 py-1">{row.skuName}</td>
+                <td className="px-2 py-1">Batches</td> {/* Static for now */}
+                {/* Standard Liquid */}
+                <td className="px-2 py-1">
+                  <div className="grid grid-cols-3 text-center text-sm divide-x divide-gray-400  overflow-hidden">
+                    <div className="px-2">
+                      {typeof row.standardLiquid.L === "number"
+                        ? row.standardLiquid.L.toFixed(2)
+                        : "-"}
+                    </div>
+                    <div className="px-2">
+                      {typeof row.standardLiquid.a === "number"
+                        ? row.standardLiquid.a.toFixed(2)
+                        : "-"}
+                    </div>
+                    <div className="px-2">
+                      {typeof row.standardLiquid.b === "number"
+                        ? row.standardLiquid.b.toFixed(2)
+                        : "-"}
+                    </div>
+                  </div>
                 </td>
-                <td className="px-4 py-2">{sku.updated_at}</td>
+                {/* Standard Panel */}
+                <td className="px-2 py-1">
+                  <div className="grid grid-cols-3 text-center text-sm divide-x divide-gray-400  overflow-hidden">
+                    <div className="px-2">
+                      {typeof row.standardPanel.L === "number"
+                        ? row.standardPanel.L.toFixed(2)
+                        : "-"}
+                    </div>
+                    <div className="px-2">
+                      {typeof row.standardPanel.a === "number"
+                        ? row.standardPanel.a.toFixed(2)
+                        : "-"}
+                    </div>
+                    <div className="px-2">
+                      {typeof row.standardPanel.b === "number"
+                        ? row.standardPanel.b.toFixed(2)
+                        : "-"}
+                    </div>
+                  </div>
+                </td>
+                {/* Spectro Panel */}
+                <td className="px-2 py-1">
+                  <div className="grid grid-cols-3 text-center text-sm divide-x divide-gray-400  overflow-hidden">
+                    <div className="px-2">
+                      {typeof row.spectroPanel.L === "number"
+                        ? row.spectroPanel.L.toFixed(2)
+                        : "-"}
+                    </div>
+                    <div className="px-2">
+                      {typeof row.spectroPanel.a === "number"
+                        ? row.spectroPanel.a.toFixed(2)
+                        : "-"}
+                    </div>
+                    <div className="px-2">
+                      {typeof row.spectroPanel.b === "number"
+                        ? row.spectroPanel.b.toFixed(2)
+                        : "-"}
+                    </div>
+                  </div>
+                </td>
+                <td className="px-2 py-1">
+                  {(row.standardTinters || []).join(", ") || "-"}
+                </td>
+                <td className="px-2 py-1">{row.targetDeltaE}</td>
+                <td className="px-2 py-1">{row.lastUpdated}</td>
+                <td className="px-2 py-1">{row.comments}</td>
               </tr>
             ))
           )}

@@ -1,0 +1,33 @@
+export const skuVersions = [
+  {
+    sku_version_id: 1,
+    sku_id: 1,
+    version_number: 1,
+    version_name: "v1",
+    product_type_id: 1,
+    colorimeter_instrument_id: 1,
+    is_default: true,
+    comments: "Initial release",
+    is_active: true,
+    created_at: "2025-07-01T10:10:00Z",
+    created_by: 101,
+    updated_at: "2025-07-08T15:20:00Z",
+    updated_by: 1,
+  },
+  {
+    sku_version_id: 2,
+    sku_id: 1,
+    version_number: 2,
+    version_name: "v2",
+    product_type_id: 1,
+    colorimeter_instrument_id: 2,
+    is_default: false,
+    comments: "Revised delta range",
+    is_active: true,
+    created_at: "2025-07-03T11:00:00Z",
+    created_by: 102,
+    updated_at: "2025-07-08T16:00:00Z",
+    updated_by: 2,
+  },
+  // ... more versions
+];

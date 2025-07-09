@@ -6,6 +6,7 @@ const Pagination = ({
   onPageChange,
   plantPerPage,
   setPlantPerPage,
+  plantList,
 }) => {
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
@@ -65,6 +66,11 @@ const Pagination = ({
             </option>
           ))}
         </select>
+      </div>
+      <div>
+        <label htmlFor="plantPerPage" className="text-white whitespace-nowrap">
+          Total Plants: {plantList.length}
+        </label>
       </div>
     </div>
   );

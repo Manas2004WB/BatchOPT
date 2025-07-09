@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 
-const AddTinterForm = ({ onAdd, plantId, user }) => {
-  const [tinter, setTinter] = useState({
-    tinter_code: "",
+const AddSkuForm = ({ onAdd, plantId, user }) => {
+  const [sku, setSku] = useState({
+    sku_name: "",
     is_active: true,
   });
   const [error, setError] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!tinter.tinter_code.trim()) {
-      return setError("Tinter code is required");
+    if (!sku.sku_name.trim()) {
+      return setError("Sku Name is required");
     }
     onAdd({
-      ...tinter,
+      ...sku,
       plant_id: Number(plantId),
       updated_by: user?.user_id || "Unknown",
 
@@ -28,7 +28,7 @@ const AddTinterForm = ({ onAdd, plantId, user }) => {
         })
         .replace(",", ""),
     });
-    setTinter({ tinter_code: "", is_active: true });
+    setSku({ sku_name: "", is_active: true });
     setError("");
   };
   return (
@@ -37,7 +37,7 @@ const AddTinterForm = ({ onAdd, plantId, user }) => {
       className="bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl mb-8 max-w-lg w-full"
     >
       <h2 className="text-xl font-bold text-black drop-shadow mb-4">
-        Add New Tinter
+        Add New Sku
       </h2>
 
       {error && (
@@ -48,19 +48,17 @@ const AddTinterForm = ({ onAdd, plantId, user }) => {
 
       <input
         type="text"
-        placeholder="Tinter Code"
-        value={tinter.tinter_code}
-        onChange={(e) => setTinter({ ...tinter, tinter_code: e.target.value })}
+        placeholder="Sku name"
+        value={sku.sku_name}
+        onChange={(e) => setSku({ ...sku, sku_name: e.target.value })}
         className="w-full px-4 py-2 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
       />
 
       <label className="text-black flex items-center mb-4">
         <input
           type="checkbox"
-          checked={tinter.is_active}
-          onChange={(e) =>
-            setTinter({ ...tinter, is_active: e.target.checked })
-          }
+          checked={sku.is_active}
+          onChange={(e) => setSku({ ...sku, is_active: e.target.checked })}
           className="mr-2"
         />
         Active
@@ -70,10 +68,10 @@ const AddTinterForm = ({ onAdd, plantId, user }) => {
         type="submit"
         className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 rounded"
       >
-        Add Tinter
+        Add Sku
       </button>
     </form>
   );
 };
 
-export default AddTinterForm;
+export default AddSkuForm;

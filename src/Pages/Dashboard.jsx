@@ -266,6 +266,7 @@ const Dashboard = ({ user }) => {
             )}
           </div>
           <Pagination
+            plantList={plantList}
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={(page) => setCurrentPage(page)}

@@ -3,6 +3,15 @@ import { tinters as allTinters } from "../Data/TinterData";
 import AddTinterForm from "./AddTinterForm";
 
 const TinterTable = ({ plantId, user }) => {
+  const getUsernameFromId = (id) => {
+    const map = {
+      1: "Berger Admin",
+      2: "Berger Operator",
+      3: "Berger Management",
+    };
+    return map[id] || "Unknown User";
+  };
+
   const [showAddModal, setShowAddModal] = useState(false);
   const [tinterList, setTinterList] = useState(allTinters);
   const filteredTinters = tinterList.filter(
@@ -58,8 +67,7 @@ const TinterTable = ({ plantId, user }) => {
       <table className="min-w-full text-left border border-white/30 backdrop-blur">
         <thead className="bg-cyan-700 text-white sticky top-0 z-10">
           <tr>
-            <th className="px-4 py-2">ID</th>
-            <th className="px-4 py-2">Code</th>
+            <th className="px-4 py-2">Tinter Code</th>
             <th className="px-4 py-2">Status</th>
             <th className="px-4 py-2">Updated By</th>
             <th className="px-4 py-2">Updated At</th>
@@ -78,7 +86,6 @@ const TinterTable = ({ plantId, user }) => {
                 key={tinter.tinter_id}
                 className="border-t border-white/30 hover:bg-white/80 transition"
               >
-                <td className="px-4 py-2">{tinter.tinter_id}</td>
                 <td className="px-4 py-2">{tinter.tinter_code}</td>
                 <td className="px-4 py-2">
                   {tinter.is_active ? (
@@ -87,7 +94,17 @@ const TinterTable = ({ plantId, user }) => {
                     <span className="text-red-500 font-semibold">Inactive</span>
                   )}
                 </td>
-                <td className="px-4 py-2">{tinter.updated_by}</td>
+                <td className="px-4 py-2">
+                  {typeof tinter.updated_by === "number"
+                    ? tinter.updated_by === 1
+                      ? "Berger Admin"
+                      : tinter.updated_by === 2
+                      ? "Berger Operator"
+                      : tinter.updated_by === 3
+                      ? "Berger Management"
+                      : "Unknown User"
+                    : tinter.updated_by}
+                </td>
                 <td className="px-4 py-2">{tinter.updated_at}</td>
               </tr>
             ))

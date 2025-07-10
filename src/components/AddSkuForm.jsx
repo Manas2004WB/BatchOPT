@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { tinters } from "../Data/TinterData";
-const AddSkuForm = ({ plantId, onAdd }) => {
+import Select from "react-select";
+const AddSkuForm = ({ plantId, onAdd, sr }) => {
   const plantTinters = tinters.filter((t) => t.plant_id == Number(plantId));
   const [sku, setSku] = useState({
     skuName: "",
@@ -13,6 +14,11 @@ const AddSkuForm = ({ plantId, onAdd }) => {
     targetDeltaE: "",
   });
 
+  const tinterOptions = plantTinters.map((tinter) => ({
+    value: tinter.tinter_id,
+    label: tinter.tinter_code,
+  }));
+  console.log(tinterOptions);
   const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
@@ -32,7 +38,7 @@ const AddSkuForm = ({ plantId, onAdd }) => {
     });
 
     const newSkuObject = {
-      srNo: null, // We will calculate later if needed
+      srNo: sr,
       skuRevision: 1,
       skuName: sku.skuName.trim(),
       batches: "Static",
@@ -175,30 +181,26 @@ const AddSkuForm = ({ plantId, onAdd }) => {
       </div>
 
       {/* Standard Tinters */}
-      <div>
+      <div className="mb-4">
         <label className="text-xs text-black mb-1 block">
           Standard Tinters
         </label>
-        <select
-          multiple
-          value={sku.standardTinterIds}
-          onChange={(e) => {
-            const selected = Array.from(e.target.selectedOptions, (opt) =>
-              parseInt(opt.value)
-            );
-            setSku({ ...sku, standardTinterIds: selected });
-          }}
-          className="w-full px-2 py-1 rounded border border-gray-300 h-20 text-sm"
-        >
-          {plantTinters.map((tinter) => (
-            <option key={tinter.tinter_id} value={tinter.tinter_id}>
-              {tinter.tinter_code}
-            </option>
-          ))}
-        </select>
-        <p className="text-[10px] text-gray-600 mt-1">
-          Hold Ctrl (or Cmd) to select multiple
-        </p>
+        <Select
+          isMulti
+          options={tinterOptions}
+          value={tinterOptions.filter((opt) =>
+            sku.standardTinterIds.includes(opt.value)
+          )}
+          onChange={(selectedOptions) =>
+            setSku({
+              ...sku,
+              standardTinterIds: selectedOptions.map((opt) => opt.value),
+            })
+          }
+          className="text-sm"
+          classNamePrefix="select"
+          placeholder="Select tinters..."
+        />
       </div>
 
       {/* Target dE & Comments */}

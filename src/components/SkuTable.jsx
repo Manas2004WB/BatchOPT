@@ -29,7 +29,7 @@ const SkuTable = ({ plantId }) => {
             </button>
 
             {/* Scrollable modal content */}
-            <div className="pt-12 px-6 pb-6">
+            <div className=" px-6 pb-6">
               <AddSkuForm plantId={plantId} onAdd={handleAddSku} />
             </div>
           </div>

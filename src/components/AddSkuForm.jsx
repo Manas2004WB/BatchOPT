@@ -1,74 +1,236 @@
 import React, { useState } from "react";
-
-const AddSkuForm = ({ onAdd, plantId, user }) => {
+import { tinters } from "../Data/TinterData";
+const AddSkuForm = ({ plantId, onAdd }) => {
+  const plantTinters = tinters.filter((t) => t.plant_id == Number(plantId));
   const [sku, setSku] = useState({
-    sku_name: "",
-    is_active: true,
+    skuName: "",
+    version: 1,
+    comments: "",
+    standardLiquid: { L: "", a: "", b: "" },
+    standardPanel: { L: "", a: "", b: "" },
+    spectroPanel: { L: "", a: "", b: "" },
+    standardTinterIds: [],
+    targetDeltaE: "",
   });
+
   const [error, setError] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!sku.sku_name.trim()) {
-      return setError("Sku Name is required");
+    if (!sku.skuName.trim()) {
+      return setError("SKU Code is required");
     }
-    onAdd({
-      ...sku,
-      plant_id: Number(plantId),
-      updated_by: user?.user_id || "Unknown",
+    const selectedCodes = plantTinters
+      .filter((t) => sku.standardTinterIds.includes(t.tinter_id))
+      .map((t) => t.tinter_code);
+    const now = new Date().toISOString();
 
-      updated_at: new Date()
-        .toLocaleString("en-GB", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        })
-        .replace(",", ""),
+    const parseColor = (colorGroup) => ({
+      L: parseFloat(colorGroup.L) || 0,
+      a: parseFloat(colorGroup.a) || 0,
+      b: parseFloat(colorGroup.b) || 0,
     });
-    setSku({ sku_name: "", is_active: true });
+
+    const newSkuObject = {
+      srNo: null, // We will calculate later if needed
+      skuRevision: 1,
+      skuName: sku.skuName.trim(),
+      batches: "Static",
+      standardLiquid: parseColor(sku.standardLiquid),
+      standardPanel: parseColor(sku.standardPanel),
+      spectroPanel: parseColor(sku.spectroPanel),
+      standardTinters: selectedCodes,
+      targetDeltaE: sku.targetDeltaE || "-",
+      createdOn: formatDisplayDate(now),
+      lastUpdated: formatDisplayDate(now),
+      comments: sku.comments || "-",
+    };
+
+    onAdd(newSkuObject);
+
+    setSku({ skuName: "", version: 1, comments: "" });
     setError("");
   };
+
+  const formatDisplayDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl mb-8 max-w-lg w-full"
+      className="w-full bg-white/30 backdrop-blur-md p-2 rounded-lg shadow space-y-3 text-sm"
     >
-      <h2 className="text-xl font-bold text-black drop-shadow mb-4">
-        Add New Sku
-      </h2>
+      <h2 className="text-base font-semibold text-black mb-2">Add New SKU</h2>
 
       {error && (
-        <p className="text-red-600 bg-white/50 px-2 py-1 rounded mb-4">
+        <p className="text-red-600 bg-white/60 px-2 py-1 rounded text-xs">
           {error}
         </p>
       )}
 
-      <input
-        type="text"
-        placeholder="Sku name"
-        value={sku.sku_name}
-        onChange={(e) => setSku({ ...sku, sku_name: e.target.value })}
-        className="w-full px-4 py-2 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-      />
-
-      <label className="text-black flex items-center mb-4">
+      {/* SKU Code & Revision */}
+      <div className="grid grid-cols-2 gap-2">
         <input
-          type="checkbox"
-          checked={sku.is_active}
-          onChange={(e) => setSku({ ...sku, is_active: e.target.checked })}
-          className="mr-2"
+          type="text"
+          placeholder="SKU Code"
+          value={sku.skuName}
+          onChange={(e) => setSku({ ...sku, skuName: e.target.value })}
+          className="w-full px-2 py-1 rounded border border-gray-300 text-sm"
         />
-        Active
-      </label>
+        <p className="text-medium border-2 text-gray-600">
+          Product Type : GI-Metallic
+        </p>
+      </div>
+
+      {/* Standard Liquid */}
+      <div>
+        <label className="text-xs text-black mb-1 block">
+          Standard Liquid (L, a, b)
+        </label>
+        <div className="grid grid-cols-3 gap-2">
+          {["L", "a", "b"].map((key) => (
+            <input
+              key={`liquid-${key}`}
+              type="number"
+              step="0.01"
+              placeholder={key}
+              value={sku.standardLiquid[key]}
+              onChange={(e) =>
+                setSku({
+                  ...sku,
+                  standardLiquid: {
+                    ...sku.standardLiquid,
+                    [key]: e.target.value,
+                  },
+                })
+              }
+              className="px-2 py-1 rounded border border-gray-300 text-sm"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Panel Color */}
+      <div>
+        <label className="text-xs text-black mb-1 block">
+          Panel Color (L, a, b)
+        </label>
+        <div className="grid grid-cols-3 gap-2">
+          {["L", "a", "b"].map((key) => (
+            <input
+              key={`panel-${key}`}
+              type="number"
+              step="0.01"
+              placeholder={key}
+              value={sku.standardPanel[key]}
+              onChange={(e) =>
+                setSku({
+                  ...sku,
+                  standardPanel: {
+                    ...sku.standardPanel,
+                    [key]: e.target.value,
+                  },
+                })
+              }
+              className="px-2 py-1 rounded border border-gray-300 text-sm"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Spectro Panel */}
+      <div>
+        <label className="text-xs text-black mb-1 block">
+          Spectro Panel (L, a, b)
+        </label>
+        <div className="grid grid-cols-3 gap-2">
+          {["L", "a", "b"].map((key) => (
+            <input
+              key={`spectro-${key}`}
+              type="number"
+              step="0.01"
+              placeholder={key}
+              value={sku.spectroPanel[key]}
+              onChange={(e) =>
+                setSku({
+                  ...sku,
+                  spectroPanel: {
+                    ...sku.spectroPanel,
+                    [key]: e.target.value,
+                  },
+                })
+              }
+              className="px-2 py-1 rounded border border-gray-300 text-sm"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Standard Tinters */}
+      <div>
+        <label className="text-xs text-black mb-1 block">
+          Standard Tinters
+        </label>
+        <select
+          multiple
+          value={sku.standardTinterIds}
+          onChange={(e) => {
+            const selected = Array.from(e.target.selectedOptions, (opt) =>
+              parseInt(opt.value)
+            );
+            setSku({ ...sku, standardTinterIds: selected });
+          }}
+          className="w-full px-2 py-1 rounded border border-gray-300 h-20 text-sm"
+        >
+          {plantTinters.map((tinter) => (
+            <option key={tinter.tinter_id} value={tinter.tinter_id}>
+              {tinter.tinter_code}
+            </option>
+          ))}
+        </select>
+        <p className="text-[10px] text-gray-600 mt-1">
+          Hold Ctrl (or Cmd) to select multiple
+        </p>
+      </div>
+
+      {/* Target dE & Comments */}
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <label className="text-xs text-black mb-1 block">Target dE</label>
+          <input
+            type="number"
+            step="0.01"
+            placeholder="e.g., 1.50"
+            value={sku.targetDeltaE}
+            onChange={(e) => setSku({ ...sku, targetDeltaE: e.target.value })}
+            className="w-full px-2 py-1 rounded border border-gray-300 text-sm"
+          />
+        </div>
+        <div>
+          <label className="text-xs text-black mb-1 block">Comments</label>
+          <textarea
+            placeholder="Optional"
+            rows={1}
+            value={sku.comments}
+            onChange={(e) => setSku({ ...sku, comments: e.target.value })}
+            className="w-full px-2 py-1 rounded border border-gray-300 text-sm"
+          ></textarea>
+        </div>
+      </div>
 
       <button
         type="submit"
-        className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 rounded"
+        className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-1.5 rounded text-sm"
       >
-        Add Sku
+        Add SKU
       </button>
     </form>
   );

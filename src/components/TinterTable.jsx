@@ -3,15 +3,6 @@ import { tinters as allTinters } from "../Data/TinterData";
 import AddTinterForm from "./AddTinterForm";
 
 const TinterTable = ({ plantId, user }) => {
-  const getUsernameFromId = (id) => {
-    const map = {
-      1: "Berger Admin",
-      2: "Berger Operator",
-      3: "Berger Management",
-    };
-    return map[id] || "Unknown User";
-  };
-
   const [showAddModal, setShowAddModal] = useState(false);
   const [tinterList, setTinterList] = useState(allTinters);
   const filteredTinters = tinterList.filter(

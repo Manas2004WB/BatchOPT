@@ -1,12 +1,47 @@
 // SkuTable.jsx
-import React from "react";
+import React, { useState } from "react";
 import { mapSkuData, formatDate } from "../utility/mapSkuData"; // Adjust path if different
+import AddSkuForm from "./AddSkuForm";
 
 const SkuTable = ({ plantId }) => {
-  const tableData = mapSkuData(plantId); // Filtered + flattened
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newSkus, setNewSkus] = useState([]);
+
+  const mappedData = mapSkuData(plantId);
+  const tableData = [...mappedData, ...newSkus];
+
+  const handleAddSku = (skuObject) => {
+    setNewSkus((prev) => [...prev, skuObject]);
+    setShowAddModal(false);
+  };
   console.log(tableData);
   return (
-    <div className="overflow-x-auto rounded-lg">
+    <div className="overflow-x-auto rounded-lg w-full">
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 bg-black/10 backdrop-blur-sm flex justify-center px-2 mt-16">
+          <div className="self-center bg-white rounded-xl shadow-lg w-full max-w-2xl overflow-y-auto relative">
+            {/* Close button */}
+            <button
+              className="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl z-10"
+              onClick={() => setShowAddModal(false)}
+            >
+              &times;
+            </button>
+
+            {/* Scrollable modal content */}
+            <div className="pt-12 px-6 pb-6">
+              <AddSkuForm plantId={plantId} onAdd={handleAddSku} />
+            </div>
+          </div>
+        </div>
+      )}
+      <button
+        className="mb-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded"
+        onClick={() => setShowAddModal(true)}
+      >
+        + Add SKU
+      </button>
+
       <table className="min-w-full text-left border border-white/30 backdrop-blur text-sm">
         <thead className="bg-cyan-700 text-white sticky top-0 z-10 ">
           <tr>

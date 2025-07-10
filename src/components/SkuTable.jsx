@@ -2,19 +2,35 @@
 import React, { useState } from "react";
 import { mapSkuData, formatDate } from "../utility/mapSkuData"; // Adjust path if different
 import AddSkuForm from "./AddSkuForm";
+import UpdateSkuForm from "./UpdateSkuForm";
+import { FaEdit } from "react-icons/fa";
 
 const SkuTable = ({ plantId }) => {
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newSkus, setNewSkus] = useState([]);
-
-  const mappedData = mapSkuData(plantId);
-  const tableData = [...mappedData, ...newSkus];
+  const [editingSku, setEditingSku] = useState(null);
+  const [skus, setSkus] = useState([...mapSkuData(plantId)]); // and update this
+  const tableData = skus;
+  const handleEditClick = (sku) => {
+    setEditingSku(sku);
+  };
+  const handleUpdateSku = (updatedSku) => {
+    setSkus((prevSkus) => [...prevSkus, updatedSku]); // add new revision
+    setEditingSku(null);
+  };
 
   const handleAddSku = (skuObject) => {
-    setNewSkus((prev) => [...prev, skuObject]);
+    setSkus((prev) => [...prev, skuObject]);
     setShowAddModal(false);
   };
-  console.log(tableData);
+  const latestRevisionsMap = {};
+  tableData.forEach((row) => {
+    const name = row.skuName;
+    const rev = Number(row.skuRevision);
+    if (!latestRevisionsMap[name] || rev > latestRevisionsMap[name]) {
+      latestRevisionsMap[name] = rev;
+    }
+  });
+
   return (
     <div className="overflow-x-auto rounded-lg w-full">
       {showAddModal && (
@@ -35,6 +51,26 @@ const SkuTable = ({ plantId }) => {
           </div>
         </div>
       )}
+      {editingSku && (
+        <div className="fixed inset-0 z-50 bg-black/10 backdrop-blur-sm flex justify-center px-2 mt-16">
+          <div className="self-center bg-white rounded-xl shadow-lg w-full max-w-2xl overflow-y-auto relative">
+            <button
+              className="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl z-10"
+              onClick={() => setEditingSku(null)}
+            >
+              &times;
+            </button>
+            <div className="px-6 pb-6">
+              <UpdateSkuForm
+                plantId={plantId}
+                skuToEdit={editingSku}
+                onUpdate={handleUpdateSku}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <button
         className="mb-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded"
         onClick={() => setShowAddModal(true)}
@@ -70,6 +106,7 @@ const SkuTable = ({ plantId }) => {
             <th className="px-2 py-1">Target dE</th>
             <th className="px-2 py-1">Last Updated</th>
             <th className="px-2 py-1">Comments</th>
+            <th className="px-2 py-1">Actions</th>
           </tr>
         </thead>
 
@@ -87,7 +124,7 @@ const SkuTable = ({ plantId }) => {
                 className="border-t border-white/30 hover:bg-white/80 transition"
               >
                 <td className="px-4 py-2">
-                  {row.skuRevision === "1" ? row.srNo : null}
+                  {Number(row.skuRevision) === 1 ? row.srNo : null}
                 </td>
                 <td className="px-2 py-1">{row.skuRevision}</td>
                 <td className="px-2 py-1">{row.skuName}</td>
@@ -158,6 +195,17 @@ const SkuTable = ({ plantId }) => {
                 <td className="px-2 py-1">{row.targetDeltaE}</td>
                 <td className="px-2 py-1">{row.lastUpdated}</td>
                 <td className="px-2 py-1">{row.comments}</td>
+                <td className="px-2 py-1">
+                  {latestRevisionsMap[row.skuName] ===
+                    Number(row.skuRevision) && (
+                    <button
+                      className="text-blue-600 hover:underline border-2 p-2"
+                      onClick={() => handleEditClick(row)}
+                    >
+                      <FaEdit />
+                    </button>
+                  )}
+                </td>
               </tr>
             ))
           )}

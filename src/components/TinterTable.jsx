@@ -3,12 +3,18 @@ import { tinters as allTinters } from "../Data/TinterData";
 import AddTinterForm from "./AddTinterForm";
 import { FaEdit } from "react-icons/fa";
 import UpdateTinterForm from "./UpdateTinterForm";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import TinterBatchForm from "./TinterBatchForm";
+import { tinterBatches } from "../Data/TinterBatches";
 
 const TinterTable = ({ plantId, user }) => {
   const [editingTinter, setEditingTinter] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [tinterList, setTinterList] = useState(allTinters);
+  const [selectedTinter, setSelectedTinter] = useState(null); // for batch form
+  const [showBatchForm, setShowBatchForm] = useState(false);
+  const [allBatches, setAllBatches] = useState(tinterBatches);
   const filteredTinters = tinterList.filter(
     (t) => t.plant_id === Number(plantId)
   );
@@ -89,6 +95,29 @@ const TinterTable = ({ plantId, user }) => {
           </div>
         </div>
       )}
+      {showBatchForm && selectedTinter && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-5xl relative">
+            {/* Close button */}
+            <button
+              onClick={() => setShowBatchForm(false)}
+              className="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl"
+            >
+              &times;
+            </button>
+            <TinterBatchForm
+              tinterId={selectedTinter.tinter_id}
+              tinterCode={selectedTinter.tinter_code}
+              batches={allBatches}
+              onAddBatch={(newBatch) =>
+                setAllBatches((prev) => [...prev, newBatch])
+              }
+              userId={user?.user_id}
+            />
+          </div>
+        </div>
+      )}
+
       <table className="min-w-full text-left border border-white/30 backdrop-blur">
         <thead className="bg-cyan-700 text-white sticky top-0 z-10">
           <tr>
@@ -97,6 +126,7 @@ const TinterTable = ({ plantId, user }) => {
             <th className="px-4 py-2">Updated By</th>
             <th className="px-4 py-2">Updated At</th>
             <th className="px-4 py-2">Edit tinter</th>
+            <th className="px-4 py-2">Add Batches</th>
           </tr>
         </thead>
         <tbody className="bg-white/60">
@@ -134,13 +164,25 @@ const TinterTable = ({ plantId, user }) => {
                 <td className="px-4 py-2">{tinter.updated_at}</td>
                 <td className="px-4 py-2 ">
                   <button
-                    className="border-2 p-1"
+                    className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
                     onClick={() => {
                       setEditingTinter(tinter);
                       setShowEditModal(true);
                     }}
                   >
                     <FaEdit />
+                  </button>
+                </td>
+                <td className="px-4 py-2">
+                  <button
+                    onClick={() => {
+                      setSelectedTinter(tinter);
+                      setShowBatchForm(true);
+                    }}
+                    className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
+                    title="Add/View Batches"
+                  >
+                    <IoIosAddCircleOutline />
                   </button>
                 </td>
               </tr>

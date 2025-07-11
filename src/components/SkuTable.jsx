@@ -10,6 +10,7 @@ const SkuTable = ({ plantId }) => {
   const [editingSku, setEditingSku] = useState(null);
   const [skus, setSkus] = useState([...mapSkuData(plantId)]); // and update this
   const tableData = skus;
+
   const handleEditClick = (sku) => {
     setEditingSku(sku);
   };

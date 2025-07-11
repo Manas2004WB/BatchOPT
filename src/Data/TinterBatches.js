@@ -14,7 +14,7 @@ export const tinterBatches = [
   },
   {
     tinter_batch_id: 2,
-    tinter_id: 1,
+    tinter_id: 3,
     tinter_batch_code: "TB-002",
     batch_tinter_name: "Red Base v2",
     strength: 97.2,

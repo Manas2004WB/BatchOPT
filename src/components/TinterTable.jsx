@@ -1,13 +1,26 @@
 import React, { useState } from "react";
 import { tinters as allTinters } from "../Data/TinterData";
 import AddTinterForm from "./AddTinterForm";
+import { FaEdit } from "react-icons/fa";
+import UpdateTinterForm from "./UpdateTinterForm";
 
 const TinterTable = ({ plantId, user }) => {
+  const [editingTinter, setEditingTinter] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [tinterList, setTinterList] = useState(allTinters);
   const filteredTinters = tinterList.filter(
     (t) => t.plant_id === Number(plantId)
   );
+
+  const handleUpdateTinter = (updatedTinter) => {
+    setTinterList((prevTinters) =>
+      prevTinters.map((tinter) =>
+        tinter.tinter_id === updatedTinter.tinter_id ? updatedTinter : tinter
+      )
+    );
+    setShowEditModal(false);
+  };
 
   const handleAddTinter = (newTinter) => {
     const nextId =
@@ -55,6 +68,27 @@ const TinterTable = ({ plantId, user }) => {
           </div>
         </div>
       )}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">
+            <button
+              onClick={() => setShowEditModal(false)}
+              className="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl"
+            >
+              &times;
+            </button>
+            <UpdateTinterForm
+              user={user}
+              plantId={plantId}
+              tinterToEdit={editingTinter}
+              onUpdate={(tinter) => {
+                handleUpdateTinter(tinter);
+                setShowEditModal(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
       <table className="min-w-full text-left border border-white/30 backdrop-blur">
         <thead className="bg-cyan-700 text-white sticky top-0 z-10">
           <tr>
@@ -62,6 +96,7 @@ const TinterTable = ({ plantId, user }) => {
             <th className="px-4 py-2">Status</th>
             <th className="px-4 py-2">Updated By</th>
             <th className="px-4 py-2">Updated At</th>
+            <th className="px-4 py-2">Edit tinter</th>
           </tr>
         </thead>
         <tbody className="bg-white/60">
@@ -97,6 +132,17 @@ const TinterTable = ({ plantId, user }) => {
                     : tinter.updated_by}
                 </td>
                 <td className="px-4 py-2">{tinter.updated_at}</td>
+                <td className="px-4 py-2 ">
+                  <button
+                    className="border-2 p-1"
+                    onClick={() => {
+                      setEditingTinter(tinter);
+                      setShowEditModal(true);
+                    }}
+                  >
+                    <FaEdit />
+                  </button>
+                </td>
               </tr>
             ))
           )}

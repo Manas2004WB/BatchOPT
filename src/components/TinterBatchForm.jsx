@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { MdDeleteOutline } from "react-icons/md";
 
 const TinterBatchForm = ({
   tinterCode,
   tinterId,
   batches,
   onAddBatch,
+  onUpdateBatch,
   userId,
 }) => {
   const [form, setForm] = useState({
@@ -20,8 +22,9 @@ const TinterBatchForm = ({
     liquid_a: "",
     liquid_b: "",
   });
-
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [error, setError] = useState("");
+  const [selectedBatchId, setSelectedBatchId] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, type, comments, checked } = e.target;
@@ -69,8 +72,53 @@ const TinterBatchForm = ({
     (batch) => batch.tinter_id === tinterId
   );
 
+  const handleConfirmDelete = () => {
+    const now = new Date().toISOString();
+    const batchToUpdate = batches.find(
+      (b) => b.tinter_batch_id === selectedBatchId
+    );
+    console.log("Found batch:", batchToUpdate);
+
+    if (batchToUpdate) {
+      const updatedBatch = {
+        ...batchToUpdate,
+        is_active: false,
+        updated_at: now,
+        updated_by: userId,
+      };
+      console.log("Sending to parent:", updatedBatch);
+      onUpdateBatch(updatedBatch); // call parent's state update function
+    }
+    setShowDeleteAlert(false);
+    setSelectedBatchId(null);
+  };
+
   return (
     <div className=" w-full bg-white  rounded-xl shadow-xl">
+      {showDeleteAlert && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white p-6 rounded-xl shadow-xl max-w-sm w-full space-y-4">
+            <h2 className="text-lg font-semibold text-gray-800 text-center">
+              Are you sure you want to make this tinter inactive?
+            </h2>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={handleConfirmDelete} // replace with your actual delete function
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={() => setShowDeleteAlert(false)}
+                className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-2">
         <h2 className="text-xl font-bold text-black mb-4">
           Batch Details : {tinterCode}
@@ -78,7 +126,7 @@ const TinterBatchForm = ({
         {error && (
           <p className="text-red-600 bg-white/50 px-2 py-1 rounded">{error}</p>
         )}
-        <div className="grid grid-cols-4 gap-4 w-full max-w-5xl">
+        <div className="grid grid-cols-5 gap-4 w-full max-w-5xl">
           {/* --- First Row: Batch Info --- */}
           <div className="col-span-1">
             <label className="flex flex-col">
@@ -121,19 +169,18 @@ const TinterBatchForm = ({
                 className="border rounded px-2 py-1"
               />
             </label>
-
-            <div className="mt-2 flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="is_active"
-                name="is_active"
-                checked={form.is_active}
-                onChange={handleChange}
-              />
-              <label htmlFor="is_active" className="text-gray-700">
-                Active
-              </label>
-            </div>
+          </div>
+          <div className="col-span-1 mt-2 flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="is_active"
+              name="is_active"
+              checked={form.is_active}
+              onChange={handleChange}
+            />
+            <label htmlFor="is_active" className="text-gray-700">
+              Active
+            </label>
           </div>
           <div className="row-span-2 col-span-1">
             <label className="flex flex-col h-full">
@@ -148,7 +195,7 @@ const TinterBatchForm = ({
             </label>
           </div>
           {/* --- Second Row: Lab L*a*b* values --- */}
-          <div className="col-span-3 grid grid-cols-2 gap-4">
+          <div className="col-span-4 grid grid-cols-2 gap-4">
             {/* Panel LAB */}
             <div className="border rounded p-3">
               <span className="text-gray-600 font-semibold block mb-2">
@@ -223,7 +270,7 @@ const TinterBatchForm = ({
           </div>
 
           {/* --- Submit Button --- */}
-          <div className="col-span-4 flex justify-end mt-4">
+          <div className="col-span-4 flex justify-start mt-4">
             <button
               type="submit"
               className="bg-cyan-500 text-white py-2 px-4 rounded hover:bg-cyan-600"
@@ -250,6 +297,7 @@ const TinterBatchForm = ({
                 <th className="px-4 py-2 text-left">Strength</th>
                 <th className="px-4 py-2 text-left">Active</th>
                 <th className="px-4 py-2 text-left">Updated</th>
+                <th className="px-4 py-2 text-left">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -290,6 +338,22 @@ const TinterBatchForm = ({
                   </td>
                   <td className="px-4 py-2 text-xs text-gray-500">
                     {batch.updated_at}
+                  </td>
+                  <td className="px-4 py-2">
+                    <button
+                      className={`p-4 rounded ${
+                        batch.is_active
+                          ? "bg-cyan-200 hover:bg-cyan-300 cursor-pointer"
+                          : "bg-gray-300 cursor-not-allowed"
+                      }`}
+                      disabled={!batch.is_active}
+                      onClick={() => {
+                        setSelectedBatchId(batch.tinter_batch_id);
+                        setShowDeleteAlert(true);
+                      }}
+                    >
+                      <MdDeleteOutline />
+                    </button>
                   </td>
                 </tr>
               ))}

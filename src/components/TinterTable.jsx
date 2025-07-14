@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { tinters as allTinters } from "../Data/TinterData";
 import AddTinterForm from "./AddTinterForm";
 import { FaEdit } from "react-icons/fa";
@@ -18,7 +18,6 @@ const TinterTable = ({ plantId, user }) => {
   const filteredTinters = tinterList.filter(
     (t) => t.plant_id === Number(plantId)
   );
-
   const handleUpdateTinter = (updatedTinter) => {
     setTinterList((prevTinters) =>
       prevTinters.map((tinter) =>
@@ -111,6 +110,15 @@ const TinterTable = ({ plantId, user }) => {
               batches={allBatches}
               onAddBatch={(newBatch) =>
                 setAllBatches((prev) => [...prev, newBatch])
+              }
+              onUpdateBatch={(updatedBatch) =>
+                setAllBatches((prev) =>
+                  prev.map((batch) =>
+                    batch.tinter_batch_code === updatedBatch.tinter_batch_code
+                      ? updatedBatch
+                      : batch
+                  )
+                )
               }
               userId={user?.user_id}
             />

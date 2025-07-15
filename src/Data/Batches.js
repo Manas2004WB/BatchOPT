@@ -1,7 +1,7 @@
 export const batches = [
   {
     batch_id: 1,
-    sku_version_id: 101, // FK -> sku_versions
+    sku_version_id: 1, // FK -> sku_versions
     batch_code: "BATCH-001-A",
     batch_size: 120.5,
     batch_status_id: 1, // FK -> batch_statuses (e.g., 1 = Active)
@@ -12,7 +12,7 @@ export const batches = [
   },
   {
     batch_id: 2,
-    sku_version_id: 101,
+    sku_version_id: 1,
     batch_code: "BATCH-001-B",
     batch_size: 130.0,
     batch_status_id: 2, // e.g., 2 = Inactive
@@ -23,7 +23,7 @@ export const batches = [
   },
   {
     batch_id: 3,
-    sku_version_id: 102,
+    sku_version_id: 2,
     batch_code: "BATCH-002-A",
     batch_size: 95.75,
     batch_status_id: 1,
@@ -34,7 +34,7 @@ export const batches = [
   },
   {
     batch_id: 4,
-    sku_version_id: 103,
+    sku_version_id: 2,
     batch_code: "BATCH-003-A",
     batch_size: 110.2,
     batch_status_id: 3, // e.g., 3 = Pending QA
@@ -45,7 +45,7 @@ export const batches = [
   },
   {
     batch_id: 5,
-    sku_version_id: 103,
+    sku_version_id: 2,
     batch_code: "BATCH-003-B",
     batch_size: 150.0,
     batch_status_id: 1,

@@ -2,7 +2,7 @@ export const skuData = [
   {
     sku_id: 1,
     plant_id: 1,
-    sku_name: "Blue Gloss 500ml",
+    sku_name: "SKU001",
     is_active: true,
     created_at: "2025-07-01T10:00:00Z",
     created_by: 101,

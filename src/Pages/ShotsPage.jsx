@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import heroBg from "../assets/hero-bg.jpg";
 import { useParams } from "react-router-dom";
 import { batches } from "../Data/Batches"; // <-- import your batch data
@@ -8,18 +8,14 @@ import { skuData } from "../Data/SkuData";
 import { skuVersionMeasurements } from "../Data/SkuMeasurementData";
 import { standardRecipes } from "../Data/standardRecipes";
 import { tinters } from "../Data/TinterData";
+import NavbarShots from "../components/NavbarShots";
 
 const ShotsPage = () => {
+  const [deltaValues, setDeltaValues] = useState(null);
+  const [fetched, setFetched] = useState(false);
   const { batchId } = useParams();
   const batch = batches.find((b) => b.batch_id === parseInt(batchId));
 
-  const getSkuByVersionId = (versionId) => {
-    const version = skuVersions.find((v) => v.sku_version_id === versionId);
-    if (!version) return "-";
-
-    const sku = skuData.find((s) => s.sku_id === version.sku_id);
-    return sku?.sku_name || "-";
-  };
   //Table data
   const skuVersion = skuVersions.find(
     (v) => v.sku_version_id === batch?.sku_version_id
@@ -31,10 +27,10 @@ const ShotsPage = () => {
     measurements.find((m) => m.measurement_type === type)?.measurement_value ??
     "-";
 
-  const liquidL = getMeasurement("liquid_l");
-  const liquidA = getMeasurement("liquid_a");
-  const liquidB = getMeasurement("liquid_b");
-  const targetDeltaE = getMeasurement("target_delta_e");
+  const liquidL = getMeasurement("liquid_l").toFixed(2);
+  const liquidA = getMeasurement("liquid_a").toFixed(2);
+  const liquidB = getMeasurement("liquid_b").toFixed(2);
+  const targetDeltaE = getMeasurement("target_delta_e").toFixed(2);
 
   const recipeTinters = standardRecipes
     .filter((r) => r.sku_version_id === batch?.sku_version_id)
@@ -43,39 +39,30 @@ const ShotsPage = () => {
       return tinter?.tinter_code || `Tinter-${r.tinter_id}`;
     });
 
+  function getRandomFloat(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+  const handleShow = () => {
+    const sampleL = parseFloat(getRandomFloat(0, 100).toFixed(2));
+    const sampleA = parseFloat(getRandomFloat(-127, 128).toFixed(2));
+    const sampleB = parseFloat(getRandomFloat(-127, 128).toFixed(2));
+
+    const deltaL = parseFloat(liquidL) - sampleL;
+    const deltaA = parseFloat(liquidA) - sampleA;
+    const deltaB = parseFloat(liquidB) - sampleB;
+
+    const deltaE = Math.sqrt(deltaL ** 2 + deltaA ** 2 + deltaB ** 2);
+
+    setDeltaValues({ deltaL, deltaA, deltaB, deltaE });
+    setFetched(true);
+  };
+
   return (
     <div
       className="w-full min-h-screen overflow-hidden bg-cover bg-center"
       style={{ backgroundImage: `url(${heroBg})` }}
     >
-      {/* Top Info Bar */}
-      <div className="bg-white/60 backdrop-blur-md p-4 flex justify-between items-center text-black font-semibold shadow-md">
-        <div>
-          Batch Code:{" "}
-          <span className="text-cyan-800 text-2xl">
-            {batch?.batch_code || "-"}
-          </span>
-        </div>
-        <div>
-          SKU Version ID:{" "}
-          <span className="text-cyan-800 text-xl">
-            {getSkuByVersionId(batch?.sku_version_id || "-")}
-          </span>
-        </div>
-        <div>
-          Batch Size:{" "}
-          <span className="text-cyan-800">{batch?.batch_size || "-"}</span>
-        </div>
-        <div>
-          <button
-            onClick={() => window.history.back()}
-            className="flex items-center gap-1 bg-white text-cyan-800 font-medium text-sm px-4 py-1.5 rounded-md shadow hover:bg-gray-100 transition duration-200"
-          >
-            <MdArrowBackIos className="text-base" />
-            <span>Back</span>
-          </button>
-        </div>
-      </div>
+      <NavbarShots batch={batch} />
 
       {/* You can add shots input section below this */}
       <div className="p-6 text-white text-xl">
@@ -87,6 +74,7 @@ const ShotsPage = () => {
             <td className="px-4 py-2">Liquid Color</td>
             <td className="px-4 py-2">Liquid dE</td>
             <td className="px-4 py-2">Comments</td>
+            <td className="px-4 py-2">Actions</td>
           </thead>
           <tbody>
             <tr className="border-t border-white/30 hover:bg-white/80 transition bg-white/70 text-black">
@@ -99,9 +87,53 @@ const ShotsPage = () => {
               </td>
               <td className="px-4 py-2 ">{targetDeltaE}</td>
               <td className="px-4 py-2 ">{skuVersion?.comments || "-"}</td>
+              <td className="px-4 py-2 "></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr className="border-t border-white/30 hover:bg-white/80 transition bg-white/70 text-black">
+              <td className="px-4 py-2 font-semibold">Shot 0</td>
+              <td className="px-4 py-2 font-semibold"></td>
+              <td className="px-4 py-2  items-center justify-center">
+                {!fetched ? (
+                  <button
+                    className="bg-cyan-600 p-1.5 text-white rounded-md hover:bg-cyan-700"
+                    onClick={() => setTimeout(handleShow, 2000)}
+                  >
+                    Fetch
+                  </button>
+                ) : (
+                  <div className="flex gap-2 text-sm font-medium ">
+                    <div className=" px-3 py-1 rounded-full shadow-sm">
+                      ΔL: {deltaValues?.deltaL.toFixed(2)}
+                    </div>
+                    <div className=" px-3 py-1 rounded-full shadow-sm">
+                      ΔA: {deltaValues?.deltaA.toFixed(2)}
+                    </div>
+                    <div className=" px-3 py-1 rounded-full shadow-sm">
+                      ΔB: {deltaValues?.deltaB.toFixed(2)}
+                    </div>
+                  </div>
+                )}
+              </td>
+              <td className="px-4 py-2 ">
+                {fetched ? (
+                  <div className=" px-1.5 py-1 rounded-full shadow-sm">
+                    ΔE: {Number(deltaValues.deltaE).toFixed(2)}
+                  </div>
+                ) : (
+                  <div></div>
+                )}
+              </td>
+
+              <td className="px-4 py-2 font-semibold"></td>
+              <td className="px-4 py-2 font-semibold"></td>
             </tr>
           </tbody>
         </table>
+        <button className="bg-cyan-700 p-1.5">ADD SHOT</button>
       </div>
     </div>
   );

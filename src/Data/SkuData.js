@@ -12,7 +12,7 @@ export const skuData = [
   {
     sku_id: 2,
     plant_id: 1,
-    sku_name: "Red Matte 1L",
+    sku_name: "SKU002",
     is_active: true,
     created_at: "2025-07-01T10:05:00Z",
     created_by: 102,
@@ -22,7 +22,7 @@ export const skuData = [
   {
     sku_id: 3,
     plant_id: 2,
-    sku_name: "Yellow SemiGloss 250ml",
+    sku_name: "SKU003",
     is_active: false,
     created_at: "2025-07-01T11:00:00Z",
     created_by: 103,
@@ -32,7 +32,7 @@ export const skuData = [
   {
     sku_id: 4,
     plant_id: 2,
-    sku_name: "Green Gloss 2L",
+    sku_name: "SKU005",
     is_active: true,
     created_at: "2025-07-01T11:30:00Z",
     created_by: 104,

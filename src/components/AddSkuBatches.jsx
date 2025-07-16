@@ -4,7 +4,10 @@ import { skuData } from "../Data/SkuData";
 import { skuVersions } from "../Data/SkuVersionData";
 import AddSkuBatchForm from "./AddSkuBatchForm";
 import { users } from "../Data/Data";
+import { useNavigate } from "react-router-dom";
+
 const AddSkuBatches = ({ user, plantId }) => {
+  const navigate = useNavigate();
   const [batchList, setBatchList] = useState(batches);
   const [showAddBatchModal, setShowAddBatchModal] = useState(false);
   const handleAddBatch = (newBatch) => {
@@ -57,11 +60,12 @@ const AddSkuBatches = ({ user, plantId }) => {
           <tr>
             <th className="px-4 py-2 ">#</th>
             <th className="px-4 py-2 ">Batch Code</th>
-            <th className="px-4 py-2 ">SKU Version ID</th>
+            <th className="px-4 py-2 ">SKU Version </th>
             <th className="px-4 py-2 ">Batch Size</th>
-            <th className="px-4 py-2 ">Status ID</th>
+            <th className="px-4 py-2 ">Status </th>
             <th className="px-4 py-2 ">Updated On</th>
             <th className="px-4 py-2 ">Updated By</th>
+            <th className="px-4 py-2 ">Shots</th>
           </tr>
         </thead>
         <tbody className="bg-white/60">
@@ -91,6 +95,16 @@ const AddSkuBatches = ({ user, plantId }) => {
                 </td>
                 <td className="px-4 py-2 text-center">
                   {getUsernamebyUserId(batch.updated_by)}
+                </td>
+                <td className="px-4 py-2 text-center">
+                  <button
+                    className="bg-cyan-700 p-1 rounded-xl text-white"
+                    onClick={() =>
+                      navigate(`/shots/${batch.batch_id}`, { state: { batch } })
+                    }
+                  >
+                    Shots
+                  </button>
                 </td>
               </tr>
             ))

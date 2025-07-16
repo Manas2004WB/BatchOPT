@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import Dashboard from "./Pages/Dashboard";
 import PlantDetails from "./Pages/PlantDetails";
+import ShotsPage from "./Pages/ShotsPage";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -39,6 +40,10 @@ const App = () => {
           <Route
             path="/plant/:id"
             element={user ? <PlantDetails user={user} /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/shots/:batchId"
+            element={user ? <ShotsPage user={user} /> : <Navigate to="/" />}
           />
         </Routes>
       </Router>

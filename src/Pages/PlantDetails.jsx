@@ -8,7 +8,7 @@ import AddSkuBatches from "../components/AddSkuBatches";
 
 const PlantDetails = ({ user }) => {
   const { id } = useParams();
-  const [activeTab, setActiveTab] = useState("tinter");
+  const [activeTab, setActiveTab] = useState("batches");
 
   const renderTabContent = () => {
     switch (activeTab) {

@@ -9,8 +9,10 @@ import { skuVersionMeasurements } from "../Data/SkuMeasurementData";
 import { standardRecipes } from "../Data/standardRecipes";
 import { tinters } from "../Data/TinterData";
 import NavbarShots from "../components/NavbarShots";
+import ShotTinterAddModal from "../components/ShotTinterAddModal";
 
 const ShotsPage = () => {
+  const [tinterModalShotIndex, setTinterModalShotIndex] = useState(null);
   const [shots, setShots] = useState([]); // Initially empty
   const { batchId } = useParams();
   const batch = batches.find((b) => b.batch_id === parseInt(batchId));
@@ -80,6 +82,13 @@ const ShotsPage = () => {
     updatedShots[index].ended = true;
     setShots(updatedShots);
   };
+  const handleOpenTinterModal = (index) => {
+    setTinterModalShotIndex(index);
+  };
+
+  const handleCloseTinterModal = () => {
+    setTinterModalShotIndex(null);
+  };
 
   return (
     <div
@@ -123,6 +132,16 @@ const ShotsPage = () => {
                 <td className="px-4 py-2 font-semibold">Shot {shot.id}</td>
                 <td className="px-4 py-2">
                   {/* You can add Select/Manual logic here later for non-zero shots */}
+                  <td className="px-4 py-2">
+                    {shot.id !== 0 && !shot.ended && (
+                      <button
+                        className="bg-cyan-600 text-white px-3 py-1 rounded-md hover:bg-cyan-700"
+                        onClick={() => handleOpenTinterModal(index)}
+                      >
+                        Select Tinters
+                      </button>
+                    )}
+                  </td>
                 </td>
                 <td className="px-4 py-2">
                   {index === 0 && !shot.fetched && !shot.ended ? (
@@ -135,12 +154,13 @@ const ShotsPage = () => {
                       Fetch
                     </button>
                   ) : shot.deltaValues ? (
-                    <div className="flex flex-row">
+                    <div className="flex flex-row ">
                       {!shot.ended ? (
                         <button
                           className="bg-cyan-600 p-1.5 text-white rounded-md hover:bg-cyan-700"
                           onClick={() => {
-                            handleFetch(index); // no setTimeout unless you want delay
+                            setTimeout(() => handleFetch(index), 1000);
+                            // no setTimeout unless you want delay
                           }}
                         >
                           Fetch
@@ -205,6 +225,15 @@ const ShotsPage = () => {
             )}
           </tbody>
         </table>
+        {tinterModalShotIndex !== null && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+            <ShotTinterAddModal
+              tinterModalShotIndex={tinterModalShotIndex}
+              handleCloseTinterModal={handleCloseTinterModal}
+              recipeTinters={recipeTinters}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

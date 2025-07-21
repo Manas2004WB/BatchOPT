@@ -6,11 +6,14 @@ import { skuVersionMeasurements } from "../Data/SkuMeasurementData";
 import { standardRecipes } from "../Data/standardRecipes";
 import { tinters } from "../Data/TinterData";
 import { batches } from "../Data/Batches";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import heroBg from "../assets/hero-bg.jpg";
 import NavbarShots from "../components/NavbarShots";
+import { tinterBatches } from "../Data/TinterBatches";
 
 const ShotsPage = ({ user }) => {
+  const location = useLocation();
+  const { plantId } = location.state || {};
   const { batchId } = useParams();
   const batch = batches.find((b) => b.batch_id === parseInt(batchId));
   const [shots, setShots] = useState([]);
@@ -124,9 +127,16 @@ const ShotsPage = ({ user }) => {
                 const tinterObj = tinters.find(
                   (x) => x.tinter_id === t.tinter_id
                 );
-                return tinterObj
-                  ? `${tinterObj.tinter_code} (${t.batch_id})`
-                  : `Tinter-${t.tinter_id} (${t.batch_id})`;
+                const batchObj = tinterBatches.find(
+                  (b) => b.tinter_batch_id === t.batch_id
+                );
+
+                const tinterCode =
+                  tinterObj?.tinter_code || `Tinter-${t.tinter_id}`;
+                const batchCode =
+                  batchObj?.batch_tinter_name || `Batch-${t.batch_id}`;
+
+                return `${tinterCode} - ${batchCode}`;
               }),
             }
           : shot
@@ -286,6 +296,7 @@ const ShotsPage = ({ user }) => {
 
       {/* Tinter Selection Modal */}
       <ShotTinterAddModal
+        plantId={plantId}
         isOpen={showTinterModal}
         onClose={() => setShowTinterModal(false)}
         onSave={handleSaveTinters}

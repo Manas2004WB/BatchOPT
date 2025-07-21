@@ -2,36 +2,44 @@ import React, { useState, useEffect } from "react";
 import { tinters } from "../Data/TinterData";
 import { tinterBatches } from "../Data/TinterBatches";
 import { ImCancelCircle } from "react-icons/im";
+// Add a prop: plantId
 const TinterSelectionModal = ({
+  user,
   isOpen,
   onClose,
   onSave,
   preselectedTinters = [],
-  allowedTinterIds = null, // Pass allowed tinter ids from parent
+  allowedTinterIds,
+  plantId, // new prop for plant
 }) => {
   const [selectedTinters, setSelectedTinters] = useState([]);
   const [batchOptions, setBatchOptions] = useState({});
 
   useEffect(() => {
-    // Only show tinters that are allowed (from standard recipe) and active
-    let filteredTinters = tinters.filter((t) => t.is_active);
-    if (allowedTinterIds && allowedTinterIds.length > 0) {
-      filteredTinters = filteredTinters.filter((t) =>
-        allowedTinterIds.includes(t.tinter_id)
-      );
-    }
+    const allActiveTinters = tinters.filter((t) => t.is_active);
+    const plantTinters = allActiveTinters.filter(
+      (t) => t.plant_id === Number(plantId)
+    );
+    console.log("🌱 All active tinters for plant:", plantTinters);
 
-    const defaultTinters = preselectedTinters.length
+    // Default tinters to preselected or first 2 allowed ones
+    let defaultTinters = preselectedTinters.length
       ? preselectedTinters
-      : filteredTinters.slice(0, 2).map((t) => ({
-          tinter_id: t.tinter_id,
-          batch_id: null,
-        }));
+      : plantTinters
+          .filter((t) => allowedTinterIds.includes(t.tinter_id))
+          .slice(0, 2)
+          .map((t) => ({
+            tinter_id: t.tinter_id,
+            batch_id: null,
+          }));
+
+    console.log("🌟 Default selected tinters:", defaultTinters);
 
     setSelectedTinters(defaultTinters);
 
+    // Get batches for all plant tinters
     const batchesByTinter = {};
-    filteredTinters.forEach((tinter) => {
+    plantTinters.forEach((tinter) => {
       batchesByTinter[tinter.tinter_id] = tinterBatches
         ? tinterBatches.filter(
             (b) => b.tinter_id === tinter.tinter_id && b.is_active
@@ -39,7 +47,7 @@ const TinterSelectionModal = ({
         : [];
     });
     setBatchOptions(batchesByTinter);
-  }, [preselectedTinters, allowedTinterIds]);
+  }, [preselectedTinters, allowedTinterIds, plantId]);
 
   const handleTinterChange = (index, tinterId) => {
     const updated = [...selectedTinters];
@@ -81,12 +89,9 @@ const TinterSelectionModal = ({
   if (!isOpen) return null;
 
   // Only show allowed tinters in dropdown
-  let filteredTinters = tinters.filter((t) => t.is_active);
-  if (allowedTinterIds && allowedTinterIds.length > 0) {
-    filteredTinters = filteredTinters.filter((t) =>
-      allowedTinterIds.includes(t.tinter_id)
-    );
-  }
+  let dropdownTinters = tinters.filter(
+    (t) => t.is_active && t.plant_id === Number(plantId)
+  );
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
@@ -106,7 +111,7 @@ const TinterSelectionModal = ({
               className="border p-2 rounded w-1/2"
             >
               <option value="">Select Tinter</option>
-              {filteredTinters.map((tinter) => (
+              {dropdownTinters.map((tinter) => (
                 <option key={tinter.tinter_id} value={tinter.tinter_id}>
                   {tinter.tinter_code}
                 </option>

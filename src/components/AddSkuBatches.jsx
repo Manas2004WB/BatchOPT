@@ -100,7 +100,9 @@ const AddSkuBatches = ({ user, plantId }) => {
                   <button
                     className="bg-cyan-700 p-1 rounded-xl text-white"
                     onClick={() =>
-                      navigate(`/shots/${batch.batch_id}`, { state: { batch } })
+                      navigate(`/shots/${batch.batch_id}`, {
+                        state: { batch, plantId },
+                      })
                     }
                   >
                     Shots

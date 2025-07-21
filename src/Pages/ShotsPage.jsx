@@ -21,9 +21,6 @@ const ShotsPage = ({ user }) => {
   const [currentShotId, setCurrentShotId] = useState(null);
 
   // Helper functions to extract Standard row data
-  const skuVersion = skuVersions.find(
-    (v) => v.sku_version_id === batch?.sku_version_id
-  );
 
   const measurements = skuVersionMeasurements.filter(
     (m) => m.sku_version_id === batch?.sku_version_id
@@ -38,6 +35,12 @@ const ShotsPage = ({ user }) => {
   const liquidA = getMeasurement("liquid_a");
   const liquidB = getMeasurement("liquid_b");
   const targetDeltaE = getMeasurement("target_delta_e");
+  const panelL = getMeasurement("panel_l");
+  const panelA = getMeasurement("panel_a");
+  const panelB = getMeasurement("panel_b");
+  const colorimeterL = getMeasurement("colorimeter_l");
+  const colorimeterA = getMeasurement("colorimeter_a");
+  const colorimeterB = getMeasurement("colorimeter_b");
 
   const recipeTinters = standardRecipes
     .filter((r) => r.sku_version_id === batch?.sku_version_id)
@@ -66,40 +69,37 @@ const ShotsPage = ({ user }) => {
       prevShots.map((shot) => {
         if (shot.id !== shotId) return shot;
 
+        // Generate random values for demonstration
         const randomL = Number((Math.random() * 10 + 50).toFixed(2));
         const randomA = Number((Math.random() * 5 + 10).toFixed(2));
         const randomB = Number((Math.random() * 8 + 20).toFixed(2));
 
-        if (shotId === 0) {
-          // Shot 0: delta values from standard
-          const deltaL = +(randomL - liquidL).toFixed(2);
-          const deltaA = +(randomA - liquidA).toFixed(2);
-          const deltaB = +(randomB - liquidB).toFixed(2);
-          const deltaE = Math.sqrt(
+        // Calculate delta for each reference
+        const calcDeltaE = (refL, refA, refB) => {
+          const deltaL = randomL - refL;
+          const deltaA = randomA - refA;
+          const deltaB = randomB - refB;
+          return Math.sqrt(
             deltaL * deltaL + deltaA * deltaA + deltaB * deltaB
           ).toFixed(2);
+        };
 
-          return {
-            ...shot,
-            values: {
-              l: deltaL,
-              a: deltaA,
-              b: deltaB,
-              deltaE: deltaE,
-            },
-          };
-        } else {
-          // Shot > 0: use as-is
-          return {
-            ...shot,
-            values: {
-              l: randomL,
-              a: randomA,
-              b: randomB,
-              deltaE: (Math.random() * 2 + 0.5).toFixed(2),
-            },
-          };
-        }
+        // For shot 0 and onwards, always calculate Euclidean distance for all three
+        return {
+          ...shot,
+          values: {
+            l: randomL,
+            a: randomA,
+            b: randomB,
+            deltaE_liquid: calcDeltaE(liquidL, liquidA, liquidB),
+            deltaE_panel: calcDeltaE(panelL, panelA, panelB),
+            deltaE_colorimeter: calcDeltaE(
+              colorimeterL,
+              colorimeterA,
+              colorimeterB
+            ),
+          },
+        };
       })
     );
   };
@@ -146,19 +146,6 @@ const ShotsPage = ({ user }) => {
     setCurrentShotId(null);
   };
 
-  const handleSelectTinters = (shotId) => {
-    const randomTinters = [
-      tinters[0]?.tinter_code || "Tinter-1",
-      tinters[1]?.tinter_code || "Tinter-2",
-    ];
-
-    setShots((prevShots) =>
-      prevShots.map((shot) =>
-        shot.id === shotId ? { ...shot, tinters: randomTinters } : shot
-      )
-    );
-  };
-
   const handleCommentChange = (shotId, comment) => {
     setShots((prevShots) =>
       prevShots.map((shot) =>
@@ -175,17 +162,40 @@ const ShotsPage = ({ user }) => {
       <NavbarShots batch={batch} />
       <h2 className="text-xl font-bold mx-6 my-2 text-white">Shots Table</h2>
       <div className="p-6 text-white text-xl">
-        <table className="min-w-full text-left border border-white/30 backdrop-blur ">
+        <table className="min-w-full text-centre border border-white/30 backdrop-blur ">
           <thead className="bg-cyan-700 text-white sticky top-0 z-10">
             <tr className="border-b border-white/30">
               <th className="border px-2 py-1">#</th>
               <th className="border px-2 py-1">Tinters</th>
-              <th className="border px-2 py-1">L</th>
-              <th className="border px-2 py-1">A</th>
-              <th className="border px-2 py-1">B</th>
-              <th className="border px-2 py-1">ΔE</th>
+              <th className="border px-2 py-1" colSpan={4}>
+                Liquid Color
+              </th>
+              <th className="border px-2 py-1" colSpan={4}>
+                Panel Color
+              </th>
+              <th className="border px-2 py-1" colSpan={4}>
+                Colorimeter
+              </th>
               <th className="border px-2 py-1">Comment</th>
               <th className="border px-2 py-1">Actions</th>
+            </tr>
+            <tr className="border-b border-white/30">
+              <th className="border px-2 py-1"></th>
+              <th className="border px-2 py-1"></th>
+              <th className="border px-2 py-1">ΔL</th>
+              <th className="border px-2 py-1">ΔA</th>
+              <th className="border px-2 py-1">ΔB</th>
+              <th className="border px-2 py-1">ΔE</th>
+              <th className="border px-2 py-1">ΔL</th>
+              <th className="border px-2 py-1">ΔA</th>
+              <th className="border px-2 py-1">ΔB</th>
+              <th className="border px-2 py-1">ΔE</th>
+              <th className="border px-2 py-1">ΔL</th>
+              <th className="border px-2 py-1">ΔA</th>
+              <th className="border px-2 py-1">ΔB</th>
+              <th className="border px-2 py-1">ΔE</th>
+              <th className="border px-2 py-1"></th>
+              <th className="border px-2 py-1"></th>
             </tr>
           </thead>
           <tbody>
@@ -195,6 +205,7 @@ const ShotsPage = ({ user }) => {
               <td className="border px-2 py-1">
                 {recipeTinters.length ? recipeTinters.join(", ") : "N/A"}
               </td>
+              {/* Liquid Color */}
               <td className="border px-2 py-1">
                 {liquidL !== "-" ? liquidL.toFixed(2) : "-"}
               </td>
@@ -203,6 +214,32 @@ const ShotsPage = ({ user }) => {
               </td>
               <td className="border px-2 py-1">
                 {liquidB !== "-" ? liquidB.toFixed(2) : "-"}
+              </td>
+              <td className="border px-2 py-1">
+                {targetDeltaE !== "-" ? targetDeltaE.toFixed(2) : "-"}
+              </td>
+              {/* Panel Color */}
+              <td className="border px-2 py-1">
+                {panelL !== "-" ? panelL.toFixed(2) : "-"}
+              </td>
+              <td className="border px-2 py-1">
+                {panelA !== "-" ? panelA.toFixed(2) : "-"}
+              </td>
+              <td className="border px-2 py-1">
+                {panelB !== "-" ? panelB.toFixed(2) : "-"}
+              </td>
+              <td className="border px-2 py-1">
+                {targetDeltaE !== "-" ? targetDeltaE.toFixed(2) : "-"}
+              </td>
+              {/* Colorimeter */}
+              <td className="border px-2 py-1">
+                {colorimeterL !== "-" ? colorimeterL.toFixed(2) : "-"}
+              </td>
+              <td className="border px-2 py-1">
+                {colorimeterA !== "-" ? colorimeterA.toFixed(2) : "-"}
+              </td>
+              <td className="border px-2 py-1">
+                {colorimeterB !== "-" ? colorimeterB.toFixed(2) : "-"}
               </td>
               <td className="border px-2 py-1">
                 {targetDeltaE !== "-" ? targetDeltaE.toFixed(2) : "-"}
@@ -216,6 +253,7 @@ const ShotsPage = ({ user }) => {
                 key={shot.id}
                 className="border-t border-white/30 hover:bg-white/80 transition bg-white/70 text-black"
               >
+                {console.log("💀💀💀", shot)}
                 <td className="border px-2 py-1 font-semibold">
                   Shot {shot.id}
                 </td>
@@ -223,7 +261,7 @@ const ShotsPage = ({ user }) => {
                   {shot.id > 0 ? (
                     <div>
                       <button
-                        className="bg-purple-500 text-white px-2 py-1 rounded mr-2 mb-1"
+                        className="bg-cyan-600 text-white px-2 py-1 rounded mr-2 mb-1"
                         onClick={() => handleOpenTinterModal(shot.id)}
                         disabled={shot.ended}
                       >
@@ -239,10 +277,26 @@ const ShotsPage = ({ user }) => {
                     <span className="text-gray-400">-</span>
                   )}
                 </td>
+                {/* Liquid Color */}
+
                 <td className="border px-2 py-1">{shot.values.l}</td>
                 <td className="border px-2 py-1">{shot.values.a}</td>
                 <td className="border px-2 py-1">{shot.values.b}</td>
-                <td className="border px-2 py-1">{shot.values.deltaE}</td>
+                <td className="border px-2 py-1">
+                  {shot.values.deltaE_liquid}
+                </td>
+                {/* Panel Color */}
+                <td className="border px-2 py-1">{shot.values.l}</td>
+                <td className="border px-2 py-1">{shot.values.a}</td>
+                <td className="border px-2 py-1">{shot.values.b}</td>
+                <td className="border px-2 py-1">{shot.values.deltaE_panel}</td>
+                {/* Colorimeter */}
+                <td className="border px-2 py-1">{shot.values.l}</td>
+                <td className="border px-2 py-1">{shot.values.a}</td>
+                <td className="border px-2 py-1">{shot.values.b}</td>
+                <td className="border px-2 py-1">
+                  {shot.values.deltaE_colorimeter}
+                </td>
                 <td className="border px-2 py-1 w-48">
                   <textarea
                     className="w-full border p-1 text-xs"

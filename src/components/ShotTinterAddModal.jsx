@@ -1,239 +1,170 @@
-import React, { useState } from "react";
-import { tinterBatches } from "../Data/TinterBatches";
+import React, { useState, useEffect } from "react";
 import { tinters } from "../Data/TinterData";
-import { MdDelete } from "react-icons/md";
-
-const ShotTinterAddModal = ({
-  handleCloseTinterModal,
-  tinterModalShotIndex,
-  recipeTinters = [],
+import { tinterBatches } from "../Data/TinterBatches";
+import { ImCancelCircle } from "react-icons/im";
+const TinterSelectionModal = ({
+  isOpen,
+  onClose,
+  onSave,
+  preselectedTinters = [],
+  allowedTinterIds = null, // Pass allowed tinter ids from parent
 }) => {
-  const [rows, setRows] = useState([]);
-  const [deletedStaticIndexes, setDeletedStaticIndexes] = useState([]);
+  const [selectedTinters, setSelectedTinters] = useState([]);
+  const [batchOptions, setBatchOptions] = useState({});
 
-  const handleAddRow = () => {
-    setRows((prev) => [
-      ...prev,
-      { tinter_code: "", tinter_batch_id: "", tinter_weights: "" },
+  useEffect(() => {
+    // Only show tinters that are allowed (from standard recipe) and active
+    let filteredTinters = tinters.filter((t) => t.is_active);
+    if (allowedTinterIds && allowedTinterIds.length > 0) {
+      filteredTinters = filteredTinters.filter((t) =>
+        allowedTinterIds.includes(t.tinter_id)
+      );
+    }
+
+    const defaultTinters = preselectedTinters.length
+      ? preselectedTinters
+      : filteredTinters.slice(0, 2).map((t) => ({
+          tinter_id: t.tinter_id,
+          batch_id: null,
+        }));
+
+    setSelectedTinters(defaultTinters);
+
+    const batchesByTinter = {};
+    filteredTinters.forEach((tinter) => {
+      batchesByTinter[tinter.tinter_id] = tinterBatches
+        ? tinterBatches.filter(
+            (b) => b.tinter_id === tinter.tinter_id && b.is_active
+          )
+        : [];
+    });
+    setBatchOptions(batchesByTinter);
+  }, [preselectedTinters, allowedTinterIds]);
+
+  const handleTinterChange = (index, tinterId) => {
+    const updated = [...selectedTinters];
+    updated[index].tinter_id = parseInt(tinterId);
+    updated[index].batch_id = null; // Reset batch
+    setSelectedTinters(updated);
+  };
+
+  const handleBatchChange = (index, batchId) => {
+    const updated = [...selectedTinters];
+    updated[index].batch_id = parseInt(batchId);
+    setSelectedTinters(updated);
+  };
+
+  const addTinter = () => {
+    setSelectedTinters([
+      ...selectedTinters,
+      { tinter_id: null, batch_id: null },
     ]);
   };
 
-  const handleDelete = (isStatic, index) => {
-    if (isStatic) {
-      setDeletedStaticIndexes((prev) => [...prev, index]);
-    } else {
-      const updatedRows = rows.filter((_, i) => i !== index);
-      setRows(updatedRows);
+  const removeTinter = (index) => {
+    if (selectedTinters.length > 0) {
+      const updated = selectedTinters.filter((_, i) => i !== index);
+      setSelectedTinters(updated);
     }
   };
 
-  const handleTinterChange = (index, selectedTinterCode) => {
-    const updatedRows = [...rows];
-    updatedRows[index].tinter_code = selectedTinterCode;
-    updatedRows[index].tinter_batch_id = ""; // reset batch when tinter changes
-    updatedRows[index].tinter_weights = "";
-    setRows(updatedRows);
-  };
-
-  const handleBatchChange = (index, selectedBatchId) => {
-    const updatedRows = [...rows];
-    updatedRows[index].tinter_batch_id = selectedBatchId;
-    updatedRows[index].tinter_weights = "";
-    setRows(updatedRows);
-  };
-
-  const isSaveDisabled = () => {
-    // Check static rows (recipeTinters): always require a batch and weight for each
-    // Since static rows are not tracked in state, you may need to track their values in state for full validation
-    // For now, only check dynamic rows
-    if (rows.length === 0) return true;
-    for (const row of rows) {
-      if (!row.tinter_code || !row.tinter_batch_id || !row.tinter_weights) {
-        return true;
-      }
+  const handleSave = () => {
+    const isValid = selectedTinters.every((t) => t.tinter_id && t.batch_id);
+    if (!isValid) {
+      alert("Please select both Tinter and Batch for all entries.");
+      return;
     }
-    return false;
+    onSave(selectedTinters);
+    onClose();
   };
+
+  if (!isOpen) return null;
+
+  // Only show allowed tinters in dropdown
+  let filteredTinters = tinters.filter((t) => t.is_active);
+  if (allowedTinterIds && allowedTinterIds.length > 0) {
+    filteredTinters = filteredTinters.filter((t) =>
+      allowedTinterIds.includes(t.tinter_id)
+    );
+  }
 
   return (
-    <div className="bg-white rounded-lg p-6 w-full max-w-3xl text-black shadow-lg">
-      <h2 className="text-xl font-bold mb-4">
-        Select Tinters for Shot {tinterModalShotIndex}
-      </h2>
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg p-6 w-[600px] max-h-[80vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-bold">Select Tinters and Batches</h2>
+          <button onClick={onClose} className="text-red-600 font-bold">
+            <ImCancelCircle />
+          </button>
+        </div>
 
-      <div className="flex justify-between items-center mb-2 overflow-auto max-h-1/2">
-        <h3 className="text-lg font-medium">Tinter Dosing</h3>
-        <span className="bg-green-500 text-white px-3 py-1 rounded text-sm">
-          Recommended Tinter Options
-        </span>
-      </div>
+        {selectedTinters.map((entry, index) => (
+          <div key={index} className="flex gap-4 items-center mb-4">
+            <select
+              value={entry.tinter_id || ""}
+              onChange={(e) => handleTinterChange(index, e.target.value)}
+              className="border p-2 rounded w-1/2"
+            >
+              <option value="">Select Tinter</option>
+              {filteredTinters.map((tinter) => (
+                <option key={tinter.tinter_id} value={tinter.tinter_id}>
+                  {tinter.tinter_code}
+                </option>
+              ))}
+            </select>
 
-      <table className="w-full table-auto border border-gray-300">
-        <thead className="bg-cyan-600 text-white">
-          <tr>
-            <th className="px-4 py-2 text-left">Sr. No</th>
-            <th className="px-4 py-2 text-left">Tinter Name</th>
-            <th className="px-4 py-2 text-left">Select Batch</th>
-            <th className="px-4 py-2 text-left">Tinter Weights (in kg)</th>
-            <th className="px-4 py-2 text-left">Delete</th>
-          </tr>
-        </thead>
-        <tbody className="bg-cyan-50">
-          {/* Static recipeTinters */}
-          {recipeTinters.map((tinterCode, index) => {
-            if (deletedStaticIndexes.includes(index)) return null;
-            const matchedTinter = tinters.find(
-              (t) => t.tinter_code === tinterCode
-            );
-            const matchingBatches = tinterBatches.filter(
-              (batch) =>
-                batch.tinter_id === matchedTinter?.tinter_id && batch.is_active
-            );
+            <select
+              value={entry.batch_id || ""}
+              onChange={(e) => handleBatchChange(index, e.target.value)}
+              disabled={!entry.tinter_id}
+              className="border p-2 rounded w-1/2"
+            >
+              <option value="">Select Batch</option>
+              {(batchOptions[entry.tinter_id] || []).map((batch) => (
+                <option
+                  key={batch.tinter_batch_id}
+                  value={batch.tinter_batch_id}
+                >
+                  {batch.tinter_batch_code} - {batch.batch_tinter_name}
+                </option>
+              ))}
+            </select>
 
-            return (
-              <tr key={`static-${index}`} className="border-t border-gray-300">
-                <td className="px-4 py-2">{index + 1}</td>
-                <td className="px-4 py-2">{tinterCode}</td>
-                <td className="px-4 py-2">
-                  <select className="border rounded px-2 py-1 w-full">
-                    <option value="">Select Batch</option>
-                    {matchingBatches.map((batch) => (
-                      <option
-                        key={batch.tinter_batch_id}
-                        value={batch.tinter_batch_id}
-                      >
-                        {batch.tinter_batch_code} - {batch.batch_tinter_name}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    placeholder="0"
-                    value={rows.tinter_weights}
-                    className="bg-white/60 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
-                  />
-                </td>
-                <td className="text-center">
-                  <button
-                    onClick={() => handleDelete(true, index)}
-                    className="p-1"
-                  >
-                    <MdDelete />
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
+            {index >= 0 && (
+              <button
+                onClick={() => removeTinter(index)}
+                className="text-red-600 font-bold text-lg"
+              >
+                −
+              </button>
+            )}
+          </div>
+        ))}
 
-          {/* Dynamic rows */}
-          {rows.map((row, index) => {
-            const matchedTinter = tinters.find(
-              (t) => t.tinter_code === row.tinter_code
-            );
-
-            const matchingBatches = matchedTinter
-              ? tinterBatches.filter(
-                  (batch) =>
-                    batch.tinter_id === matchedTinter.tinter_id &&
-                    batch.is_active
-                )
-              : [];
-
-            const srNo =
-              recipeTinters.filter((_, i) => !deletedStaticIndexes.includes(i))
-                .length +
-              index +
-              1;
-
-            return (
-              <tr key={`dynamic-${index}`} className="border-t border-gray-300">
-                <td className="px-4 py-2">{srNo}</td>
-                <td className="px-4 py-2">
-                  <select
-                    className="border rounded px-2 py-1 w-full"
-                    value={row.tinter_code}
-                    onChange={(e) => handleTinterChange(index, e.target.value)}
-                  >
-                    <option value="">Select Tinter</option>
-                    {tinters
-                      .filter((t) => t.is_active)
-                      .map((t) => (
-                        <option key={t.tinter_id} value={t.tinter_code}>
-                          {t.tinter_code}
-                        </option>
-                      ))}
-                  </select>
-                </td>
-                <td className="px-4 py-2">
-                  <select
-                    className="border rounded px-2 py-1 w-full"
-                    value={row.tinter_batch_id}
-                    onChange={(e) => handleBatchChange(index, e.target.value)}
-                    disabled={!row.tinter_code}
-                  >
-                    <option value="">Select Batch</option>
-                    {matchingBatches.map((batch) => (
-                      <option
-                        key={batch.tinter_batch_id}
-                        value={batch.tinter_batch_id}
-                      >
-                        {batch.tinter_batch_code} - {batch.batch_tinter_name}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    placeholder="0"
-                    value={row.tinter_weights}
-                    onChange={(e) => {
-                      const updatedRows = [...rows];
-                      updatedRows[index].tinter_weights = e.target.value;
-                      setRows(updatedRows);
-                    }}
-                    className="bg-white/60 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  />
-                </td>
-
-                <td className="text-center">
-                  <button
-                    onClick={() => handleDelete(false, index)}
-                    className="p-1"
-                  >
-                    <MdDelete />
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-
-      <div className="mt-6 flex justify-between">
         <button
-          className="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700"
-          onClick={handleAddRow}
+          onClick={addTinter}
+          className="text-blue-600 underline mb-4 text-sm"
         >
-          + Add Row
+          + Add Tinter
         </button>
-        <button
-          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={isSaveDisabled()}
-        >
-          Save
-        </button>
-        <button
-          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
-          onClick={handleCloseTinterModal}
-        >
-          Close
-        </button>
+
+        <div className="flex justify-end gap-4">
+          <button
+            onClick={handleSave}
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Save Selection
+          </button>
+          <button
+            onClick={onClose}
+            className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
-export default ShotTinterAddModal;
+export default TinterSelectionModal;

@@ -3,7 +3,7 @@ export const tinters = [
   {
     tinter_id: 1,
     tinter_code: "T1001",
-    plant_id: 1, 
+    plant_id: 1,
     is_active: true,
     created_by: "Admin",
     updated_by: 1,
@@ -13,8 +13,8 @@ export const tinters = [
   {
     tinter_id: 2,
     tinter_code: "T1002",
-    plant_id: 2, 
-    is_active: false,
+    plant_id: 2,
+    is_active: true,
     created_by: "Admin",
     updated_by: 2,
     created_at: "2024-06-12",
@@ -23,7 +23,7 @@ export const tinters = [
   {
     tinter_id: 3,
     tinter_code: "T1003",
-    plant_id: 1, 
+    plant_id: 1,
     is_active: true,
     created_by: "Supervisor",
     updated_by: 2,
@@ -33,7 +33,7 @@ export const tinters = [
   {
     tinter_id: 4,
     tinter_code: "T1004",
-    plant_id: 1, 
+    plant_id: 1,
     is_active: true,
     created_by: "Admin",
     updated_by: 2,
@@ -43,8 +43,8 @@ export const tinters = [
   {
     tinter_id: 5,
     tinter_code: "T1005",
-    plant_id: 2, 
-    is_active: false,
+    plant_id: 2,
+    is_active: true,
     created_by: "Admin",
     updated_by: 1,
     created_at: "2024-06-12",
@@ -53,7 +53,7 @@ export const tinters = [
   {
     tinter_id: 6,
     tinter_code: "T1006",
-    plant_id: 1, 
+    plant_id: 1,
     is_active: true,
     created_by: "Supervisor",
     updated_by: 1,

@@ -64,7 +64,8 @@ const ShotsPage = ({ user }) => {
     setShots([...shots, newShot]);
   };
 
-  const handleFetch = (shotId) => {
+  // Fetch only the selected type (liquid, panel, colorimeter) for a shot
+  const handleFetch = (shotId, type) => {
     setShots((prevShots) =>
       prevShots.map((shot) => {
         if (shot.id !== shotId) return shot;
@@ -84,21 +85,33 @@ const ShotsPage = ({ user }) => {
           ).toFixed(2);
         };
 
-        // For shot 0 and onwards, always calculate Euclidean distance for all three
+        // Only update the selected type, keep others unchanged
+        let newValues = { ...shot.values };
+        if (type === "liquid") {
+          newValues.l_liquid = randomL;
+          newValues.a_liquid = randomA;
+          newValues.b_liquid = randomB;
+          newValues.deltaE_liquid = calcDeltaE(liquidL, liquidA, liquidB);
+        }
+        if (type === "panel") {
+          newValues.l_panel = randomL;
+          newValues.a_panel = randomA;
+          newValues.b_panel = randomB;
+          newValues.deltaE_panel = calcDeltaE(panelL, panelA, panelB);
+        }
+        if (type === "colorimeter") {
+          newValues.l_colorimeter = randomL;
+          newValues.a_colorimeter = randomA;
+          newValues.b_colorimeter = randomB;
+          newValues.deltaE_colorimeter = calcDeltaE(
+            colorimeterL,
+            colorimeterA,
+            colorimeterB
+          );
+        }
         return {
           ...shot,
-          values: {
-            l: randomL,
-            a: randomA,
-            b: randomB,
-            deltaE_liquid: calcDeltaE(liquidL, liquidA, liquidB),
-            deltaE_panel: calcDeltaE(panelL, panelA, panelB),
-            deltaE_colorimeter: calcDeltaE(
-              colorimeterL,
-              colorimeterA,
-              colorimeterB
-            ),
-          },
+          values: newValues,
         };
       })
     );
@@ -161,38 +174,38 @@ const ShotsPage = ({ user }) => {
     >
       <NavbarShots batch={batch} />
       <h2 className="text-xl font-bold mx-6 my-2 text-white">Shots Table</h2>
-      <div className="p-6 text-white text-xl">
-        <table className="min-w-full text-centre border border-white/30 backdrop-blur ">
+      <div className="max-h-[70vh] p-2 overflow-y-auto rounded-lg">
+        <table className="min-w-full text-centre border-none backdrop-blur">
           <thead className="bg-cyan-700 text-white sticky top-0 z-10">
-            <tr className="border-b border-white/30">
-              <th className="border px-2 py-1">#</th>
-              <th className="border px-2 py-1">Tinters</th>
-              <th className="border px-2 py-1" colSpan={4}>
+            <tr className="">
+              <th className=" px-2 py-1">#</th>
+              <th className=" px-2 py-1">Tinters</th>
+              <th className=" px-2 py-1" colSpan={4}>
                 Liquid Color
               </th>
-              <th className="border px-2 py-1" colSpan={4}>
+              <th className=" px-2 py-1" colSpan={4}>
                 Panel Color
               </th>
-              <th className="border px-2 py-1" colSpan={4}>
+              <th className=" px-2 py-1" colSpan={4}>
                 Colorimeter
               </th>
-              <th className="border px-2 py-1">Comment</th>
-              <th className="border px-2 py-1">Actions</th>
+              <th className=" px-2 py-1">Comment</th>
+              <th className=" px-2 py-1">Actions</th>
             </tr>
-            <tr className="border-b border-white/30">
+            <tr className=" ">
               <th className="border px-2 py-1"></th>
               <th className="border px-2 py-1"></th>
-              <th className="border px-2 py-1">ΔL</th>
-              <th className="border px-2 py-1">ΔA</th>
-              <th className="border px-2 py-1">ΔB</th>
+              <th className="border px-2 py-1">L</th>
+              <th className="border px-2 py-1">A</th>
+              <th className="border px-2 py-1">B</th>
               <th className="border px-2 py-1">ΔE</th>
-              <th className="border px-2 py-1">ΔL</th>
-              <th className="border px-2 py-1">ΔA</th>
-              <th className="border px-2 py-1">ΔB</th>
+              <th className="border px-2 py-1">L</th>
+              <th className="border px-2 py-1">A</th>
+              <th className="border px-2 py-1">B</th>
               <th className="border px-2 py-1">ΔE</th>
-              <th className="border px-2 py-1">ΔL</th>
-              <th className="border px-2 py-1">ΔA</th>
-              <th className="border px-2 py-1">ΔB</th>
+              <th className="border px-2 py-1">L</th>
+              <th className="border px-2 py-1">A</th>
+              <th className="border px-2 py-1">B</th>
               <th className="border px-2 py-1">ΔE</th>
               <th className="border px-2 py-1"></th>
               <th className="border px-2 py-1"></th>
@@ -200,7 +213,7 @@ const ShotsPage = ({ user }) => {
           </thead>
           <tbody>
             {/* Standard Row */}
-            <tr className="border-t border-white/30 hover:bg-white/80 transition bg-white/70 text-black">
+            <tr className=" hover:bg-white/80 transition bg-white/70 text-black">
               <td className="border px-2 py-1">Standard</td>
               <td className="border px-2 py-1">
                 {recipeTinters.length ? recipeTinters.join(", ") : "N/A"}
@@ -247,13 +260,33 @@ const ShotsPage = ({ user }) => {
               <td className="border px-2 py-1"></td>
               <td className="border px-2 py-1"></td>
             </tr>
+            {shots.length > 0 && (
+              <tr className="border-b border-white/30 bg-cyan-700 text-white">
+                <td className="border px-2 py-1"></td>
+                <td className="border px-2 py-1"></td>
+                <td className="border px-2 py-1">ΔL</td>
+                <td className="border px-2 py-1">ΔA</td>
+                <td className="border px-2 py-1">ΔB</td>
+                <td className="border px-2 py-1">ΔE</td>
+                <td className="border px-2 py-1">ΔL</td>
+                <td className="border px-2 py-1">ΔA</td>
+                <td className="border px-2 py-1">ΔB</td>
+                <td className="border px-2 py-1">ΔE</td>
+                <td className="border px-2 py-1">ΔL</td>
+                <td className="border px-2 py-1">ΔA</td>
+                <td className="border px-2 py-1">ΔB</td>
+                <td className="border px-2 py-1">ΔE</td>
+                <td className="border px-2 py-1"></td>
+                <td className="border px-2 py-1"></td>
+              </tr>
+            )}
             {/* Shot Rows */}
             {shots.map((shot) => (
               <tr
                 key={shot.id}
                 className="border-t border-white/30 hover:bg-white/80 transition bg-white/70 text-black"
               >
-                {console.log("💀💀💀", shot)}
+                {/* ...existing code... */}
                 <td className="border px-2 py-1 font-semibold">
                   Shot {shot.id}
                 </td>
@@ -278,24 +311,43 @@ const ShotsPage = ({ user }) => {
                   )}
                 </td>
                 {/* Liquid Color */}
-
-                <td className="border px-2 py-1">{shot.values.l}</td>
-                <td className="border px-2 py-1">{shot.values.a}</td>
-                <td className="border px-2 py-1">{shot.values.b}</td>
                 <td className="border px-2 py-1">
-                  {shot.values.deltaE_liquid}
+                  {shot.values.l_liquid ?? "-"}
+                </td>
+                <td className="border px-2 py-1">
+                  {shot.values.a_liquid ?? "-"}
+                </td>
+                <td className="border px-2 py-1">
+                  {shot.values.b_liquid ?? "-"}
+                </td>
+                <td className="border px-2 py-1">
+                  {shot.values.deltaE_liquid ?? "-"}
                 </td>
                 {/* Panel Color */}
-                <td className="border px-2 py-1">{shot.values.l}</td>
-                <td className="border px-2 py-1">{shot.values.a}</td>
-                <td className="border px-2 py-1">{shot.values.b}</td>
-                <td className="border px-2 py-1">{shot.values.deltaE_panel}</td>
-                {/* Colorimeter */}
-                <td className="border px-2 py-1">{shot.values.l}</td>
-                <td className="border px-2 py-1">{shot.values.a}</td>
-                <td className="border px-2 py-1">{shot.values.b}</td>
                 <td className="border px-2 py-1">
-                  {shot.values.deltaE_colorimeter}
+                  {shot.values.l_panel ?? "-"}
+                </td>
+                <td className="border px-2 py-1">
+                  {shot.values.a_panel ?? "-"}
+                </td>
+                <td className="border px-2 py-1">
+                  {shot.values.b_panel ?? "-"}
+                </td>
+                <td className="border px-2 py-1">
+                  {shot.values.deltaE_panel ?? "-"}
+                </td>
+                {/* Colorimeter */}
+                <td className="border px-2 py-1">
+                  {shot.values.l_colorimeter ?? "-"}
+                </td>
+                <td className="border px-2 py-1">
+                  {shot.values.a_colorimeter ?? "-"}
+                </td>
+                <td className="border px-2 py-1">
+                  {shot.values.b_colorimeter ?? "-"}
+                </td>
+                <td className="border px-2 py-1">
+                  {shot.values.deltaE_colorimeter ?? "-"}
                 </td>
                 <td className="border px-2 py-1 w-48">
                   <textarea
@@ -303,6 +355,7 @@ const ShotsPage = ({ user }) => {
                     placeholder="Add comment..."
                     value={shot.comment}
                     disabled={shot.ended}
+                    rows={8}
                     onChange={(e) =>
                       handleCommentChange(shot.id, e.target.value)
                     }
@@ -311,11 +364,25 @@ const ShotsPage = ({ user }) => {
                 <td className="border px-2 py-1 align-top">
                   <div className="flex flex-col gap-2">
                     <button
-                      className="bg-green-500 text-white px-2 py-1 rounded"
-                      onClick={() => handleFetch(shot.id)}
+                      className="bg-cyan-700 text-white px-2 py-1 rounded"
+                      onClick={() => handleFetch(shot.id, "liquid")}
                       disabled={shot.ended}
                     >
-                      Fetch LAB Values
+                      Fetch Liquid
+                    </button>
+                    <button
+                      className="bg-cyan-700 text-white px-2 py-1 rounded"
+                      onClick={() => handleFetch(shot.id, "panel")}
+                      disabled={shot.ended}
+                    >
+                      Fetch Panel
+                    </button>
+                    <button
+                      className="bg-cyan-700 text-white px-2 py-1 rounded"
+                      onClick={() => handleFetch(shot.id, "colorimeter")}
+                      disabled={shot.ended}
+                    >
+                      Fetch Colorimeter
                     </button>
                     {!shot.ended && (
                       <button

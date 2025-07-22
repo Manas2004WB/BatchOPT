@@ -70,40 +70,57 @@ const ShotsPage = ({ user }) => {
       prevShots.map((shot) => {
         if (shot.id !== shotId) return shot;
 
-        // Generate random values for demonstration
+        // Generate random values for demonstration (liquid/panel)
         const randomL = Number((Math.random() * 10 + 50).toFixed(2));
         const randomA = Number((Math.random() * 5 + 10).toFixed(2));
         const randomB = Number((Math.random() * 8 + 20).toFixed(2));
 
         // Calculate delta for each reference
-        const calcDeltaE = (refL, refA, refB) => {
-          const deltaL = randomL - refL;
-          const deltaA = randomA - refA;
-          const deltaB = randomB - refB;
+        const calcDeltaE = (l, a, b, refL, refA, refB) => {
+          const deltaL = l - refL;
+          const deltaA = a - refA;
+          const deltaB = b - refB;
           return Math.sqrt(
             deltaL * deltaL + deltaA * deltaA + deltaB * deltaB
           ).toFixed(2);
         };
 
-        // Only update the selected type, keep others unchanged
         let newValues = { ...shot.values };
         if (type === "liquid") {
           newValues.l_liquid = randomL;
           newValues.a_liquid = randomA;
           newValues.b_liquid = randomB;
-          newValues.deltaE_liquid = calcDeltaE(liquidL, liquidA, liquidB);
+          newValues.deltaE_liquid = calcDeltaE(
+            randomL,
+            randomA,
+            randomB,
+            liquidL,
+            liquidA,
+            liquidB
+          );
         }
         if (type === "panel") {
           newValues.l_panel = randomL;
           newValues.a_panel = randomA;
           newValues.b_panel = randomB;
-          newValues.deltaE_panel = calcDeltaE(panelL, panelA, panelB);
+          newValues.deltaE_panel = calcDeltaE(
+            randomL,
+            randomA,
+            randomB,
+            panelL,
+            panelA,
+            panelB
+          );
         }
         if (type === "colorimeter") {
-          newValues.l_colorimeter = randomL;
-          newValues.a_colorimeter = randomA;
-          newValues.b_colorimeter = randomB;
+          // Use current input values for colorimeter
+          const l = shot.values.l_colorimeter ?? 0;
+          const a = shot.values.a_colorimeter ?? 0;
+          const b = shot.values.b_colorimeter ?? 0;
           newValues.deltaE_colorimeter = calcDeltaE(
+            l,
+            a,
+            b,
             colorimeterL,
             colorimeterA,
             colorimeterB
@@ -163,6 +180,22 @@ const ShotsPage = ({ user }) => {
     setShots((prevShots) =>
       prevShots.map((shot) =>
         shot.id === shotId ? { ...shot, comment } : shot
+      )
+    );
+  };
+
+  const handleColorimeterChange = (shotId, key, value) => {
+    setShots((prevShots) =>
+      prevShots.map((shot) =>
+        shot.id === shotId
+          ? {
+              ...shot,
+              values: {
+                ...shot.values,
+                [key]: parseFloat(value) || 0,
+              },
+            }
+          : shot
       )
     );
   };
@@ -261,7 +294,7 @@ const ShotsPage = ({ user }) => {
               <td className="border px-2 py-1"></td>
             </tr>
             {shots.length > 0 && (
-              <tr className="border-b border-white/30 bg-cyan-700 text-white">
+              <tr className="border-b border-white/30 bg-cyan-700 text-white text-center">
                 <td className="border px-2 py-1"></td>
                 <td className="border px-2 py-1"></td>
                 <td className="border px-2 py-1">ΔL</td>
@@ -338,14 +371,56 @@ const ShotsPage = ({ user }) => {
                 </td>
                 {/* Colorimeter */}
                 <td className="border px-2 py-1">
-                  {shot.values.l_colorimeter ?? "-"}
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="w-16 text-xs p-1 border rounded"
+                    value={shot.values.l_colorimeter ?? ""}
+                    disabled={shot.ended}
+                    onChange={(e) =>
+                      handleColorimeterChange(
+                        shot.id,
+                        "l_colorimeter",
+                        e.target.value
+                      )
+                    }
+                  />
                 </td>
+
                 <td className="border px-2 py-1">
-                  {shot.values.a_colorimeter ?? "-"}
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="w-16 text-xs p-1 border rounded"
+                    value={shot.values.a_colorimeter ?? ""}
+                    disabled={shot.ended}
+                    onChange={(e) =>
+                      handleColorimeterChange(
+                        shot.id,
+                        "a_colorimeter",
+                        e.target.value
+                      )
+                    }
+                  />
                 </td>
+
                 <td className="border px-2 py-1">
-                  {shot.values.b_colorimeter ?? "-"}
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="w-16 text-xs p-1 border rounded"
+                    value={shot.values.b_colorimeter ?? ""}
+                    disabled={shot.ended}
+                    onChange={(e) =>
+                      handleColorimeterChange(
+                        shot.id,
+                        "b_colorimeter",
+                        e.target.value
+                      )
+                    }
+                  />
                 </td>
+
                 <td className="border px-2 py-1">
                   {shot.values.deltaE_colorimeter ?? "-"}
                 </td>
@@ -378,11 +453,11 @@ const ShotsPage = ({ user }) => {
                       Fetch Panel
                     </button>
                     <button
-                      className="bg-cyan-700 text-white px-2 py-1 rounded"
+                      className="bg-cyan-600 text-white px-2 py-1 rounded"
                       onClick={() => handleFetch(shot.id, "colorimeter")}
                       disabled={shot.ended}
                     >
-                      Fetch Colorimeter
+                      Calculate ΔE
                     </button>
                     {!shot.ended && (
                       <button

@@ -17,7 +17,18 @@ const ShotRow = ({
   randomAPanel,
   randomBPanel,
 }) => {
-  const [showModal, setShowModal] = useState(false);
+  const [visibleSections, setVisibleSections] = useState({
+    liquid: false,
+    panel: false,
+    colorimeter: false,
+  });
+
+  // Handle button clicks
+  const showSection = (type) => {
+    setVisibleSections((prev) => ({ ...prev, [type]: true }));
+    handleFetch(shot.id, type);
+  };
+
   const rgbLiquid = lab2rgb(randomLLiquid, randomALiquid, randomBLiquid);
   const rgbPanel = lab2rgb(randomLPanel, randomAPanel, randomBPanel);
   const rgbColorimeter = lab2rgb(
@@ -113,25 +124,21 @@ const ShotRow = ({
           <div className="flex flex-col gap-2">
             <button
               className="bg-cyan-700 text-white px-2 py-1 rounded"
-              onClick={() => {
-                handleFetch(shot.id, "liquid"), setShowModal(true);
-              }}
+              onClick={() => showSection("liquid")}
               disabled={shot.ended}
             >
               Fetch Liquid
             </button>
             <button
               className="bg-cyan-700 text-white px-2 py-1 rounded"
-              onClick={() => {
-                handleFetch(shot.id, "panel"), setShowModal(true);
-              }}
+              onClick={() => showSection("panel")}
               disabled={shot.ended}
             >
               Fetch Panel
             </button>
             <button
               className="bg-cyan-600 text-white px-2 py-1 rounded"
-              onClick={() => handleFetch(shot.id, "colorimeter")}
+              onClick={() => showSection("colorimeter")}
               disabled={shot.ended}
             >
               Calculate ΔE
@@ -152,87 +159,59 @@ const ShotRow = ({
           </div>
         </td>
       </tr>
-      {showModal && (
+      {(visibleSections.liquid ||
+        visibleSections.panel ||
+        visibleSections.colorimeter) && (
         <tr className="h-5">
           <td className="border-l px-2 py-1 bg-white/70"></td>
-          <td className=" px-2 py-1 bg-white/70"></td>
-          {/* //Liquid */}
-          <td
-            className="border-l px-2 py-1"
-            style={{
-              backgroundColor: `rgb(${rgbLiquid.r}, ${rgbLiquid.g}, ${rgbLiquid.b})`,
-            }}
-          ></td>
-          <td
-            className=" px-2 py-1"
-            style={{
-              backgroundColor: `rgb(${rgbLiquid.r}, ${rgbLiquid.g}, ${rgbLiquid.b})`,
-            }}
-          ></td>
-          <td
-            className=" px-2 py-1"
-            style={{
-              backgroundColor: `rgb(${rgbLiquid.r}, ${rgbLiquid.g}, ${rgbLiquid.b})`,
-            }}
-          ></td>
-          <td
-            className="border-r px-2 py-1"
-            style={{
-              backgroundColor: `rgb(${rgbLiquid.r}, ${rgbLiquid.g}, ${rgbLiquid.b})`,
-            }}
-          ></td>
+          <td className="px-2 py-1 bg-white/70"></td>
 
-          {/* //Panel */}
-          <td
-            className="border-l px-2 py-1"
-            style={{
-              backgroundColor: `rgb(${rgbPanel.r}, ${rgbPanel.g}, ${rgbPanel.b})`,
-            }}
-          ></td>
-          <td
-            className=" px-2 py-1"
-            style={{
-              backgroundColor: `rgb(${rgbPanel.r}, ${rgbPanel.g}, ${rgbPanel.b})`,
-            }}
-          ></td>
-          <td
-            className=" px-2 py-1"
-            style={{
-              backgroundColor: `rgb(${rgbPanel.r}, ${rgbPanel.g}, ${rgbPanel.b})`,
-            }}
-          ></td>
-          <td
-            className="border-r px-2 py-1"
-            style={{
-              backgroundColor: `rgb(${rgbPanel.r}, ${rgbPanel.g}, ${rgbPanel.b})`,
-            }}
-          ></td>
-          {/* //Colorimeter */}
-          <td
-            className="border-l px-2 py-1"
-            style={{
-              backgroundColor: `rgb(${rgbColorimeter.r}, ${rgbColorimeter.g}, ${rgbColorimeter.b})`,
-            }}
-          ></td>
-          <td
-            className=" px-2 py-1"
-            style={{
-              backgroundColor: `rgb(${rgbColorimeter.r}, ${rgbColorimeter.g}, ${rgbColorimeter.b})`,
-            }}
-          ></td>
-          <td
-            className=" px-2 py-1"
-            style={{
-              backgroundColor: `rgb(${rgbColorimeter.r}, ${rgbColorimeter.g}, ${rgbColorimeter.b})`,
-            }}
-          ></td>
-          <td
-            className="border-r px-2 py-1"
-            style={{
-              backgroundColor: `rgb(${rgbColorimeter.r}, ${rgbColorimeter.g}, ${rgbColorimeter.b})`,
-            }}
-          ></td>
-          <td className=" px-2 py-1 bg-white/70"></td>
+          {/* Liquid cells */}
+          {["r", "g", "b", "extra"].map((_, i) => (
+            <td
+              key={`liquid-${i}`}
+              style={{
+                backgroundColor: visibleSections.liquid
+                  ? `rgb(${rgbLiquid.r}, ${rgbLiquid.g}, ${rgbLiquid.b})`
+                  : "transparent",
+              }}
+              className={`${i === 0 ? "border-l" : ""} ${
+                i === 3 ? "border-r" : ""
+              }`}
+            ></td>
+          ))}
+
+          {/* Panel cells */}
+          {["r", "g", "b", "extra"].map((_, i) => (
+            <td
+              key={`panel-${i}`}
+              style={{
+                backgroundColor: visibleSections.panel
+                  ? `rgb(${rgbPanel.r}, ${rgbPanel.g}, ${rgbPanel.b})`
+                  : "transparent",
+              }}
+              className={`${i === 0 ? "border-l" : ""} ${
+                i === 3 ? "border-r" : ""
+              }`}
+            ></td>
+          ))}
+
+          {/* Colorimeter cells */}
+          {["r", "g", "b", "extra"].map((_, i) => (
+            <td
+              key={`colorimeter-${i}`}
+              style={{
+                backgroundColor: visibleSections.colorimeter
+                  ? `rgb(${rgbColorimeter.r}, ${rgbColorimeter.g}, ${rgbColorimeter.b})`
+                  : "transparent",
+              }}
+              className={`${i === 0 ? "border-l" : ""} ${
+                i === 3 ? "border-r" : ""
+              }`}
+            ></td>
+          ))}
+
+          <td className="px-2 py-1 bg-white/70"></td>
           <td className="border-r px-2 py-1 bg-white/70"></td>
         </tr>
       )}

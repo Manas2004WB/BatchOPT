@@ -40,6 +40,14 @@ const ShotsPage = ({ user }) => {
   const colorimeterA = getMeasurement(measurements, "colorimeter_a");
   const colorimeterB = getMeasurement(measurements, "colorimeter_b");
 
+  // Generate random values for demonstration (liquid/panel)
+  const randomLLiquid = Number((liquidL + Math.random() * 10).toFixed(2));
+  const randomALiquid = Number((liquidA + Math.random() * 10).toFixed(2));
+  const randomBLiquid = Number((liquidB + Math.random() * 10).toFixed(2));
+  const randomLPanel = Number((panelL + Math.random() * 10).toFixed(2));
+  const randomAPanel = Number((panelA + Math.random() * 10).toFixed(2));
+  const randomBPanel = Number((panelB + Math.random() * 10).toFixed(2));
+
   const recipeTinters = standardRecipes
     .filter((r) => r.sku_version_id === batch?.sku_version_id)
     .map((r) => {
@@ -68,33 +76,28 @@ const ShotsPage = ({ user }) => {
       prevShots.map((shot) => {
         if (shot.id !== shotId) return shot;
 
-        // Generate random values for demonstration (liquid/panel)
-        const randomL = Number((Math.random() * 10 + 50).toFixed(2));
-        const randomA = Number((Math.random() * 5 + 10).toFixed(2));
-        const randomB = Number((Math.random() * 8 + 20).toFixed(2));
-
         let newValues = { ...shot.values };
         if (type === "liquid") {
-          newValues.l_liquid = randomL;
-          newValues.a_liquid = randomA;
-          newValues.b_liquid = randomB;
+          newValues.l_liquid = (randomLLiquid - liquidL).toFixed(2);
+          newValues.a_liquid = (randomALiquid - liquidA).toFixed(2);
+          newValues.b_liquid = (randomBLiquid - liquidB).toFixed(2);
           newValues.deltaE_liquid = calcDeltaE(
-            randomL,
-            randomA,
-            randomB,
+            randomLLiquid,
+            randomALiquid,
+            randomBLiquid,
             liquidL,
             liquidA,
             liquidB
           );
         }
         if (type === "panel") {
-          newValues.l_panel = randomL;
-          newValues.a_panel = randomA;
-          newValues.b_panel = randomB;
+          newValues.l_panel = (randomLPanel - panelL).toFixed(2);
+          newValues.a_panel = (randomAPanel - panelA).toFixed(2);
+          newValues.b_panel = (randomBPanel - panelB).toFixed(2);
           newValues.deltaE_panel = calcDeltaE(
-            randomL,
-            randomA,
-            randomB,
+            randomLPanel,
+            randomAPanel,
+            randomBPanel,
             panelL,
             panelA,
             panelB
@@ -197,7 +200,7 @@ const ShotsPage = ({ user }) => {
       <h2 className="text-xl font-bold mx-6 my-2 text-white">Shots Table</h2>
       <div className="max-h-[70vh] p-2 overflow-y-auto rounded-lg">
         <table className="min-w-full text-centre border-none backdrop-blur">
-          <thead className="bg-cyan-700 text-white sticky top-0 z-10">
+          <thead className="bg-cyan-700 text-white">
             <tr className="">
               <th className=" px-2 py-1">#</th>
               <th className=" px-2 py-1">Tinters</th>
@@ -248,7 +251,7 @@ const ShotsPage = ({ user }) => {
               colorimeterB={colorimeterB}
             />
             {shots.length > 0 && (
-              <tr className="border-b border-white/30 bg-cyan-700 text-white text-center">
+              <tr className="border-b border-white/30 bg-cyan-700 text-white sticky top-0 z-10 text-center">
                 <td className="border px-2 py-1"></td>
                 <td className="border px-2 py-1"></td>
                 <td className="border px-2 py-1">ΔL</td>
@@ -277,6 +280,15 @@ const ShotsPage = ({ user }) => {
                 handleCommentChange={handleCommentChange}
                 handleFetch={handleFetch}
                 handleEndShot={handleEndShot}
+                colorimeterL={colorimeterL}
+                colorimeterA={colorimeterA}
+                colorimeterB={colorimeterB}
+                randomLLiquid={randomLLiquid}
+                randomALiquid={randomALiquid}
+                randomBLiquid={randomBLiquid}
+                randomLPanel={randomLPanel}
+                randomAPanel={randomAPanel}
+                randomBPanel={randomBPanel}
               />
             ))}
           </tbody>

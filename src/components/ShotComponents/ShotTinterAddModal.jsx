@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { tinters } from "../Data/TinterData";
-import { tinterBatches } from "../Data/TinterBatches";
+import { tinters } from "../../Data/TinterData";
+import { tinterBatches } from "../../Data/TinterBatches";
 import { ImCancelCircle } from "react-icons/im";
 // Add a prop: plantId
 const TinterSelectionModal = ({

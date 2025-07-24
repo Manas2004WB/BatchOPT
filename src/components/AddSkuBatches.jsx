@@ -10,6 +10,17 @@ const AddSkuBatches = ({ user, plantId }) => {
   const navigate = useNavigate();
   const [batchList, setBatchList] = useState(batches);
   const [showAddBatchModal, setShowAddBatchModal] = useState(false);
+
+  const initialBatchList = batchList.filter((batch) => {
+    const version = skuVersions.find(
+      (v) => v.sku_version_id === batch.sku_version_id
+    );
+    console.log("Version:", version);
+    if (!version) return false;
+    const sku = skuData.find((s) => s.sku_id === version.sku_id);
+    console.log("SKU:", sku);
+    return sku && sku.plant_id === Number(plantId);
+  });
   const handleAddBatch = (newBatch) => {
     setBatchList((prev) => [...prev, newBatch]);
     setShowAddBatchModal(false);
@@ -69,14 +80,14 @@ const AddSkuBatches = ({ user, plantId }) => {
           </tr>
         </thead>
         <tbody className="bg-white/60">
-          {batchList.length === 0 ? (
+          {initialBatchList.length === 0 ? (
             <tr>
               <td colSpan="9" className="text-center py-4 text-gray-500">
                 No batches available.
               </td>
             </tr>
           ) : (
-            batchList.map((batch, index) => (
+            initialBatchList.map((batch, index) => (
               <tr
                 key={batch.batch_id}
                 className="border-t border-white/30 hover:bg-white/80 transition"

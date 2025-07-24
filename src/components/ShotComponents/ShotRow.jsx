@@ -116,28 +116,39 @@ const ShotRow = ({
             placeholder="Add comment..."
             value={shot.comment}
             disabled={shot.ended}
-            rows={8}
             onChange={(e) => handleCommentChange(shot.id, e.target.value)}
           ></textarea>
         </td>
         <td className="border px-2 py-1 align-top">
           <div className="flex flex-col gap-2">
             <button
-              className="bg-cyan-700 text-white px-2 py-1 rounded"
+              className={
+                !shot.ended
+                  ? "bg-cyan-700 text-white px-2 py-1 rounded"
+                  : "invisible"
+              }
               onClick={() => showSection("liquid")}
               disabled={shot.ended}
             >
               Fetch Liquid
             </button>
             <button
-              className="bg-cyan-700 text-white px-2 py-1 rounded"
+              className={
+                !shot.ended
+                  ? "bg-cyan-700 text-white px-2 py-1 rounded"
+                  : "invisible"
+              }
               onClick={() => showSection("panel")}
               disabled={shot.ended}
             >
               Fetch Panel
             </button>
             <button
-              className="bg-cyan-600 text-white px-2 py-1 rounded"
+              className={
+                !shot.ended
+                  ? "bg-cyan-700 text-white px-2 py-1 rounded"
+                  : "invisible"
+              }
               onClick={() => showSection("colorimeter")}
               disabled={shot.ended}
             >
@@ -145,7 +156,11 @@ const ShotRow = ({
             </button>
             {!shot.ended && (
               <button
-                className="bg-red-500 text-white px-2 py-1 rounded"
+                className={
+                  !shot.ended
+                    ? "bg-red-700 text-white px-2 py-1 rounded"
+                    : "invisible"
+                }
                 onClick={() => handleEndShot(shot.id)}
               >
                 End Shot

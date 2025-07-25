@@ -99,7 +99,11 @@ const AddSkuBatches = ({ user, plantId }) => {
                 </td>
                 <td className="px-4 py-2  text-center">{batch.batch_size}</td>
                 <td className="px-4 py-2 text-center">
-                  {batch.batch_status_id === 1 ? "in-progress" : "Completed"}
+                  {batch.batch_status_id === 1
+                    ? "In-Progress"
+                    : batch.batch_status_id === 2
+                    ? "Completed"
+                    : "Abondon"}
                 </td>
                 <td className="px-4 py-2  text-center">
                   {formatDate(batch.updated_at)}

@@ -15,6 +15,7 @@ import ShotRow from "../components/ShotComponents/ShotRow";
 import { calcDeltaE, getMeasurement } from "../utility/shotUtils";
 
 const ShotsPage = ({ user }) => {
+  const [showCloseModal, setShowCloseModal] = useState(false);
   const location = useLocation();
   const { plantId } = location.state || {};
   const { batchId } = useParams();
@@ -41,12 +42,20 @@ const ShotsPage = ({ user }) => {
   const colorimeterB = getMeasurement(measurements, "colorimeter_b");
 
   // Generate random values for demonstration (liquid/panel)
-  const randomLLiquid = Number((liquidL + Math.random() * 10).toFixed(2));
-  const randomALiquid = Number((liquidA + Math.random() * 10).toFixed(2));
-  const randomBLiquid = Number((liquidB + Math.random() * 10).toFixed(2));
-  const randomLPanel = Number((panelL + Math.random() * 10).toFixed(2));
-  const randomAPanel = Number((panelA + Math.random() * 10).toFixed(2));
-  const randomBPanel = Number((panelB + Math.random() * 10).toFixed(2));
+  const randomLLiquid = Number(
+    (Number(liquidL) + Math.random() * 10).toFixed(2)
+  );
+  const randomALiquid = Number(
+    (Number(liquidA) + Math.random() * 10).toFixed(2)
+  );
+  const randomBLiquid = Number(
+    (Number(liquidB) + Math.random() * 10).toFixed(2)
+  );
+  const randomLPanel = Number((Number(panelL) + Math.random() * 10).toFixed(2));
+  const randomAPanel = Number((Number(panelA) + Math.random() * 10).toFixed(2));
+  const randomBPanel = Number((Number(panelB) + Math.random() * 10).toFixed(2));
+  const COMPLETED_STATUS_ID_Complete = 2;
+  const COMPLETED_STATUS_ID_Abandon = 3;
 
   const recipeTinters = standardRecipes
     .filter((r) => r.sku_version_id === batch?.sku_version_id)
@@ -191,6 +200,28 @@ const ShotsPage = ({ user }) => {
     );
   };
 
+  const handleCloseShot = (batchId, status) => {
+    const batch = batches.find((b) => b.batch_id === Number(batchId));
+    if (!batch) {
+      console.error(`Batch ${batchId} not found`);
+      return;
+    }
+
+    if (status === "Abondon") {
+      batch.batch_status_id = COMPLETED_STATUS_ID_Abandon;
+      batch.updated_at = new Date().toISOString();
+      batch.updated_by = 1;
+      console.log(`Batch ${batchId} marked as Abandoned`, batch);
+    } else if (status === "Complete") {
+      batch.batch_status_id = COMPLETED_STATUS_ID_Complete;
+      batch.updated_at = new Date().toISOString();
+      batch.updated_by = 1;
+      console.log(`Batch ${batchId} marked as Completed`, batch);
+    } else {
+      console.warn(`Unknown status: ${status}`);
+    }
+  };
+
   return (
     <div
       className="w-full min-h-screen overflow-hidden bg-cover bg-center "
@@ -301,9 +332,52 @@ const ShotsPage = ({ user }) => {
           className="mx-6 my-2 bg-cyan-600 text-white px-4 py-2 rounded"
           onClick={handleAddShot}
         >
-          Add Next Shot
+          Add Shot
         </button>
       ) : null}
+
+      {shots.length === 0 || shots[shots.length - 1].ended ? (
+        <button
+          className="mx-6 my-2 bg-cyan-600 text-white px-4 py-2 rounded"
+          onClick={() => setShowCloseModal(true)}
+        >
+          Close Batch
+        </button>
+      ) : null}
+      {showCloseModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-lg font-bold mb-4">Close Batch</h3>
+            <p>Are you sure you want to complete / abandon this batch?</p>
+            <div className="mt-4 flex justify-center space-x-4">
+              <button
+                className="bg-gray-300 px-4 py-2 rounded mr-2"
+                onClick={() => setShowCloseModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-cyan-600 text-white px-4 py-2 rounded"
+                onClick={() => {
+                  handleCloseShot(batchId, "Abondon");
+                  setShowCloseModal(false);
+                }}
+              >
+                Abandon
+              </button>
+              <button
+                className="bg-cyan-600 text-white px-4 py-2 rounded"
+                onClick={() => {
+                  handleCloseShot(batchId, "Complete");
+                  setShowCloseModal(false);
+                }}
+              >
+                Complete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Tinter Selection Modal */}
       <ShotTinterAddModal

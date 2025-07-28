@@ -1,6 +1,6 @@
 import React from "react";
-import { calibrationData } from "../../../Data/Calibration/calibrationData";
-const DailyCalibrationTable = () => {
+
+const DailyCalibrationTable = ({ calibrationList }) => {
   return (
     <div className="overflow-x-auto rounded-lg shadow-lg max-h-60 overflow-y-auto">
       <table className="min-w-full bg-white/80 text-sm rounded-lg backdrop-blur-md">
@@ -15,7 +15,7 @@ const DailyCalibrationTable = () => {
           </tr>
         </thead>
         <tbody>
-          {calibrationData.map((row, idx) => (
+          {calibrationList.map((row, idx) => (
             <tr
               key={row.calibration_id}
               className="border-b hover:bg-cyan-50 transition"

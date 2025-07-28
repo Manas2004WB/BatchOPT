@@ -10,6 +10,10 @@ import DishCleanCheckTable from "./Tables/DishCleanCheckTable";
 
 const Calibration = () => {
   const [selectedType, setSelectedType] = useState("Calibration");
+  const [calibrationList, setCalibrationList] = useState(calibrationData);
+  const onSave = (newData) => {
+    setCalibrationList((prevList) => [...prevList, newData]);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center w-full space-y-6 p-6">
@@ -37,21 +41,27 @@ const Calibration = () => {
       {/* Conditional Form Display */}
       <div className="w-full max-w-4xl">
         {selectedType === "Calibration" ? (
-          <CalibrationForm />
+          <CalibrationForm onSave={onSave} calibrationList={calibrationList} />
         ) : selectedType === "Daily Calibration check" ? (
-          <DailyCalibrationCheckForm />
+          <DailyCalibrationCheckForm
+            onSave={onSave}
+            calibrationList={calibrationList}
+          />
         ) : (
-          <DishCleanCheckForm />
+          <DishCleanCheckForm
+            onSave={onSave}
+            calibrationList={calibrationList}
+          />
         )}
       </div>
 
       <div className="w-full max-w-4xl">
         {selectedType === "Calibration" ? (
-          <CalibrationTable />
+          <CalibrationTable calibrationList={calibrationList} />
         ) : selectedType === "Daily Calibration check" ? (
-          <DailyCalibrationTable />
+          <DailyCalibrationTable calibrationList={calibrationList} />
         ) : (
-          <DishCleanCheckTable />
+          <DishCleanCheckTable calibrationList={calibrationList} />
         )}
       </div>
     </div>

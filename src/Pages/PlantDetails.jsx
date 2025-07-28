@@ -5,10 +5,11 @@ import TinterTable from "../components/TinterTable";
 import SkuTable from "../components/SkuTable";
 import NavbarPlantDetails from "../components/NavbarPlantDetails";
 import AddSkuBatches from "../components/AddSkuBatches";
+import Calibration from "../components/Calibration/Calibration";
 
 const PlantDetails = ({ user }) => {
   const { id } = useParams();
-  const [activeTab, setActiveTab] = useState("batches");
+  const [activeTab, setActiveTab] = useState("calibration");
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -18,6 +19,8 @@ const PlantDetails = ({ user }) => {
         return <SkuTable user={user} plantId={id} />;
       case "batches":
         return <AddSkuBatches user={user} plantId={id} />;
+      case "calibration":
+        return <Calibration user={user} plantId={id} />;
       default:
         return (
           <div className="text-center text-gray-600">Select a valid tab.</div>

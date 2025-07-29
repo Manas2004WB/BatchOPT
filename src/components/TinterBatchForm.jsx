@@ -36,8 +36,50 @@ const TinterBatchForm = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.tinter_batch_code.trim() || !form.batch_tinter_name.trim()) {
-      return setError("Code and name are required");
+    const code = form.tinter_batch_code.trim();
+    const name = form.batch_tinter_name.trim();
+    const strength = form.strength;
+    // Validate code
+    if (!code) {
+      return setError("Batch code is required");
+    }
+    if (code.length < 2 || code.length > 20) {
+      return setError("Batch code must be 2-20 characters");
+    }
+    if (!/^[a-zA-Z0-9 \-]+$/.test(code)) {
+      return setError(
+        "Batch code can only contain letters, numbers, spaces, and hyphens"
+      );
+    }
+    // Validate name
+    if (!name) {
+      return setError("Tinter name is required");
+    }
+    if (name.length < 2 || name.length > 30) {
+      return setError("Tinter name must be 2-30 characters");
+    }
+    if (!/^[a-zA-Z0-9 \-]+$/.test(name)) {
+      return setError(
+        "Tinter name can only contain letters, numbers, spaces, and hyphens"
+      );
+    }
+    // Validate strength
+    if (!strength || isNaN(strength) || Number(strength) <= 0) {
+      return setError("Strength must be a positive number");
+    }
+    // Validate panel and liquid L a b
+    const labFields = [
+      "panel_L",
+      "panel_a",
+      "panel_b",
+      "liquid_L",
+      "liquid_a",
+      "liquid_b",
+    ];
+    for (let field of labFields) {
+      if (form[field] === "" || isNaN(form[field])) {
+        return setError("All L, a, b values must be numbers");
+      }
     }
 
     const now = new Date().toISOString();

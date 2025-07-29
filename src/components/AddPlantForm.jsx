@@ -1,21 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const AddPlantForm = ({ onAdd }) => {
   const [plant, setPlant] = useState({
-    plant_name: '',
+    plant_name: "",
     is_active: true,
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!plant.plant_name.trim()) {
+    const name = plant.plant_name.trim();
+    if (!name) {
       return setError("Plant name is required");
+    }
+    if (name.length < 3) {
+      return setError("Plant name must be at least 3 characters");
+    }
+    if (name.length > 30) {
+      return setError("Plant name must be at most 30 characters");
+    }
+    if (!/^[a-zA-Z0-9 ]+$/.test(name)) {
+      return setError(
+        "Plant name can only contain letters, numbers, and spaces"
+      );
     }
 
     onAdd(plant);
-    setPlant({ plant_name: '', is_active: true });
-    setError('');
+    setPlant({ plant_name: "", is_active: true });
+    setError("");
   };
 
   return (
@@ -23,9 +35,15 @@ const AddPlantForm = ({ onAdd }) => {
       onSubmit={handleSubmit}
       className="bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl mb-8 max-w-lg w-full"
     >
-      <h2 className="text-xl font-bold text-black drop-shadow mb-4">Add New Plant</h2>
+      <h2 className="text-xl font-bold text-black drop-shadow mb-4">
+        Add New Plant
+      </h2>
 
-      {error && <p className="text-red-600 bg-white/50 px-2 py-1 rounded mb-4">{error}</p>}
+      {error && (
+        <p className="text-red-600 bg-red-100 px-2 py-1 rounded mb-4">
+          {error}
+        </p>
+      )}
 
       <input
         type="text"

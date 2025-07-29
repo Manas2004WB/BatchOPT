@@ -10,12 +10,24 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!updatedPlant.plant_name.trim()) {
+    const name = updatedPlant.plant_name.trim();
+    if (!name) {
       return setError("Plant name is required");
+    }
+    if (name.length < 3) {
+      return setError("Plant name must be at least 3 characters");
+    }
+    if (name.length > 30) {
+      return setError("Plant name must be at most 30 characters");
+    }
+    if (!/^[a-zA-Z0-9 ]+$/.test(name)) {
+      return setError(
+        "Plant name can only contain letters, numbers, and spaces"
+      );
     }
 
     onUpdate(updatedPlant);
+    setError("");
   };
 
   return (

@@ -17,8 +17,20 @@ const UpdateTinterForm = ({ tinterToEdit, onUpdate, plantId, user }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!tinter.tinter_code.trim()) {
+    const code = tinter.tinter_code.trim();
+    if (!code) {
       return setError("Tinter code is required");
+    }
+    if (code.length < 2) {
+      return setError("Tinter code must be at least 2 characters");
+    }
+    if (code.length > 20) {
+      return setError("Tinter code must be at most 20 characters");
+    }
+    if (!/^[a-zA-Z0-9 \-]+$/.test(code)) {
+      return setError(
+        "Tinter code can only contain letters, numbers, spaces, and hyphens"
+      );
     }
     const updatedTinter = {
       ...tinterToEdit,
@@ -50,7 +62,7 @@ const UpdateTinterForm = ({ tinterToEdit, onUpdate, plantId, user }) => {
       </h2>
 
       {error && (
-        <p className="text-red-600 bg-white/50 px-2 py-1 rounded mb-4">
+        <p className="text-red-600 bg-red-100 px-2 py-1 rounded mb-4">
           {error}
         </p>
       )}

@@ -16,12 +16,18 @@ const SkuTable = ({ plantId }) => {
     setEditingSku(sku);
   };
   const handleUpdateSku = (updatedSku) => {
-    setSkus((prevSkus) => [...prevSkus, updatedSku]); // add new revision
+    // For new version, do not assign srNo
+    setSkus((prevSkus) => [...prevSkus, { ...updatedSku, srNo: undefined }]);
     setEditingSku(null);
   };
 
   const handleAddSku = (skuObject) => {
-    setSkus((prev) => [...prev, skuObject]);
+    // For new SKU, assign srNo as max existing + 1
+    const maxSrNo = skus.reduce(
+      (max, sku) => (sku.srNo && sku.srNo > max ? sku.srNo : max),
+      0
+    );
+    setSkus((prev) => [...prev, { ...skuObject, srNo: maxSrNo + 1 }]);
     setShowAddModal(false);
   };
   const latestRevisionsMap = {};
@@ -126,70 +132,82 @@ const SkuTable = ({ plantId }) => {
                 className="border-t border-white/30 hover:bg-white/80 transition"
               >
                 <td className="px-4 py-2">
-                  {Number(row.skuRevision) === 1 ? row.srNo : null}
+                  {row.srNo && Number(row.skuRevision) === 1 ? row.srNo : null}
                 </td>
                 <td className="px-2 py-1">{row.skuRevision}</td>
                 <td className="px-2 py-1">{row.skuName}</td>
                 <td className="px-2 py-1">Batches</td> {/* Static for now */}
                 {/* Standard Liquid */}
                 <td className="px-2 py-1">
-                  <div className="grid grid-cols-3 text-center text-sm divide-x divide-gray-400  overflow-hidden">
-                    <div className="px-2">
-                      {typeof row.standardLiquid.L === "number"
-                        ? row.standardLiquid.L.toFixed(2)
-                        : "-"}
-                    </div>
-                    <div className="px-2">
-                      {typeof row.standardLiquid.a === "number"
-                        ? row.standardLiquid.a.toFixed(2)
-                        : "-"}
-                    </div>
-                    <div className="px-2">
-                      {typeof row.standardLiquid.b === "number"
-                        ? row.standardLiquid.b.toFixed(2)
-                        : "-"}
-                    </div>
-                  </div>
+                  <table className="w-full border border-gray-300 text-center text-xs rounded">
+                    <tbody>
+                      <tr>
+                        <td className="px-2 py-1">
+                          {typeof row.standardLiquid.L === "number"
+                            ? row.standardLiquid.L.toFixed(2)
+                            : "-"}
+                        </td>
+                        <td className="px-2 py-1">
+                          {typeof row.standardLiquid.a === "number"
+                            ? row.standardLiquid.a.toFixed(2)
+                            : "-"}
+                        </td>
+                        <td className="px-2 py-1">
+                          {typeof row.standardLiquid.b === "number"
+                            ? row.standardLiquid.b.toFixed(2)
+                            : "-"}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </td>
                 {/* Standard Panel */}
                 <td className="px-2 py-1">
-                  <div className="grid grid-cols-3 text-center text-sm divide-x divide-gray-400  overflow-hidden">
-                    <div className="px-2">
-                      {typeof row.standardPanel.L === "number"
-                        ? row.standardPanel.L.toFixed(2)
-                        : "-"}
-                    </div>
-                    <div className="px-2">
-                      {typeof row.standardPanel.a === "number"
-                        ? row.standardPanel.a.toFixed(2)
-                        : "-"}
-                    </div>
-                    <div className="px-2">
-                      {typeof row.standardPanel.b === "number"
-                        ? row.standardPanel.b.toFixed(2)
-                        : "-"}
-                    </div>
-                  </div>
+                  <table className="w-full border border-gray-300 text-center text-xs rounded">
+                    <tbody>
+                      <tr>
+                        <td className="px-2 py-1">
+                          {typeof row.standardPanel.L === "number"
+                            ? row.standardPanel.L.toFixed(2)
+                            : "-"}
+                        </td>
+                        <td className="px-2 py-1">
+                          {typeof row.standardPanel.a === "number"
+                            ? row.standardPanel.a.toFixed(2)
+                            : "-"}
+                        </td>
+                        <td className="px-2 py-1">
+                          {typeof row.standardPanel.b === "number"
+                            ? row.standardPanel.b.toFixed(2)
+                            : "-"}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </td>
                 {/* Spectro Panel */}
                 <td className="px-2 py-1">
-                  <div className="grid grid-cols-3 text-center text-sm divide-x divide-gray-400  overflow-hidden">
-                    <div className="px-2">
-                      {typeof row.spectroPanel.L === "number"
-                        ? row.spectroPanel.L.toFixed(2)
-                        : "-"}
-                    </div>
-                    <div className="px-2">
-                      {typeof row.spectroPanel.a === "number"
-                        ? row.spectroPanel.a.toFixed(2)
-                        : "-"}
-                    </div>
-                    <div className="px-2">
-                      {typeof row.spectroPanel.b === "number"
-                        ? row.spectroPanel.b.toFixed(2)
-                        : "-"}
-                    </div>
-                  </div>
+                  <table className="w-full border border-gray-300 text-center text-xs rounded">
+                    <tbody>
+                      <tr>
+                        <td className="px-2 py-1">
+                          {typeof row.spectroPanel.L === "number"
+                            ? row.spectroPanel.L.toFixed(2)
+                            : "-"}
+                        </td>
+                        <td className="px-2 py-1">
+                          {typeof row.spectroPanel.a === "number"
+                            ? row.spectroPanel.a.toFixed(2)
+                            : "-"}
+                        </td>
+                        <td className="px-2 py-1">
+                          {typeof row.spectroPanel.b === "number"
+                            ? row.spectroPanel.b.toFixed(2)
+                            : "-"}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </td>
                 <td className="px-2 py-1">
                   {(row.standardTinters || []).join(", ") || "-"}

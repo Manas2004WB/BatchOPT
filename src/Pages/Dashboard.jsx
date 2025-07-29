@@ -19,7 +19,7 @@ const Dashboard = ({ user }) => {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
-  const [plantPerPage, setPlantPerPage] = useState(10);
+  const [plantPerPage, setPlantPerPage] = useState(7);
 
   const navigate = useNavigate();
 
@@ -219,7 +219,7 @@ const Dashboard = ({ user }) => {
                         View
                       </button>
                       <button
-                        className="bg-cyan-600 hover:bg-cyan-800 text-white px-5 py-1 rounded text-sm"
+                        className="bg-cyan-500 hover:bg-cyan-600 text-white px-5 py-1 rounded text-sm"
                         onClick={() => {
                           setSelectedPlant(plant);
                           setShowUpdateModal(true);
@@ -237,6 +237,16 @@ const Dashboard = ({ user }) => {
                         Delete
                       </button>
                     </td>
+                  </tr>
+                ))}
+                {/* Add empty rows to keep table height consistent */}
+                {Array.from({
+                  length: plantPerPage - currentPlants.length,
+                }).map((_, idx) => (
+                  <tr key={"empty-" + idx} className="border-t border-white/30">
+                    <td className="px-4 py-2">&nbsp;</td>
+                    <td className="px-4 py-2"></td>
+                    <td className="px-4 py-2"></td>
                   </tr>
                 ))}
               </tbody>

@@ -7,16 +7,21 @@ import { calibrationData } from "../../Data/Calibration/calibrationData";
 import CalibrationTable from "./Tables/CalibrationTable";
 import DailyCalibrationTable from "./Tables/DailyCalibrationTable";
 import DishCleanCheckTable from "./Tables/DishCleanCheckTable";
+import { plants } from "../../Data/PlantData";
 
-const Calibration = () => {
+const Calibration = ({ plantId }) => {
   const [selectedType, setSelectedType] = useState("Calibration");
   const [calibrationList, setCalibrationList] = useState(calibrationData);
   const onSave = (newData) => {
     setCalibrationList((prevList) => [...prevList, newData]);
   };
+  const getPlantNameById = (plant_Id) => {
+    const plant = plants.find((p) => Number(p.plant_id) === Number(plant_Id));
+    return plant ? plant.plant_name : "Unknown Plant";
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full space-y-6 p-6">
+    <div className="flex flex-col items-center justify-center w-full space-y-6 p-1">
       {/* Calibration Type Row */}
       <div className="flex w-full max-w-4xl items-center h-0 gap-x-6">
         <label className="w-1/3 text-lg font-medium text-gray-900 dark:text-white">

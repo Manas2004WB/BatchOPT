@@ -9,7 +9,7 @@ import Calibration from "../components/Calibration/Calibration";
 
 const PlantDetails = ({ user }) => {
   const { id } = useParams();
-  const [activeTab, setActiveTab] = useState("calibration");
+  const [activeTab, setActiveTab] = useState("sku");
 
   const renderTabContent = () => {
     switch (activeTab) {

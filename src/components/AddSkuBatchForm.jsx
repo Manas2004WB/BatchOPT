@@ -30,8 +30,31 @@ const AddSkuBatchForm = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!selectedSkuId || !batchCode.trim() || !defaultVersion) {
-      setError("Please select a valid SKU and fill all fields.");
+    // Validation
+    if (!selectedSkuId) {
+      setError("Please select a SKU.");
+      return;
+    }
+    if (!latestVersion) {
+      setError("No active version found for selected SKU.");
+      return;
+    }
+    if (!batchCode.trim()) {
+      setError("Batch code is required.");
+      return;
+    }
+    if (batchCode.length < 2 || batchCode.length > 20) {
+      setError("Batch code must be 2-20 characters.");
+      return;
+    }
+    if (!/^[a-zA-Z0-9\- ]+$/.test(batchCode)) {
+      setError(
+        "Batch code can only contain letters, numbers, spaces, and hyphens."
+      );
+      return;
+    }
+    if (!batchSize || isNaN(batchSize) || Number(batchSize) <= 0) {
+      setError("Batch size must be a positive number.");
       return;
     }
 
@@ -63,7 +86,7 @@ const AddSkuBatchForm = ({
       <form onSubmit={handleSubmit} className="space-y-4">
         <h2 className="text-xl font-bold text-black">Add SKU Batch</h2>
 
-        {error && <p className="text-red-600">{error}</p>}
+        {error && <p className="bg-red-100 px-2 py-1 text-red-600">{error}</p>}
 
         <div className="grid grid-cols-2 gap-4">
           {/* SKU Dropdown */}

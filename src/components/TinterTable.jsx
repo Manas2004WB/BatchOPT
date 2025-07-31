@@ -6,6 +6,7 @@ import UpdateTinterForm from "./UpdateTinterForm";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import TinterBatchForm from "./TinterBatchForm";
 import { tinterBatches } from "../Data/TinterBatches";
+import { plants } from "../Data/PlantData";
 
 const TinterTable = ({ plantId, user }) => {
   const [editingTinter, setEditingTinter] = useState(null);
@@ -15,6 +16,12 @@ const TinterTable = ({ plantId, user }) => {
   const [selectedTinter, setSelectedTinter] = useState(null); // for batch form
   const [showBatchForm, setShowBatchForm] = useState(false);
   const [allBatches, setAllBatches] = useState(tinterBatches);
+
+  const getPlantNameById = (plant_Id) => {
+    const plant = plants.find((p) => Number(p.plant_id) === Number(plant_Id));
+    return plant ? plant.plant_name : "Unknown Plant";
+  };
+
   const filteredTinters = tinterList.filter(
     (t) => t.plant_id === Number(plantId)
   );
@@ -44,6 +51,12 @@ const TinterTable = ({ plantId, user }) => {
 
   return (
     <div className="overflow-x-auto rounded-lg">
+      <div className="mb-4 flex items-cente justify-center gap-2">
+        <span className="text-lg font-semibold text-white">Plant:</span>
+        <span className="text-lg font-bold text-cyan-600 bg-cyan-100 px-3 py-1 rounded shadow-sm">
+          {getPlantNameById(plantId)}
+        </span>
+      </div>
       <button
         className="mb-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded"
         onClick={() => setShowAddModal(true)}

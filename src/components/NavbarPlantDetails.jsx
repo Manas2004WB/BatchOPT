@@ -13,7 +13,7 @@ const NavbarPlantDetails = ({ activeTab, setActiveTab }) => {
 
         {/* Tabs */}
         <ul className="flex gap-6 text-cyan-800 font-medium text-sm tracking-wide">
-          {["tinter", "sku", "batches", "calibration"].map((tab) => (
+          {["sku", "batches", "tinter", "calibration"].map((tab) => (
             <li key={tab}>
               <button
                 onClick={() => setActiveTab(tab)}

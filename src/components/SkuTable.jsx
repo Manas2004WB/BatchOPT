@@ -4,11 +4,17 @@ import { mapSkuData, formatDate } from "../utility/mapSkuData"; // Adjust path i
 import AddSkuForm from "./AddSkuForm";
 import UpdateSkuForm from "./UpdateSkuForm";
 import { FaEdit } from "react-icons/fa";
+import { plants } from "../Data/PlantData";
 
 const SkuTable = ({ plantId }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingSku, setEditingSku] = useState(null);
   const [skus, setSkus] = useState([...mapSkuData(plantId)]);
+
+  const getPlantNameById = (plant_Id) => {
+    const plant = plants.find((p) => Number(p.plant_id) === Number(plant_Id));
+    return plant ? plant.plant_name : "Unknown Plant";
+  };
   // and update this
   const tableData = skus;
 
@@ -41,6 +47,12 @@ const SkuTable = ({ plantId }) => {
 
   return (
     <div className="overflow-x-auto rounded-lg w-full">
+      <div className="mb-4 flex items-center justify-center gap-2">
+        <span className="text-lg font-semibold text-white">Plant:</span>
+        <span className="text-lg font-bold text-cyan-600 bg-cyan-100 px-3 py-1 rounded shadow-sm">
+          {getPlantNameById(plantId)}
+        </span>
+      </div>
       {showAddModal && (
         <div className="fixed inset-0 z-50 bg-black/10 backdrop-blur-sm flex justify-center px-2 mt-16">
           <div className="self-center bg-white rounded-xl shadow-lg w-full max-w-2xl overflow-y-auto relative">
@@ -94,7 +106,7 @@ const SkuTable = ({ plantId }) => {
             <th className="px-2 py-1">SKU Code</th>
             <th className="px-2 py-1">Batches</th>
 
-            <th className="px-2 py-1">
+            <th className="px-2 py-1 ">
               Std. Liquid
               <br />
               (L, a, b)
@@ -139,20 +151,20 @@ const SkuTable = ({ plantId }) => {
                 <td className="px-2 py-1">Batches</td> {/* Static for now */}
                 {/* Standard Liquid */}
                 <td className="px-2 py-1">
-                  <table className="w-full border border-gray-300 text-center text-xs rounded">
+                  <table className="w-full border border-gray-400 text-center text-xs rounded">
                     <tbody>
                       <tr>
-                        <td className="px-2 py-1">
+                        <td className="px-2 py-1 border">
                           {typeof row.standardLiquid.L === "number"
                             ? row.standardLiquid.L.toFixed(2)
                             : "-"}
                         </td>
-                        <td className="px-2 py-1">
+                        <td className="px-2 py-1 border">
                           {typeof row.standardLiquid.a === "number"
                             ? row.standardLiquid.a.toFixed(2)
                             : "-"}
                         </td>
-                        <td className="px-2 py-1">
+                        <td className="px-2 py-1 border">
                           {typeof row.standardLiquid.b === "number"
                             ? row.standardLiquid.b.toFixed(2)
                             : "-"}
@@ -163,20 +175,20 @@ const SkuTable = ({ plantId }) => {
                 </td>
                 {/* Standard Panel */}
                 <td className="px-2 py-1">
-                  <table className="w-full border border-gray-300 text-center text-xs rounded">
+                  <table className="w-full border border-gray-400 text-center text-xs rounded">
                     <tbody>
                       <tr>
-                        <td className="px-2 py-1">
+                        <td className="px-2 py-1 border">
                           {typeof row.standardPanel.L === "number"
                             ? row.standardPanel.L.toFixed(2)
                             : "-"}
                         </td>
-                        <td className="px-2 py-1">
+                        <td className="px-2 py-1 border">
                           {typeof row.standardPanel.a === "number"
                             ? row.standardPanel.a.toFixed(2)
                             : "-"}
                         </td>
-                        <td className="px-2 py-1">
+                        <td className="px-2 py-1 border">
                           {typeof row.standardPanel.b === "number"
                             ? row.standardPanel.b.toFixed(2)
                             : "-"}
@@ -187,20 +199,20 @@ const SkuTable = ({ plantId }) => {
                 </td>
                 {/* Spectro Panel */}
                 <td className="px-2 py-1">
-                  <table className="w-full border border-gray-300 text-center text-xs rounded">
+                  <table className="w-full border border-gray-400 text-center text-xs rounded">
                     <tbody>
                       <tr>
-                        <td className="px-2 py-1">
+                        <td className="px-2 py-1 border">
                           {typeof row.spectroPanel.L === "number"
                             ? row.spectroPanel.L.toFixed(2)
                             : "-"}
                         </td>
-                        <td className="px-2 py-1">
+                        <td className="px-2 py-1 border">
                           {typeof row.spectroPanel.a === "number"
                             ? row.spectroPanel.a.toFixed(2)
                             : "-"}
                         </td>
-                        <td className="px-2 py-1">
+                        <td className="px-2 py-1 border">
                           {typeof row.spectroPanel.b === "number"
                             ? row.spectroPanel.b.toFixed(2)
                             : "-"}
@@ -219,7 +231,7 @@ const SkuTable = ({ plantId }) => {
                   {latestRevisionsMap[row.skuName] ===
                     Number(row.skuRevision) && (
                     <button
-                      className="text-blue-600 hover:underline border-2 p-2"
+                      className="text-cyan-600 hover:underline border-2 p-2"
                       onClick={() => handleEditClick(row)}
                     >
                       <FaEdit />

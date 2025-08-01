@@ -153,21 +153,7 @@ const ShotsPage = ({ user }) => {
         shot.id === currentShotId
           ? {
               ...shot,
-              tinters: selectedTinters.map((t) => {
-                const tinterObj = tinters.find(
-                  (x) => x.tinter_id === t.tinter_id
-                );
-                const batchObj = tinterBatches.find(
-                  (b) => b.tinter_batch_id === t.batch_id
-                );
-
-                const tinterCode =
-                  tinterObj?.tinter_code || `Tinter-${t.tinter_id}`;
-                const batchCode =
-                  batchObj?.batch_tinter_name || `Batch-${t.batch_id}`;
-
-                return `${tinterCode} - ${batchCode}`;
-              }),
+              tinters: selectedTinters, // Store as array of { tinter_id, batch_id }
             }
           : shot
       )
@@ -222,6 +208,7 @@ const ShotsPage = ({ user }) => {
     }
   };
 
+  const isCompleted = batch?.batch_status_id === 2;
   return (
     <div
       className="w-full min-h-screen overflow-hidden bg-cover bg-center "
@@ -304,7 +291,7 @@ const ShotsPage = ({ user }) => {
             {/* Shot Rows */}
             {shots.map((shot) => (
               <ShotRow
-                key={shot.id}
+                key={shot.shot_id ?? shot.id}
                 shot={shot}
                 handleOpenTinterModal={handleOpenTinterModal}
                 handleColorimeterChange={handleColorimeterChange}
@@ -320,14 +307,15 @@ const ShotsPage = ({ user }) => {
                 randomLPanel={randomLPanel}
                 randomAPanel={randomAPanel}
                 randomBPanel={randomBPanel}
+                isCompleted={isCompleted}
               />
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* Add Next Shot */}
-      {shots.length === 0 || shots[shots.length - 1].ended ? (
+      {/* Add Next Shot - only if not completed */}
+      {!isCompleted && (shots.length === 0 || shots[shots.length - 1].ended) ? (
         <button
           className="mx-6 my-2 bg-cyan-600 text-white px-4 py-2 rounded"
           onClick={handleAddShot}
@@ -336,7 +324,8 @@ const ShotsPage = ({ user }) => {
         </button>
       ) : null}
 
-      {shots.length === 0 || shots[shots.length - 1].ended ? (
+      {/* Close Batch - only if not completed */}
+      {!isCompleted && (shots.length === 0 || shots[shots.length - 1].ended) ? (
         <button
           className="mx-6 my-2 bg-cyan-600 text-white px-4 py-2 rounded"
           onClick={() => setShowCloseModal(true)}

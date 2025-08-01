@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { lab2rgb } from "../../utility/lab2rgb";
+import { tinters } from "../../Data/TinterData";
+import { tinterBatches } from "../../Data/TinterBatches";
 const ShotRow = ({
   shot,
   handleOpenTinterModal,
@@ -50,11 +52,28 @@ const ShotRow = ({
               >
                 {shot.tinters ? "Re-select Tinters" : "Select Tinters"}
               </button>
-              {shot.tinters && (
-                <div className="text-xs text-gray-700">
-                  {shot.tinters.join(", ")}
-                </div>
-              )}
+              {shot.tinters &&
+                Array.isArray(shot.tinters) &&
+                shot.tinters.length > 0 && (
+                  <div className="text-xs text-gray-700">
+                    {shot.tinters
+                      .map((t) => {
+                        // Find tinter code and batch name for display
+                        const tinterObj = tinters.find(
+                          (x) => x.tinter_id === t.tinter_id
+                        );
+                        const batchObj = tinterBatches.find(
+                          (b) => b.tinter_batch_id === t.batch_id
+                        );
+                        const tinterCode =
+                          tinterObj?.tinter_code || `Tinter-${t.tinter_id}`;
+                        const batchCode =
+                          batchObj?.batch_tinter_name || `Batch-${t.batch_id}`;
+                        return `${tinterCode} - ${batchCode}`;
+                      })
+                      .join(", ")}
+                  </div>
+                )}
             </div>
           ) : (
             <span className="text-gray-400">-</span>

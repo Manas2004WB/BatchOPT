@@ -15,15 +15,28 @@ const SkuTable = ({ plantId }) => {
     const plant = plants.find((p) => Number(p.plant_id) === Number(plant_Id));
     return plant ? plant.plant_name : "Unknown Plant";
   };
-  // and update this
-  const tableData = skus;
+  // Sort so that all versions of a SKU appear together, with latest version first, and SKUs with lower srNo come first
+  const tableData = [...skus].sort((a, b) => {
+    // Group by skuName
+    if (a.skuName !== b.skuName) {
+      // If both have srNo, sort by srNo
+      if (a.srNo && b.srNo) return a.srNo - b.srNo;
+      // If only one has srNo, that comes first
+      if (a.srNo && !b.srNo) return -1;
+      if (!a.srNo && b.srNo) return 1;
+      // Otherwise, sort by skuName
+      return a.skuName.localeCompare(b.skuName);
+    }
+    // For same skuName, sort by revision descending (latest first)
+    return Number(b.skuRevision) - Number(a.skuRevision);
+  });
 
   const handleEditClick = (sku) => {
     setEditingSku(sku);
   };
   const handleUpdateSku = (updatedSku) => {
-    // For new version, do not assign srNo
-    setSkus((prevSkus) => [...prevSkus, { ...updatedSku, srNo: undefined }]);
+    const parent = skus.find((s) => s.skuName === updatedSku.skuName);
+    setSkus((prev) => [...prev, { ...updatedSku, srNo: parent?.srNo }]);
     setEditingSku(null);
   };
 
@@ -54,7 +67,7 @@ const SkuTable = ({ plantId }) => {
         </span>
       </div>
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/10 backdrop-blur-sm flex justify-center px-2 mt-16">
+        <div className="fixed inset-0 z-50 bg-black/10 backdrop-blur-sm flex justify-center px-2 ">
           <div className="self-center bg-white rounded-xl shadow-lg w-full max-w-2xl overflow-y-auto relative">
             {/* Close button */}
             <button
@@ -72,7 +85,7 @@ const SkuTable = ({ plantId }) => {
         </div>
       )}
       {editingSku && (
-        <div className="fixed inset-0 z-50 bg-black/10 backdrop-blur-sm flex justify-center px-2 mt-16">
+        <div className="fixed inset-0 z-50 bg-black/10 backdrop-blur-sm flex justify-center px-2">
           <div className="self-center bg-white rounded-xl shadow-lg w-full max-w-2xl overflow-y-auto relative">
             <button
               className="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl z-10"

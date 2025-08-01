@@ -72,7 +72,7 @@ const AddSkuForm = ({ plantId, onAdd, sr }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full bg-white/30 backdrop-blur-md p-2 rounded-lg shadow space-y-3 text-sm"
+      className="w-full h-full bg-white/30 backdrop-blur-md p-2 rounded-lg shadow space-y-3 text-sm"
     >
       <h2 className="text-base font-semibold text-black mb-2">Add New SKU</h2>
 

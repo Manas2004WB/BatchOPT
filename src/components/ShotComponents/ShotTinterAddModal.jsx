@@ -88,10 +88,18 @@ const TinterSelectionModal = ({
 
   if (!isOpen) return null;
 
-  // Only show allowed tinters in dropdown
-  let dropdownTinters = tinters.filter(
-    (t) => t.is_active && t.plant_id === Number(plantId)
-  );
+  // Only show allowed tinters in dropdown, and prevent already selected ones (except for current row)
+  const getDropdownTinters = (currentIndex) => {
+    const selectedIds = selectedTinters
+      .map((entry, idx) => (idx !== currentIndex ? entry.tinter_id : null))
+      .filter(Boolean);
+    return tinters.filter(
+      (t) =>
+        t.is_active &&
+        t.plant_id === Number(plantId) &&
+        !selectedIds.includes(t.tinter_id)
+    );
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
@@ -111,7 +119,7 @@ const TinterSelectionModal = ({
               className="border p-2 rounded w-1/2"
             >
               <option value="">Select Tinter</option>
-              {dropdownTinters.map((tinter) => (
+              {getDropdownTinters(index).map((tinter) => (
                 <option key={tinter.tinter_id} value={tinter.tinter_id}>
                   {tinter.tinter_code}
                 </option>

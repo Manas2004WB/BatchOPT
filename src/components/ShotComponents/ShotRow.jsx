@@ -126,9 +126,20 @@ const ShotRow = ({
             }
           />
         </td>
-        <td className="border px-2 py-1">
-          {shot.values.deltaE_colorimeter ?? "-"}
+        <td className="px-2 py-1 text-center">
+          <div className="flex flex-col items-center justify-center gap-2">
+            <span>{shot.values.deltaE_colorimeter ?? "-"}</span>
+            {!shot.ended && (
+              <button
+                className="bg-cyan-700 text-white px-2 py-1 rounded"
+                onClick={() => showSection("colorimeter")}
+              >
+                Calculate ΔE
+              </button>
+            )}
+          </div>
         </td>
+
         <td className="border px-2 py-1 w-48">
           <textarea
             className="w-full border p-1 text-xs"
@@ -162,17 +173,7 @@ const ShotRow = ({
             >
               Fetch Panel
             </button>
-            <button
-              className={
-                !shot.ended
-                  ? "bg-cyan-700 text-white px-2 py-1 rounded"
-                  : "invisible"
-              }
-              onClick={() => showSection("colorimeter")}
-              disabled={shot.ended}
-            >
-              Calculate ΔE
-            </button>
+
             {!shot.ended && (
               <button
                 className={

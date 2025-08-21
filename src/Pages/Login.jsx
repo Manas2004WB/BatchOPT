@@ -18,7 +18,7 @@ const Login = ({ setUser }) => {
       const data = await loginUser(login.email, login.password);
 
       // ✅ Save user + token in localStorage
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.Token);
       localStorage.setItem("user", JSON.stringify(data));
 
       setUser(data); // if App uses context/state

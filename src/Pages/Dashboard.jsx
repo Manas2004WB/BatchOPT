@@ -10,8 +10,16 @@ import { useNavigate } from "react-router-dom";
 import { FaArrowsAltV, FaSortUp, FaSortDown, FaSort } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 
+import {
+  getPlants,
+  getPlantById,
+  createPlant,
+  updatePlant,
+  deletePlant,
+} from "../services/plantApi"; // Import API service
+
 const Dashboard = ({ user }) => {
-  const [plantList, setPlantList] = useState(initialPlants);
+  const [plantList, setPlantList] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedPlant, setSelectedPlant] = useState(null);
@@ -22,6 +30,18 @@ const Dashboard = ({ user }) => {
   const [plantPerPage, setPlantPerPage] = useState(7);
 
   const navigate = useNavigate();
+
+  // ✅ Fetch plants on mount
+  useEffect(() => {
+    (async () => {
+      try {
+        const plants = await getPlants();
+        setPlantList(plants);
+      } catch (err) {
+        console.error("Failed to fetch plants", err);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     const handler = _.debounce(() => {
@@ -36,24 +56,35 @@ const Dashboard = ({ user }) => {
   }, [searchQuery]);
 
   const filteredPlants = plantList.filter((plant) =>
-    plant.plant_name.toLowerCase().includes(debouncedQuery.toLowerCase())
+    plant.PlantName?.toLowerCase().includes(debouncedQuery.toLowerCase())
   );
-
+  console.log("this can be issue", filteredPlants);
   const sortedPlants = useMemo(() => {
+    console.log("sortConfig:", sortConfig);
+    console.log("filteredPlants (before sort):", filteredPlants);
+
     if (!sortConfig.key) return filteredPlants;
 
     const sorted = [...filteredPlants].sort((a, b) => {
-      let valA = a[sortConfig.key];
-      let valB = b[sortConfig.key];
+      let valA = a?.[sortConfig.key];
+      let valB = b?.[sortConfig.key];
+      console.log("Comparing:", valA, valB);
 
-      if (typeof valA === "boolean" && typeof valB === "boolean") {
-        valA = valA ? "Active" : "Inactive";
-        valB = valB ? "Active" : "Inactive";
-      }
+      const normalize = (v) => {
+        if (typeof v === "boolean") return v ? "Active" : "Inactive";
+        if (typeof v === "number") return v.toString();
+        return v ?? "";
+      };
+
+      valA = normalize(valA);
+      valB = normalize(valB);
+
       return sortConfig.direction === "asc"
-        ? valA.toString().localeCompare(valB.toString())
-        : valB.toString().localeCompare(valA.toString());
+        ? valA.localeCompare(valB)
+        : valB.localeCompare(valA);
     });
+
+    console.log("sortedPlants (after sort):", sorted);
     return sorted;
   }, [filteredPlants, sortConfig]);
 
@@ -62,40 +93,40 @@ const Dashboard = ({ user }) => {
   const currentPlants = sortedPlants.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredPlants.length / plantPerPage);
 
-  const handleAddPlant = (newPlant) => {
-    const nextId =
-      plantList.length > 0
-        ? Math.max(...plantList.map((p) => p.plant_id)) + 1
-        : 1;
-    setPlantList([...plantList, { ...newPlant, plant_id: nextId }]);
+  const handleAddPlant = async (newPlant) => {
+    try {
+      const created = await createPlant(newPlant);
+      setPlantList((prev) => [...prev, created]);
+    } catch (err) {
+      console.error("Failed to create plant", err);
+    }
   };
-  const handleUpdatePlant = (updatedPlant) => {
-    setPlantList((prevList) =>
-      prevList.map((plant) =>
-        plant.plant_id === updatedPlant.plant_id ? updatedPlant : plant
-      )
-    );
+  const handleUpdatePlant = async (updatedPlant) => {
+    try {
+      const updated = await updatePlant(updatedPlant.PlantId, updatedPlant);
+      setPlantList((prev) =>
+        prev.map((p) => (p.PlantId === updated.PlantId ? updated : p))
+      );
+    } catch (err) {
+      console.error("Failed to update plant", err);
+    }
   };
 
-  const handleDeletePlant = (id) => {
-    const confirm = window.confirm("Do yo want to delete the plant");
-    if (!confirm) return;
-    setPlantList((prev) => prev.filter((p) => p.plant_id !== id));
+  const handleDeletePlant = async (id) => {
+    if (!window.confirm("Do you want to delete the plant?")) return;
+    try {
+      await deletePlant(id);
+      setPlantList((prev) => prev.filter((p) => p.PlantId !== id));
+    } catch (err) {
+      console.error("Failed to delete plant", err);
+    }
   };
   const handleSort = (key) => {
-    setSortConfig((prev) => {
-      if (prev.key == key) {
-        return {
-          key,
-          direction: prev.direction === "asc" ? "desc" : "asc",
-        };
-      } else {
-        return {
-          key,
-          direction: "asc",
-        };
-      }
-    });
+    setSortConfig((prev) =>
+      prev.key === key
+        ? { key, direction: prev.direction === "asc" ? "desc" : "asc" }
+        : { key, direction: "asc" }
+    );
   };
 
   return (
@@ -187,12 +218,12 @@ const Dashboard = ({ user }) => {
               <tbody className="bg-white/60 min-h-52">
                 {currentPlants.map((plant) => (
                   <tr
-                    key={plant.plant_id}
+                    key={plant.PlantId || "N/A"}
                     className="border-t border-white/30 hover:bg-white/80 transition"
                   >
-                    <td className="px-4 py-2">{plant.plant_name}</td>
+                    <td className="px-4 py-2">{plant.PlantName}</td>
                     <td className="px-4 py-2">
-                      {plant.is_active ? (
+                      {plant.IsActive ? (
                         <span className="text-green-600 font-semibold">
                           Active
                         </span>
@@ -205,14 +236,14 @@ const Dashboard = ({ user }) => {
                     <td className="px-4 py-2 space-x-2">
                       <button
                         className={`px-4 py-1 rounded text-sm ${
-                          plant.is_active
+                          plant.IsActive
                             ? "bg-green-500 hover:bg-green-600 text-white"
                             : "bg-gray-400 cursor-not-allowed text-white"
                         }`}
-                        disabled={!plant.is_active}
+                        disabled={!plant.IsActive}
                         onClick={() => {
-                          if (plant.is_active) {
-                            navigate(`/plant/${plant.plant_id}`);
+                          if (plant.IsActive) {
+                            navigate(`/plant/${plant.PlantId}`);
                           }
                         }}
                       >
@@ -231,7 +262,7 @@ const Dashboard = ({ user }) => {
                       <button
                         className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
                         onClick={() => {
-                          handleDeletePlant(plant.plant_id);
+                          handleDeletePlant(plant.PlantId);
                         }}
                       >
                         Delete

@@ -2,14 +2,14 @@ import React, { useState } from "react";
 
 const AddPlantForm = ({ onAdd }) => {
   const [plant, setPlant] = useState({
-    plant_name: "",
-    is_active: true,
+    PlantName: "",
+    IsActive: true,
   });
   const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const name = plant.plant_name.trim();
+    const name = plant.PlantName.trim();
     if (!name) {
       return setError("Plant name is required");
     }
@@ -26,7 +26,7 @@ const AddPlantForm = ({ onAdd }) => {
     }
 
     onAdd(plant);
-    setPlant({ plant_name: "", is_active: true });
+    setPlant({ PlantName: "", IsActive: true });
     setError("");
   };
 
@@ -48,16 +48,16 @@ const AddPlantForm = ({ onAdd }) => {
       <input
         type="text"
         placeholder="Plant Name"
-        value={plant.plant_name}
-        onChange={(e) => setPlant({ ...plant, plant_name: e.target.value })}
+        value={plant.PlantName}
+        onChange={(e) => setPlant({ ...plant, PlantName: e.target.value })}
         className="w-full px-4 py-2 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
       />
 
       <label className="text-black flex items-center mb-4">
         <input
           type="checkbox"
-          checked={plant.is_active}
-          onChange={(e) => setPlant({ ...plant, is_active: e.target.checked })}
+          checked={plant.IsActive}
+          onChange={(e) => setPlant({ ...plant, IsActive: e.target.checked })}
           className="mr-2"
         />
         Active

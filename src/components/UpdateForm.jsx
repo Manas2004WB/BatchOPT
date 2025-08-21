@@ -10,7 +10,7 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const name = updatedPlant.plant_name.trim();
+    const name = updatedPlant.PlantName.trim();
     if (!name) {
       return setError("Plant name is required");
     }
@@ -19,11 +19,6 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
     }
     if (name.length > 30) {
       return setError("Plant name must be at most 30 characters");
-    }
-    if (!/^[a-zA-Z0-9 ]+$/.test(name)) {
-      return setError(
-        "Plant name can only contain letters, numbers, and spaces"
-      );
     }
 
     onUpdate(updatedPlant);
@@ -42,9 +37,9 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
 
       <input
         type="text"
-        value={updatedPlant.plant_name}
+        value={updatedPlant.PlantName}
         onChange={(e) =>
-          setUpdatedPlant({ ...updatedPlant, plant_name: e.target.value })
+          setUpdatedPlant({ ...updatedPlant, PlantName: e.target.value })
         }
         placeholder="Plant Name"
         className="w-full px-4 py-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -53,9 +48,9 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
       <label className="flex items-center mb-4 text-gray-700">
         <input
           type="checkbox"
-          checked={updatedPlant.is_active}
+          checked={updatedPlant.IsActive}
           onChange={(e) =>
-            setUpdatedPlant({ ...updatedPlant, is_active: e.target.checked })
+            setUpdatedPlant({ ...updatedPlant, IsActive: e.target.checked })
           }
           className="mr-2"
         />

@@ -1,155 +1,71 @@
 import React from "react";
-import { lab2rgb } from "../../utility/lab2rgb";
+import { standardRecipes } from "../../Data/standardRecipes";
+import { tinters } from "../../Data/TinterData";
+import { skuVersionMeasurements } from "../../Data/SkuMeasurementData";
 
-const StandardRow = ({
-  recipeTinters,
-  liquidL,
-  liquidA,
-  liquidB,
-  targetDeltaE,
-  panelL,
-  panelA,
-  panelB,
-  colorimeterL,
-  colorimeterA,
-  colorimeterB,
-}) => {
-  const rgbLiquid = lab2rgb(liquidL, liquidA, liquidB);
-  const rgbPanel = lab2rgb(panelL, panelA, panelB);
-  const rgbColorimeter = lab2rgb(colorimeterL, colorimeterA, colorimeterB);
+const StandardRow = ({ skuVersionId }) => {
+  const recipesForSku = standardRecipes.filter(
+    (rec) => rec.sku_version_id === skuVersionId
+  );
+
+  const tinterDetails = recipesForSku.map((rec) => {
+    const tinter = tinters.find((t) => t.tinter_id === rec.tinter_id);
+    return tinter
+      ? `${tinter.tinter_code}`
+      : `Unknown Tinter (${rec.tinter_id})`;
+  });
+
+  const getMeasurement = (type) =>
+    skuVersionMeasurements.find(
+      (m) => m.sku_version_id === skuVersionId && m.measurement_type === type
+    )?.measurement_value ?? "-";
+
+  const liquidL = getMeasurement("liquid_l");
+  const liquidA = getMeasurement("liquid_a");
+  const liquidB = getMeasurement("liquid_b");
+  const liquidDelta = "-";
+  const panelL = getMeasurement("panel_l");
+  const panelA = getMeasurement("panel_a");
+  const panelB = getMeasurement("panel_b");
+  const panelDelta = "-";
+  const colorimeterL = getMeasurement("colorimeter_l");
+  const colorimeterA = getMeasurement("colorimeter_a");
+  const colorimeterB = getMeasurement("colorimeter_b");
+  const colorimeterDelta = "-";
+  const targetDeltaE = getMeasurement("target_delta_e");
 
   return (
-    <>
-      <tr className="hover:bg-white/80 transition bg-white/70 text-black">
-        <td className="border px-2 py-1">Standard</td>
-        <td className="border px-2 py-1">
-          {recipeTinters.length ? recipeTinters.join(", ") : "N/A"}
-        </td>
-        {/* Liquid Color */}
-        <td className="border px-2 py-1">
-          {liquidL !== "-" ? liquidL.toFixed(2) : "-"}
-        </td>
-        <td className="border px-2 py-1">
-          {liquidA !== "-" ? liquidA.toFixed(2) : "-"}
-        </td>
-        <td className="border px-2 py-1">
-          {liquidB !== "-" ? liquidB.toFixed(2) : "-"}
-        </td>
-        <td className="border px-2 py-1">
-          {targetDeltaE !== "-" ? targetDeltaE.toFixed(2) : "-"}
-        </td>
-        {/* Panel Color */}
-        <td className="border px-2 py-1">
-          {panelL !== "-" ? panelL.toFixed(2) : "-"}
-        </td>
-        <td className="border px-2 py-1">
-          {panelA !== "-" ? panelA.toFixed(2) : "-"}
-        </td>
-        <td className="border px-2 py-1">
-          {panelB !== "-" ? panelB.toFixed(2) : "-"}
-        </td>
-        <td className="border px-2 py-1">
-          {targetDeltaE !== "-" ? targetDeltaE.toFixed(2) : "-"}
-        </td>
-        {/* Colorimeter */}
-        <td className="border px-2 py-1">
-          {colorimeterL !== "-" ? colorimeterL.toFixed(2) : "-"}
-        </td>
-        <td className="border px-2 py-1">
-          {colorimeterA !== "-" ? colorimeterA.toFixed(2) : "-"}
-        </td>
-        <td className="border px-2 py-1">
-          {colorimeterB !== "-" ? colorimeterB.toFixed(2) : "-"}
-        </td>
-        <td className="border px-2 py-1">
-          {targetDeltaE !== "-" ? targetDeltaE.toFixed(2) : "-"}
-        </td>
-        <td className="border px-2 py-1"></td>
-        <td className="border px-2 py-1"></td>
-      </tr>
-      <tr className="h-5">
-        <td className="border-l px-2 py-1 bg-white/70"></td>
-        <td className=" px-2 py-1 bg-white/70"></td>
-        {/* //Liquid */}
-        <td
-          className="border-l px-2 py-1"
-          style={{
-            backgroundColor: `rgb(${rgbLiquid.r}, ${rgbLiquid.g}, ${rgbLiquid.b})`,
-          }}
-        ></td>
-        <td
-          className=" px-2 py-1"
-          style={{
-            backgroundColor: `rgb(${rgbLiquid.r}, ${rgbLiquid.g}, ${rgbLiquid.b})`,
-          }}
-        ></td>
-        <td
-          className=" px-2 py-1"
-          style={{
-            backgroundColor: `rgb(${rgbLiquid.r}, ${rgbLiquid.g}, ${rgbLiquid.b})`,
-          }}
-        ></td>
-        <td
-          className="border-r px-2 py-1"
-          style={{
-            backgroundColor: `rgb(${rgbLiquid.r}, ${rgbLiquid.g}, ${rgbLiquid.b})`,
-          }}
-        ></td>
-
-        {/* //Panel */}
-        <td
-          className="border-l px-2 py-1"
-          style={{
-            backgroundColor: `rgb(${rgbPanel.r}, ${rgbPanel.g}, ${rgbPanel.b})`,
-          }}
-        ></td>
-        <td
-          className=" px-2 py-1"
-          style={{
-            backgroundColor: `rgb(${rgbPanel.r}, ${rgbPanel.g}, ${rgbPanel.b})`,
-          }}
-        ></td>
-        <td
-          className=" px-2 py-1"
-          style={{
-            backgroundColor: `rgb(${rgbPanel.r}, ${rgbPanel.g}, ${rgbPanel.b})`,
-          }}
-        ></td>
-        <td
-          className="border-r px-2 py-1"
-          style={{
-            backgroundColor: `rgb(${rgbPanel.r}, ${rgbPanel.g}, ${rgbPanel.b})`,
-          }}
-        ></td>
-        {/* //Colorimeter */}
-        <td
-          className="border-l px-2 py-1"
-          style={{
-            backgroundColor: `rgb(${rgbColorimeter.r}, ${rgbColorimeter.g}, ${rgbColorimeter.b})`,
-          }}
-        ></td>
-        <td
-          className=" px-2 py-1"
-          style={{
-            backgroundColor: `rgb(${rgbColorimeter.r}, ${rgbColorimeter.g}, ${rgbColorimeter.b})`,
-          }}
-        ></td>
-        <td
-          className=" px-2 py-1"
-          style={{
-            backgroundColor: `rgb(${rgbColorimeter.r}, ${rgbColorimeter.g}, ${rgbColorimeter.b})`,
-          }}
-        ></td>
-        <td
-          className="border-r px-2 py-1"
-          style={{
-            backgroundColor: `rgb(${rgbColorimeter.r}, ${rgbColorimeter.g}, ${rgbColorimeter.b})`,
-          }}
-        ></td>
-        <td className=" px-2 py-1 bg-white/70"></td>
-        <td className="border-r px-2 py-1 bg-white/70"></td>
-      </tr>
-    </>
+    <tr className="bg-yellow-50">
+      <td className="border p-2 font-semibold text-center">Standard</td>
+      <td className="border p-2 text-center">
+        <ul className="list-disc list-inside text-xs">
+          {tinterDetails.length > 0 ? (
+            tinterDetails.map((t, idx) => <li key={idx}>{t}</li>)
+          ) : (
+            <li>No standard tinters found</li>
+          )}
+        </ul>
+      </td>
+      {/* Liquid */}
+      <td className="border p-2 text-center">{liquidL}</td>
+      <td className="border p-2 text-center">{liquidA}</td>
+      <td className="border p-2 text-center">{liquidB}</td>
+      <td className="border p-2 text-center">{liquidDelta}</td>
+      {/* Panel */}
+      <td className="border p-2 text-center">{panelL}</td>
+      <td className="border p-2 text-center">{panelA}</td>
+      <td className="border p-2 text-center">{panelB}</td>
+      <td className="border p-2 text-center">{panelDelta}</td>
+      {/* Colorimeter */}
+      <td className="border p-2 text-center">{colorimeterL}</td>
+      <td className="border p-2 text-center">{colorimeterA}</td>
+      <td className="border p-2 text-center">{colorimeterB}</td>
+      <td className="border p-2 text-center">{colorimeterDelta}</td>
+      {/* Comments */}
+      <td className="border p-2 text-center">Standard reference</td>
+      {/* Actions */}
+      <td className="border p-2 text-center">-</td>
+    </tr>
   );
 };
 

@@ -1,256 +1,211 @@
-import React, { useState } from "react";
-import { lab2rgb } from "../../utility/lab2rgb";
+import React from "react";
+import { skuVersionMeasurements } from "../../Data/SkuMeasurementData";
 import { tinters } from "../../Data/TinterData";
-import { tinterBatches } from "../../Data/TinterBatches";
+
 const ShotRow = ({
-  shot,
-  handleOpenTinterModal,
-  handleColorimeterChange,
-  handleCommentChange,
-  handleFetch,
-  handleEndShot,
-  colorimeterL,
-  colorimeterA,
-  colorimeterB,
-  randomLLiquid,
-  randomALiquid,
-  randomBLiquid,
-  randomLPanel,
-  randomAPanel,
-  randomBPanel,
+  shotNumber,
+  skuVersionId,
+  measurements,
+  comments,
+  tinterBatchIds,
+  actionCell,
+  isNew,
+  calInputs,
+  onCalInputChange,
+  onCalculateDeltaE,
+  colorimeterDeltaE,
+  colorInputsDisabled,
+  showSelectTinterButton,
+  showFetchLiquidButton,
+  showFetchPanelButton,
 }) => {
-  const [visibleSections, setVisibleSections] = useState({
-    liquid: false,
-    panel: false,
-    colorimeter: false,
+  // Helper to get measured value
+  const getMeasured = (type) =>
+    measurements.find((m) => m.measurement_type === type)?.measurement_value ??
+    "-";
+
+  // Helper to get standard value
+  const getStandard = (type) =>
+    skuVersionMeasurements.find(
+      (m) => m.sku_version_id === skuVersionId && m.measurement_type === type
+    )?.measurement_value ?? "-";
+
+  // Calculate deltas for liquid, panel, and colorimeter
+  const delta = (measured, standard) =>
+    measured !== "-" && standard !== "-"
+      ? (measured - standard).toFixed(2)
+      : "-";
+
+  const euclideanDelta = (
+    measuredL,
+    measuredA,
+    measuredB,
+    standardL,
+    standardA,
+    standardB
+  ) => {
+    if (
+      [
+        measuredL,
+        measuredA,
+        measuredB,
+        standardL,
+        standardA,
+        standardB,
+      ].includes("-")
+    )
+      return "-";
+    const dL = measuredL - standardL;
+    const dA = measuredA - standardA;
+    const dB = measuredB - standardB;
+    return Math.sqrt(dL * dL + dA * dA + dB * dB).toFixed(2);
+  };
+  // Liquid
+  const liquidL = getMeasured("liquid_l");
+  const liquidA = getMeasured("liquid_a");
+  const liquidB = getMeasured("liquid_b");
+  const liquidDelta = euclideanDelta(
+    liquidL,
+    liquidA,
+    liquidB,
+    getStandard("liquid_l"),
+    getStandard("liquid_a"),
+    getStandard("liquid_b")
+  );
+
+  // Panel
+  const panelL = getMeasured("panel_l");
+  const panelA = getMeasured("panel_a");
+  const panelB = getMeasured("panel_b");
+  const panelDelta = euclideanDelta(
+    panelL,
+    panelA,
+    panelB,
+    getStandard("panel_l"),
+    getStandard("panel_a"),
+    getStandard("panel_b")
+  );
+
+  // Colorimeter
+  const colorL = getMeasured("delta_colorimeter_l");
+  const colorA = getMeasured("delta_colorimeter_a");
+  const colorB = getMeasured("delta_colorimeter_b");
+  const colorDelta = euclideanDelta(
+    colorL,
+    colorA,
+    colorB,
+    getStandard("colorimeter_l"),
+    getStandard("colorimeter_a"),
+    getStandard("colorimeter_b")
+  );
+
+  const colorLDisplay = isNew ? (
+    <input
+      type="number"
+      placeholder="L"
+      value={calInputs?.l || ""}
+      onChange={(e) => onCalInputChange("l", e.target.value)}
+      className="border w-10 px-1 text-xs"
+      disabled={colorInputsDisabled}
+    />
+  ) : (
+    delta(colorL, getStandard("colorimeter_l"))
+  );
+  const colorADisplay = isNew ? (
+    <input
+      type="number"
+      placeholder="a"
+      value={calInputs?.a || ""}
+      onChange={(e) => onCalInputChange("a", e.target.value)}
+      className="border w-10 px-1 text-xs"
+      disabled={colorInputsDisabled}
+    />
+  ) : (
+    delta(colorA, getStandard("colorimeter_a"))
+  );
+  const colorBDisplay = isNew ? (
+    <input
+      type="number"
+      placeholder="b"
+      value={calInputs?.b || ""}
+      onChange={(e) => onCalInputChange("b", e.target.value)}
+      className="border w-10 px-1 text-xs"
+      disabled={colorInputsDisabled}
+    />
+  ) : (
+    delta(colorB, getStandard("colorimeter_b"))
+  );
+
+  const colorimeterDeltaECell = isNew
+    ? colorDelta
+    : getMeasured("target_delta_e") ?? "-";
+
+  // Get tinter codes for this shot
+  const tinterCodes = tinterBatchIds.map((tbid, idx) => {
+    const tinter = tinters.find((t) => t.tinter_id === tbid);
+    return tinter ? tinter.tinter_code : `Unknown (${tbid})`;
   });
 
-  // Handle button clicks
-  const showSection = (type) => {
-    setVisibleSections((prev) => ({ ...prev, [type]: true }));
-    handleFetch(shot.id, type);
-  };
+  // Only show values if fetched
+  const showLiquid =
+    !isNew ||
+    (isNew && measurements.some((m) => m.measurement_type === "liquid_l"));
+  const showPanel =
+    !isNew ||
+    (isNew && measurements.some((m) => m.measurement_type === "panel_l"));
 
-  const rgbLiquid = lab2rgb(randomLLiquid, randomALiquid, randomBLiquid);
-  const rgbPanel = lab2rgb(randomLPanel, randomAPanel, randomBPanel);
-  const rgbColorimeter = lab2rgb(
-    shot.values.l_colorimeter + colorimeterL,
-    shot.values.a_colorimeter + colorimeterA,
-    shot.values.b_colorimeter + colorimeterB
-  );
+  // ...existing code...
+
   return (
-    <>
-      <tr className="border-t border-white/30 hover:bg-white/80 transition bg-white/70 text-black">
-        <td className="border px-2 py-1 font-semibold">Shot {shot.id}</td>
-        <td className="border px-2 py-1 align-top">
-          {shot.id > 0 ? (
-            <div>
-              <button
-                className="bg-cyan-600 text-white px-2 py-1 rounded mr-2 mb-1"
-                onClick={() => handleOpenTinterModal(shot.id)}
-                disabled={shot.ended}
-              >
-                {shot.tinters ? "Re-select Tinters" : "Select Tinters"}
-              </button>
-              {shot.tinters &&
-                Array.isArray(shot.tinters) &&
-                shot.tinters.length > 0 && (
-                  <div className="text-xs text-gray-700">
-                    {shot.tinters
-                      .map((t) => {
-                        // Find tinter code and batch name for display
-                        const tinterObj = tinters.find(
-                          (x) => x.tinter_id === t.tinter_id
-                        );
-                        const batchObj = tinterBatches.find(
-                          (b) => b.tinter_batch_id === t.batch_id
-                        );
-                        const tinterCode =
-                          tinterObj?.tinter_code || `Tinter-${t.tinter_id}`;
-                        const batchCode =
-                          batchObj?.batch_tinter_name || `Batch-${t.batch_id}`;
-                        return `${tinterCode} - ${batchCode}`;
-                      })
-                      .join(", ")}
-                  </div>
-                )}
-            </div>
-          ) : (
-            <span className="text-gray-400">-</span>
-          )}
-        </td>
-        {/* Liquid Color */}
-        <td className="border px-2 py-1">{shot.values.l_liquid ?? "-"}</td>
-        <td className="border px-2 py-1">{shot.values.a_liquid ?? "-"}</td>
-        <td className="border px-2 py-1">{shot.values.b_liquid ?? "-"}</td>
-        <td className="border px-2 py-1">{shot.values.deltaE_liquid ?? "-"}</td>
-        {/* Panel Color */}
-        <td className="border px-2 py-1">{shot.values.l_panel ?? "-"}</td>
-        <td className="border px-2 py-1">{shot.values.a_panel ?? "-"}</td>
-        <td className="border px-2 py-1">{shot.values.b_panel ?? "-"}</td>
-        <td className="border px-2 py-1">{shot.values.deltaE_panel ?? "-"}</td>
-        {/* Colorimeter */}
-        <td className="border px-2 py-1">
-          <input
-            type="number"
-            step="0.01"
-            className="w-16 text-xs p-1 border rounded"
-            value={shot.values.l_colorimeter ?? ""}
-            disabled={shot.ended}
-            onChange={(e) =>
-              handleColorimeterChange(shot.id, "l_colorimeter", e.target.value)
-            }
-          />
-        </td>
-        <td className="border px-2 py-1">
-          <input
-            type="number"
-            step="0.01"
-            className="w-16 text-xs p-1 border rounded"
-            value={shot.values.a_colorimeter ?? ""}
-            disabled={shot.ended}
-            onChange={(e) =>
-              handleColorimeterChange(shot.id, "a_colorimeter", e.target.value)
-            }
-          />
-        </td>
-        <td className="border px-2 py-1">
-          <input
-            type="number"
-            step="0.01"
-            className="w-16 text-xs p-1 border rounded"
-            value={shot.values.b_colorimeter ?? ""}
-            disabled={shot.ended}
-            onChange={(e) =>
-              handleColorimeterChange(shot.id, "b_colorimeter", e.target.value)
-            }
-          />
-        </td>
-        <td className="px-2 py-1 text-center">
-          <div className="flex flex-col items-center justify-center gap-2">
-            <span>{shot.values.deltaE_colorimeter ?? "-"}</span>
-            {!shot.ended && (
-              <button
-                className="bg-cyan-700 text-white px-2 py-1 rounded"
-                onClick={() => showSection("colorimeter")}
-              >
-                Calculate ΔE
-              </button>
-            )}
-          </div>
-        </td>
+    <tr>
+      <td className="border p-2 text-center">{shotNumber}</td>
+      <td className="border p-2 text-center">
+        {showSelectTinterButton}
+        {tinterCodes.length > 0 && (
+          <ul className="list-disc list-inside text-xs">
+            {tinterCodes.map((t, idx) => (
+              <li key={idx}>{t}</li>
+            ))}
+          </ul>
+        )}
+      </td>
+      {/* Liquid */}
+      <td className="border p-2 text-center">
+        {showLiquid ? delta(liquidL, getStandard("liquid_l")) : "-"}
+      </td>
+      <td className="border p-2 text-center">
+        {showLiquid ? delta(liquidA, getStandard("liquid_a")) : "-"}
+      </td>
+      <td className="border p-2 text-center">
+        {showLiquid ? delta(liquidB, getStandard("liquid_b")) : "-"}
+      </td>
+      <td className="border p-2 text-center">
+        {showLiquid ? liquidDelta : "-"}
+      </td>
 
-        <td className="border px-2 py-1 w-48">
-          <textarea
-            className="w-full border p-1 text-xs"
-            placeholder="Add comment..."
-            value={shot.comment}
-            disabled={shot.ended}
-            onChange={(e) => handleCommentChange(shot.id, e.target.value)}
-          ></textarea>
-        </td>
-        <td className="border px-2 py-1 align-top">
-          <div className="flex flex-col gap-2">
-            <button
-              className={
-                !shot.ended
-                  ? "bg-cyan-700 text-white px-2 py-1 rounded"
-                  : "invisible"
-              }
-              onClick={() => showSection("liquid")}
-              disabled={shot.ended}
-            >
-              Fetch Liquid
-            </button>
-            <button
-              className={
-                !shot.ended
-                  ? "bg-cyan-700 text-white px-2 py-1 rounded"
-                  : "invisible"
-              }
-              onClick={() => showSection("panel")}
-              disabled={shot.ended}
-            >
-              Fetch Panel
-            </button>
+      {/* Panel */}
+      <td className="border p-2 text-center">
+        {showPanel ? delta(panelL, getStandard("panel_l")) : "-"}
+      </td>
+      <td className="border p-2 text-center">
+        {showPanel ? delta(panelA, getStandard("panel_a")) : "-"}
+      </td>
+      <td className="border p-2 text-center">
+        {showPanel ? delta(panelB, getStandard("panel_b")) : "-"}
+      </td>
+      <td className="border p-2 text-center">{showPanel ? panelDelta : "-"}</td>
 
-            {!shot.ended && (
-              <button
-                className={
-                  !shot.ended
-                    ? "bg-red-700 text-white px-2 py-1 rounded"
-                    : "invisible"
-                }
-                onClick={() => handleEndShot(shot.id)}
-              >
-                End Shot
-              </button>
-            )}
-            {shot.ended && (
-              <span className="text-green-600 font-semibold text-xs">
-                Shot Ended
-              </span>
-            )}
-          </div>
-        </td>
-      </tr>
-      {(visibleSections.liquid ||
-        visibleSections.panel ||
-        visibleSections.colorimeter) && (
-        <tr className="h-5">
-          <td className="border-l px-2 py-1 bg-white/70"></td>
-          <td className="px-2 py-1 bg-white/70"></td>
+      {/* Colorimeter */}
+      <td className="border p-2 text-center">{colorLDisplay}</td>
+      <td className="border p-2 text-center">{colorADisplay}</td>
+      <td className="border p-2 text-center">{colorBDisplay}</td>
+      <td className="border p-2 text-center">{colorimeterDeltaECell}</td>
 
-          {/* Liquid cells */}
-          {["r", "g", "b", "extra"].map((_, i) => (
-            <td
-              key={`liquid-${i}`}
-              style={{
-                backgroundColor: visibleSections.liquid
-                  ? `rgb(${rgbLiquid.r}, ${rgbLiquid.g}, ${rgbLiquid.b})`
-                  : "transparent",
-              }}
-              className={`${i === 0 ? "border-l" : ""} ${
-                i === 3 ? "border-r" : ""
-              }`}
-            ></td>
-          ))}
-
-          {/* Panel cells */}
-          {["r", "g", "b", "extra"].map((_, i) => (
-            <td
-              key={`panel-${i}`}
-              style={{
-                backgroundColor: visibleSections.panel
-                  ? `rgb(${rgbPanel.r}, ${rgbPanel.g}, ${rgbPanel.b})`
-                  : "transparent",
-              }}
-              className={`${i === 0 ? "border-l" : ""} ${
-                i === 3 ? "border-r" : ""
-              }`}
-            ></td>
-          ))}
-
-          {/* Colorimeter cells */}
-          {["r", "g", "b", "extra"].map((_, i) => (
-            <td
-              key={`colorimeter-${i}`}
-              style={{
-                backgroundColor: visibleSections.colorimeter
-                  ? `rgb(${rgbColorimeter.r}, ${rgbColorimeter.g}, ${rgbColorimeter.b})`
-                  : "transparent",
-              }}
-              className={`${i === 0 ? "border-l" : ""} ${
-                i === 3 ? "border-r" : ""
-              }`}
-            ></td>
-          ))}
-
-          <td className="px-2 py-1 bg-white/70"></td>
-          <td className="border-r px-2 py-1 bg-white/70"></td>
-        </tr>
-      )}
-    </>
+      {/* Comments */}
+      <td className="border p-2 text-center">{comments}</td>
+      {/* Actions */}
+      <td className="border p-2 text-center">{actionCell}</td>
+    </tr>
   );
 };
 

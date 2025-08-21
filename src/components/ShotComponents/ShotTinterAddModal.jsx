@@ -20,7 +20,6 @@ const TinterSelectionModal = ({
     const plantTinters = allActiveTinters.filter(
       (t) => t.plant_id === Number(plantId)
     );
-    console.log("🌱 All active tinters for plant:", plantTinters);
 
     // Default tinters to preselected or first 2 allowed ones
     let defaultTinters = preselectedTinters.length
@@ -32,8 +31,6 @@ const TinterSelectionModal = ({
             tinter_id: t.tinter_id,
             batch_id: null,
           }));
-
-    console.log("🌟 Default selected tinters:", defaultTinters);
 
     setSelectedTinters(defaultTinters);
 
@@ -47,7 +44,7 @@ const TinterSelectionModal = ({
         : [];
     });
     setBatchOptions(batchesByTinter);
-  }, [preselectedTinters, allowedTinterIds, plantId]);
+  }, [plantId]);
 
   const handleTinterChange = (index, tinterId) => {
     const updated = [...selectedTinters];

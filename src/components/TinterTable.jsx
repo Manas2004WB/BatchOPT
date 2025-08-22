@@ -1,80 +1,96 @@
 import React, { useEffect, useState } from "react";
-import { tinters as allTinters } from "../Data/TinterData";
 import AddTinterForm from "./AddTinterForm";
-import { FaEdit } from "react-icons/fa";
 import UpdateTinterForm from "./UpdateTinterForm";
-import { IoIosAddCircleOutline } from "react-icons/io";
 import TinterBatchForm from "./TinterBatchForm";
-import { tinterBatches } from "../Data/TinterBatches";
-import { plants } from "../Data/PlantData";
+import { FaEdit } from "react-icons/fa";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import tinterService from "../services/tinterService"; // ✅ import API service
+import { MdDelete } from "react-icons/md";
 
-const TinterTable = ({ plantId, user }) => {
+const TinterTable = ({ plantId, user, plantName }) => {
+  console.log("TinterTable props - PlantId:", plantId);
   const [editingTinter, setEditingTinter] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [tinterList, setTinterList] = useState(allTinters);
-  const [selectedTinter, setSelectedTinter] = useState(null); // for batch form
+  const [tinterList, setTinterList] = useState([]);
+  const [selectedTinter, setSelectedTinter] = useState(null);
   const [showBatchForm, setShowBatchForm] = useState(false);
-  const [allBatches, setAllBatches] = useState(tinterBatches);
 
-  const getPlantNameById = (plant_Id) => {
-    const plant = plants.find((p) => Number(p.plant_id) === Number(plant_Id));
-    return plant ? plant.plant_name : "Unknown Plant";
+  // ✅ Fetch tinters for this plant
+  useEffect(() => {
+    const fetchTinters = async () => {
+      try {
+        const data = await tinterService.getTinters();
+        console.log("All tinters from API:", data);
+
+        // filter only for this plant
+        const filtered = data.filter(
+          (t) => Number(t.PlantId) === Number(plantId)
+        );
+
+        console.log("Filtered tinters:", filtered);
+        setTinterList(filtered);
+
+        setTinterList(filtered);
+        console.log("Fetched tinters:", filtered);
+      } catch (error) {
+        console.error("Error fetching tinters:", error);
+      }
+    };
+    fetchTinters();
+  }, [plantId]);
+
+  // ✅ Add Tinter (API + state update)
+  const handleAddTinter = (createdTinter) => {
+    setTinterList((prev) => [...prev, createdTinter]);
   };
 
-  const filteredTinters = tinterList.filter(
-    (t) => t.plant_id === Number(plantId)
-  );
+  // ✅ Update Tinter
   const handleUpdateTinter = (updatedTinter) => {
-    setTinterList((prevTinters) =>
-      prevTinters.map((tinter) =>
-        tinter.tinter_id === updatedTinter.tinter_id ? updatedTinter : tinter
+    setTinterList((prev) =>
+      prev.map((t) =>
+        t.TinterId === updatedTinter.TinterId ? updatedTinter : t
       )
     );
     setShowEditModal(false);
   };
 
-  const handleAddTinter = (newTinter) => {
-    const nextId =
-      tinterList.length > 0
-        ? Math.max(...tinterList.map((t) => t.tinter_id)) + 1
-        : 1;
-
-    const newTinterWithId = {
-      ...newTinter,
-      tinter_id: nextId,
-      plant_id: Number(plantId),
-    };
-    console.log(newTinterWithId);
-    setTinterList([...tinterList, newTinterWithId]);
+  // ✅ Delete Tinter
+  const handleDeleteTinter = async (id) => {
+    try {
+      await tinterService.deleteTinter(id);
+      setTinterList((prev) => prev.filter((t) => t.TinterId !== id));
+    } catch (error) {
+      console.error("Error deleting tinter:", error);
+    }
   };
 
   return (
     <div className="overflow-x-auto rounded-lg">
-      <div className="mb-4 flex items-cente justify-center gap-2">
+      <div className="mb-4 flex items-center justify-center gap-2">
         <span className="text-lg font-semibold text-white">Plant:</span>
         <span className="text-lg font-bold text-cyan-600 bg-cyan-100 px-3 py-1 rounded shadow-sm">
-          {getPlantNameById(plantId)}
+          {plantName}
         </span>
       </div>
+
       <button
         className="mb-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded"
         onClick={() => setShowAddModal(true)}
       >
         + Add Tinter
       </button>
+
+      {/* Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">
-            {/* Close button */}
             <button
               onClick={() => setShowAddModal(false)}
               className="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl"
             >
               &times;
             </button>
-
-            {/* Add Plant Form */}
             <AddTinterForm
               user={user}
               plantId={plantId}
@@ -86,7 +102,9 @@ const TinterTable = ({ plantId, user }) => {
           </div>
         </div>
       )}
-      {showEditModal && (
+
+      {/* Update Modal */}
+      {showEditModal && editingTinter && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">
             <button
@@ -99,18 +117,16 @@ const TinterTable = ({ plantId, user }) => {
               user={user}
               plantId={plantId}
               tinterToEdit={editingTinter}
-              onUpdate={(tinter) => {
-                handleUpdateTinter(tinter);
-                setShowEditModal(false);
-              }}
+              onUpdate={handleUpdateTinter}
             />
           </div>
         </div>
       )}
+
+      {/* Batch Form */}
       {showBatchForm && selectedTinter && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-5xl relative">
-            {/* Close button */}
             <button
               onClick={() => setShowBatchForm(false)}
               className="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl"
@@ -146,44 +162,35 @@ const TinterTable = ({ plantId, user }) => {
             <th className="px-4 py-2">Status</th>
             <th className="px-4 py-2">Updated By</th>
             <th className="px-4 py-2">Updated At</th>
-            <th className="px-4 py-2">Edit tinter</th>
-            <th className="px-4 py-2">Add Batches</th>
+            <th className="px-4 py-2">Edit</th>
+            <th className="px-4 py-2">Batches</th>
+            <th className="px-4 py-2">Delete</th>
           </tr>
         </thead>
         <tbody className="bg-white/60">
-          {filteredTinters.length === 0 ? (
+          {tinterList.length === 0 ? (
             <tr>
               <td colSpan="7" className="text-center py-4 text-gray-500">
                 No tinter data for this plant.
               </td>
             </tr>
           ) : (
-            filteredTinters.map((tinter) => (
+            tinterList.map((tinter) => (
               <tr
-                key={tinter.tinter_id}
+                key={tinter.TinterId}
                 className="border-t border-white/30 hover:bg-white/80 transition"
               >
-                <td className="px-4 py-2">{tinter.tinter_code}</td>
+                <td className="px-4 py-2">{tinter.TinterCode}</td>
                 <td className="px-4 py-2">
-                  {tinter.is_active ? (
+                  {tinter.IsActive ? (
                     <span className="text-green-600 font-semibold">Active</span>
                   ) : (
                     <span className="text-red-500 font-semibold">Inactive</span>
                   )}
                 </td>
+                <td className="px-4 py-2">{tinter.UpdatedBy}</td>
+                <td className="px-4 py-2">{tinter.UpdatedAt}</td>
                 <td className="px-4 py-2">
-                  {typeof tinter.updated_by === "number"
-                    ? tinter.updated_by === 1
-                      ? "Berger Admin"
-                      : tinter.updated_by === 2
-                      ? "Berger Operator"
-                      : tinter.updated_by === 3
-                      ? "Berger Management"
-                      : "Unknown User"
-                    : tinter.updated_by}
-                </td>
-                <td className="px-4 py-2">{tinter.updated_at}</td>
-                <td className="px-4 py-2 ">
                   <button
                     className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
                     onClick={() => {
@@ -201,9 +208,16 @@ const TinterTable = ({ plantId, user }) => {
                       setShowBatchForm(true);
                     }}
                     className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
-                    title="Add/View Batches"
                   >
                     <IoIosAddCircleOutline />
+                  </button>
+                </td>
+                <td className="px-4 py-2">
+                  <button
+                    onClick={() => handleDeleteTinter(tinter.TinterId)}
+                    className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
+                  >
+                    <MdDelete />
                   </button>
                 </td>
               </tr>

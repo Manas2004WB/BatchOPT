@@ -1,17 +1,6 @@
 import axios from "axios";
-
+import { authHeader } from "./authHeader"; // helper that attaches token if required
 const API_BASE = "https://localhost:7130/api/plant";
-
-// Include token in headers for protected routes
-export default function authHeader() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (user && user.Token) {
-    // capital T
-    return { Authorization: `Bearer ${user.Token}` };
-  } else {
-    return {};
-  }
-}
 
 export const getPlants = async () => {
   const res = await axios.get(API_BASE);

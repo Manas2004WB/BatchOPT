@@ -4,7 +4,7 @@ import { MdDeleteOutline } from "react-icons/md";
 const TinterBatchForm = ({
   tinterCode,
   tinterId,
-  batches,
+  batches, // <-- default to empty array
   onAddBatch,
   onUpdateBatch,
   userId,

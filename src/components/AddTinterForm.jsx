@@ -1,47 +1,54 @@
 import React, { useState } from "react";
+import tinterService from "../services/tinterService";
 
-const AddTinterForm = ({ onAdd, plantId, user }) => {
-  const [tinter, setTinter] = useState({
-    tinter_code: "",
-    is_active: true,
-  });
+const AddTinterForm = ({ onAdd, plantId }) => {
+  console.log("AddTinterForm props - PlantId:", plantId);
+  const [tinterCode, setTinterCode] = useState("");
+  const [isActive, setIsActive] = useState(true);
   const [error, setError] = useState("");
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const code = tinter.tinter_code.trim();
-    if (!code) {
-      return setError("Tinter code is required");
-    }
-    if (code.length < 2) {
+
+    const code = tinterCode.trim();
+
+    // ✅ Validation
+    if (!code) return setError("Tinter code is required");
+    if (code.length < 2)
       return setError("Tinter code must be at least 2 characters");
-    }
-    if (code.length > 20) {
+    if (code.length > 20)
       return setError("Tinter code must be at most 20 characters");
-    }
     if (!/^[a-zA-Z0-9 \-]+$/.test(code)) {
       return setError(
         "Tinter code can only contain letters, numbers, spaces, and hyphens"
       );
     }
-    onAdd({
-      ...tinter,
-      plant_id: Number(plantId),
-      updated_by: user?.user_id || "Unknown",
-      updated_at: new Date()
-        .toLocaleString("en-GB", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        })
-        .replace(",", ""),
-    });
-    setTinter({ tinter_code: "", is_active: true });
+
     setError("");
+    setLoading(true);
+
+    try {
+      // ✅ API Call (wrap inside dto)
+      const created = await tinterService.createTinter({
+        PlantId: Number(plantId),
+        TinterCode: tinterCode.trim(),
+        IsActive: isActive,
+      });
+
+      console.log("Created tinter:", created);
+
+      // ✅ Send created tinter back to parent
+      onAdd(created);
+
+      // Reset form
+      setTinterCode("");
+      setIsActive(true);
+    } catch (err) {
+      console.error("Error creating tinter:", err);
+    }
   };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -60,18 +67,16 @@ const AddTinterForm = ({ onAdd, plantId, user }) => {
       <input
         type="text"
         placeholder="Tinter Code"
-        value={tinter.tinter_code}
-        onChange={(e) => setTinter({ ...tinter, tinter_code: e.target.value })}
+        value={tinterCode}
+        onChange={(e) => setTinterCode(e.target.value)}
         className="w-full px-4 py-2 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
       />
 
       <label className="text-black flex items-center mb-4">
         <input
           type="checkbox"
-          checked={tinter.is_active}
-          onChange={(e) =>
-            setTinter({ ...tinter, is_active: e.target.checked })
-          }
+          checked={isActive}
+          onChange={(e) => setIsActive(e.target.checked)}
           className="mr-2"
         />
         Active
@@ -79,9 +84,10 @@ const AddTinterForm = ({ onAdd, plantId, user }) => {
 
       <button
         type="submit"
-        className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 rounded"
+        disabled={loading}
+        className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 rounded disabled:opacity-50"
       >
-        Add Tinter
+        {loading ? "Adding..." : "Add Tinter"}
       </button>
     </form>
   );

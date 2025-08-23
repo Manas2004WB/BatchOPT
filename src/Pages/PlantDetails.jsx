@@ -77,7 +77,7 @@ const PlantDetails = ({ user }) => {
       <NavbarPlantDetails activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main blurred card */}
-      <div className="px-4 pt-24 w-full flex justify-center">
+      <div className="bg-cover bg-center px-4 pt-24 w-full h-screen flex justify-center p-10">
         <div className="w-full max-w-7xl bg-white/25 backdrop-blur-md shadow-2xl rounded-2xl p-8">
           {renderTabContent()}
         </div>

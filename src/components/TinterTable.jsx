@@ -5,6 +5,7 @@ import TinterBatchForm from "./TinterBatchForm";
 import { FaEdit } from "react-icons/fa";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import tinterService from "../services/tinterService"; // ✅ import API service
+import tinterBatchService from "../services/tinterBatchService";
 import { MdDelete } from "react-icons/md";
 
 const TinterTable = ({ plantId, user, plantName }) => {
@@ -15,6 +16,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
   const [tinterList, setTinterList] = useState([]);
   const [selectedTinter, setSelectedTinter] = useState(null);
   const [showBatchForm, setShowBatchForm] = useState(false);
+  const [batches, setBatches] = useState([]);
 
   // ✅ Fetch tinters for this plant
   useEffect(() => {
@@ -134,22 +136,9 @@ const TinterTable = ({ plantId, user, plantName }) => {
               &times;
             </button>
             <TinterBatchForm
-              tinterId={selectedTinter.tinter_id}
-              tinterCode={selectedTinter.tinter_code}
-              batches={allBatches}
-              onAddBatch={(newBatch) =>
-                setAllBatches((prev) => [...prev, newBatch])
-              }
-              onUpdateBatch={(updatedBatch) =>
-                setAllBatches((prev) =>
-                  prev.map((batch) =>
-                    batch.tinter_batch_code === updatedBatch.tinter_batch_code
-                      ? updatedBatch
-                      : batch
-                  )
-                )
-              }
-              userId={user?.user_id}
+              tinterId={selectedTinter.TinterId}
+              tinterCode={selectedTinter.TinterCode}
+              userId={user?.UserId}
             />
           </div>
         </div>

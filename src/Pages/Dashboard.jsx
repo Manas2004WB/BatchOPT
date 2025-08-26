@@ -128,10 +128,15 @@ const Dashboard = ({ user }) => {
         : { key, direction: "asc" }
     );
   };
+  const handleLogout = () => {
+    // Clear user session (e.g., remove token from localStorage)
+    localStorage.clear();
+    navigate("/login");
+  };
 
   return (
     <>
-      <Navbar user={user} />
+      <Navbar user={user} onLogout={handleLogout} />
       <div
         className="min-h-screen bg-cover bg-center flex items-center justify-center px-4 pt-24"
         style={{ backgroundImage: `url(${heroBg})` }}
@@ -174,7 +179,7 @@ const Dashboard = ({ user }) => {
             </div>
           )}
 
-          <div className="overflow-x-auto rounded-lg min-h-[350px] max-h-[400px] overflow-y-auto border border-white/30">
+          <div className="overflow-x-auto rounded-lg  max-h-[400px] overflow-y-auto border border-white/30">
             <table className="min-w-full text-left border border-white/30 backdrop-blur">
               <thead className="bg-cyan-700 text-white sticky top-0 z-10">
                 <tr>

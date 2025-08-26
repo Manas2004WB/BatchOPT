@@ -60,7 +60,7 @@ const Pagination = ({
           }}
           className="border text-white border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-500"
         >
-          {[10, 20, 50, 100].map((option) => (
+          {[7, 20, 50, 100].map((option) => (
             <option key={option} value={option} className="text-black">
               {option}
             </option>

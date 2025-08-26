@@ -10,6 +10,14 @@ export const getTinters = async () => {
   return res.data;
 };
 
+// Get tinters for a specific plant
+export const getTinterByPlantId = async (plantID) => {
+  const res = await axios.get(`${API_BASE}/plant/${plantID}`, {
+    headers: authHeader(),
+  });
+  return res.data;
+};
+
 // ✅ Get tinter by ID with batches + measurements
 export const getTinterById = async (id) => {
   const res = await axios.get(`${API_BASE}/${id}`, { headers: authHeader() });
@@ -53,4 +61,5 @@ export default {
   updateTinter,
   deleteTinter,
   createTinterWithBatches,
+  getTinterByPlantId,
 };

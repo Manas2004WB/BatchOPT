@@ -10,3 +10,11 @@ export const getSkusWithVersionMeasurements = async (plantId) => {
   });
   return res.data;
 };
+
+const API_BASE_POST = "https://localhost:7130/api/Sku/with-measurements"; // update base URL as per your API
+export const postSkuWithVersionMeasurements = async (skuData) => {
+  const res = await axios.post(API_BASE_POST, skuData, {
+    headers: authHeader(),
+  });
+  return res.data;
+};

@@ -78,7 +78,7 @@ const AddSkuBatches = ({ user, plantId }) => {
       >
         + Add Batches
       </button>
-      <table className="min-w-full text-left border border-white/30 backdrop-blur">
+      <table className="min-w-full text-centre border border-white/30 backdrop-blur">
         <thead className="bg-cyan-700 text-white sticky top-0 z-10">
           <tr>
             <th className="px-4 py-2 ">#</th>
@@ -91,7 +91,7 @@ const AddSkuBatches = ({ user, plantId }) => {
             <th className="px-4 py-2 ">Shots</th>
           </tr>
         </thead>
-        <tbody className="bg-white/60">
+        <tbody className="bg-white/60 ">
           {initialBatchList.length === 0 ? (
             <tr>
               <td colSpan="9" className="text-center py-4 text-gray-500">

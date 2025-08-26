@@ -198,7 +198,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700"
             >
               {loading ? "Saving..." : "Save"}
             </button>

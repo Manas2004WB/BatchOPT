@@ -17,6 +17,10 @@ const TinterTable = ({ plantId, user, plantName }) => {
   const [selectedTinter, setSelectedTinter] = useState(null);
   const [showBatchForm, setShowBatchForm] = useState(false);
   const [batches, setBatches] = useState([]);
+  const [confirmDelete, setConfirmDelete] = useState({
+    open: false,
+    tinterId: null,
+  });
 
   // ✅ Fetch tinters for this plant
   useEffect(() => {
@@ -57,13 +61,21 @@ const TinterTable = ({ plantId, user, plantName }) => {
     setShowEditModal(false);
   };
 
-  // ✅ Delete Tinter
+  // ✅ Delete Tinter with confirmation
   const handleDeleteTinter = async (id) => {
+    setConfirmDelete({ open: true, tinterId: id });
+  };
+
+  const confirmDeleteTinter = async () => {
     try {
-      await tinterService.deleteTinter(id);
-      setTinterList((prev) => prev.filter((t) => t.TinterId !== id));
+      await tinterService.deleteTinter(confirmDelete.tinterId);
+      setTinterList((prev) =>
+        prev.filter((t) => t.TinterId !== confirmDelete.tinterId)
+      );
     } catch (error) {
       console.error("Error deleting tinter:", error);
+    } finally {
+      setConfirmDelete({ open: false, tinterId: null });
     }
   };
 
@@ -144,6 +156,36 @@ const TinterTable = ({ plantId, user, plantName }) => {
         </div>
       )}
 
+      {confirmDelete.open && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm  flex items-center justify-center z-10">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
+            <h2 className="text-lg font-bold mb-2 text-cyan-700">
+              Delete Tinter?
+            </h2>
+            <p className="mb-4 text-gray-700">
+              Are you sure you want to delete this tinter? This action cannot be
+              undone.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                onClick={confirmDeleteTinter}
+              >
+                Delete
+              </button>
+              <button
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                onClick={() =>
+                  setConfirmDelete({ open: false, tinterId: null })
+                }
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <table className="min-w-full text-left border border-white/30 backdrop-blur">
         <thead className="bg-cyan-700 text-white sticky top-0 z-10">
           <tr>
@@ -209,6 +251,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
                     <MdDelete />
                   </button>
                 </td>
+                {/* Custom Delete Confirmation Modal */}
               </tr>
             ))
           )}

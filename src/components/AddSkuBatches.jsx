@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { batches } from "../Data/Batches";
 import { skuData } from "../Data/SkuData";
 import { skuVersions } from "../Data/SkuVersionData";
@@ -6,10 +6,12 @@ import AddSkuBatchForm from "./AddSkuBatchForm";
 import { users } from "../Data/Data";
 import { useNavigate } from "react-router-dom";
 import { plants } from "../Data/PlantData";
+import { getBatchesByPlantId } from "../services/batchService";
+import { getUserNameById } from "../services/userService";
 
 const AddSkuBatches = ({ user, plantId }) => {
   const navigate = useNavigate();
-  const [batchList, setBatchList] = useState(batches);
+  const [batchList, setBatchList] = useState([]);
   const [showAddBatchModal, setShowAddBatchModal] = useState(false);
 
   const getPlantNameById = (plant_Id) => {
@@ -17,26 +19,22 @@ const AddSkuBatches = ({ user, plantId }) => {
     return plant ? plant.plant_name : "Unknown Plant";
   };
 
-  const initialBatchList = batchList.filter((batch) => {
-    const version = skuVersions.find(
-      (v) => v.sku_version_id === batch.sku_version_id
-    );
-    console.log("Version:", version);
-    if (!version) return false;
-    const sku = skuData.find((s) => s.sku_id === version.sku_id);
-    console.log("SKU:", sku);
-    return sku && sku.plant_id === Number(plantId);
-  });
+  useEffect(() => {
+    const fetchBatches = async () => {
+      try {
+        const data = await getBatchesByPlantId(plantId);
+        setBatchList(data || []);
+        console.log("Fetched batches:", data);
+      } catch (error) {
+        console.error("Failed to fetch batches", error);
+      }
+    };
+    if (plantId) fetchBatches();
+  }, [plantId]);
+
   const handleAddBatch = (newBatch) => {
     setBatchList((prev) => [...prev, newBatch]);
     setShowAddBatchModal(false);
-  };
-  const getSkuByVersionId = (versionId) => {
-    const version = skuVersions.find((v) => v.sku_version_id === versionId);
-    if (!version) return "-";
-
-    const sku = skuData.find((s) => s.sku_id === version.sku_id);
-    return sku?.sku_name || "-";
   };
 
   const getUsernamebyUserId = (updatedBy) => {
@@ -92,42 +90,43 @@ const AddSkuBatches = ({ user, plantId }) => {
           </tr>
         </thead>
         <tbody className="bg-white/60 ">
-          {initialBatchList.length === 0 ? (
+          {batchList.length === 0 ? (
             <tr>
               <td colSpan="9" className="text-center py-4 text-gray-500">
                 No batches available.
               </td>
             </tr>
           ) : (
-            initialBatchList.map((batch, index) => (
+            batchList.map((batch, index) => (
               <tr
-                key={batch.batch_id}
+                key={batch.BatchId}
                 className="border-t border-white/30 hover:bg-white/80 transition"
               >
                 <td className="px-4 py-2 ">{index + 1}</td>
-                <td className="px-4 py-2 ">{batch.batch_code}</td>
+                <td className="px-4 py-2 ">{batch.BatchCode}</td>
                 <td className="px-4 py-2  text-center">
-                  {getSkuByVersionId(batch.sku_version_id)}
+                  {batch.SkuVersion.Sku.SkuName} -{" "}
+                  {batch.SkuVersion.VersionName}
                 </td>
-                <td className="px-4 py-2  text-center">{batch.batch_size}</td>
+                <td className="px-4 py-2  text-center">{batch.BatchSize}</td>
                 <td className="px-4 py-2 text-center">
-                  {batch.batch_status_id === 1
+                  {batch.BatchStatusId === 1
                     ? "In-Progress"
-                    : batch.batch_status_id === 2
+                    : batch.BatchStatusId === 2
                     ? "Completed"
                     : "Abondon"}
                 </td>
                 <td className="px-4 py-2  text-center">
-                  {formatDate(batch.updated_at)}
+                  {formatDate(batch.UpdatedAt)}
                 </td>
                 <td className="px-4 py-2 text-center">
-                  {getUsernamebyUserId(batch.updated_by)}
+                  {getUsernamebyUserId(batch.UpdatedBy)}
                 </td>
                 <td className="px-4 py-2 text-center">
                   <button
                     className="bg-cyan-700 p-1 rounded-xl text-white"
                     onClick={() =>
-                      navigate(`/shots/${batch.batch_id}`, {
+                      navigate(`/shots/${batch.BatchId}`, {
                         state: { batch, plantId },
                       })
                     }

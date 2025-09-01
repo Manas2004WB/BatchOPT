@@ -9,6 +9,7 @@ import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import { FaArrowsAltV, FaSortUp, FaSortDown, FaSort } from "react-icons/fa";
 import Navbar from "../components/Navbar";
+import { Toaster, toast } from "sonner";
 
 import {
   getPlants,
@@ -20,6 +21,10 @@ import {
 
 const Dashboard = ({ user }) => {
   const [plantList, setPlantList] = useState([]);
+  const [confirmDelete, setConfirmDelete] = useState({
+    open: false,
+    plantId: null,
+  });
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedPlant, setSelectedPlant] = useState(null);
@@ -87,6 +92,15 @@ const Dashboard = ({ user }) => {
     console.log("sortedPlants (after sort):", sorted);
     return sorted;
   }, [filteredPlants, sortConfig]);
+  // 🔔 Trigger toast when sortConfig changes
+  useEffect(() => {
+    if (sortConfig.key) {
+      toast.info(
+        `Sorted by ${sortConfig.key} (${sortConfig.direction.toUpperCase()})`,
+        { autoClose: 2000 }
+      );
+    }
+  }, [sortConfig]);
 
   const indexOfLast = currentPage * plantPerPage;
   const indexOfFirst = indexOfLast - plantPerPage;
@@ -97,28 +111,42 @@ const Dashboard = ({ user }) => {
     try {
       const created = await createPlant(newPlant);
       setPlantList((prev) => [...prev, created]);
+      toast.success("Plant added successfully!");
     } catch (err) {
       console.error("Failed to create plant", err);
+      toast.error("Failed to add plant.");
     }
   };
+
   const handleUpdatePlant = async (updatedPlant) => {
     try {
       const updated = await updatePlant(updatedPlant.PlantId, updatedPlant);
       setPlantList((prev) =>
         prev.map((p) => (p.PlantId === updated.PlantId ? updated : p))
       );
+      toast.success("Plant updated successfully!");
     } catch (err) {
       console.error("Failed to update plant", err);
+      toast.error("Failed to update plant.");
     }
   };
 
-  const handleDeletePlant = async (id) => {
-    if (!window.confirm("Do you want to delete the plant?")) return;
+  const handleDeletePlant = (id) => {
+    setConfirmDelete({ open: true, plantId: id });
+  };
+
+  const confirmDeletePlant = async () => {
     try {
-      await deletePlant(id);
-      setPlantList((prev) => prev.filter((p) => p.PlantId !== id));
+      await deletePlant(confirmDelete.plantId);
+      setPlantList((prev) =>
+        prev.filter((p) => p.PlantId !== confirmDelete.plantId)
+      );
+      toast.success("Plant deleted successfully!");
     } catch (err) {
       console.error("Failed to delete plant", err);
+      toast.error("Failed to delete plant.");
+    } finally {
+      setConfirmDelete({ open: false, plantId: null });
     }
   };
   const handleSort = (key) => {
@@ -136,6 +164,7 @@ const Dashboard = ({ user }) => {
 
   return (
     <>
+      <Toaster richColors position="top-right" />
       <Navbar user={user} onLogout={handleLogout} />
       <div
         className="min-h-screen bg-cover bg-center flex items-center justify-center px-4 pt-24"
@@ -179,17 +208,50 @@ const Dashboard = ({ user }) => {
             </div>
           )}
 
+          {confirmDelete.open && (
+            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
+                <h2 className="text-lg font-bold mb-2 text-red-700">
+                  Delete Plant?
+                </h2>
+                <p className="mb-4 text-gray-700">
+                  Are you sure you want to delete this plant? This action cannot
+                  be undone.
+                </p>
+                <div className="flex justify-end gap-2">
+                  <button
+                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                    onClick={() =>
+                      setConfirmDelete({
+                        open: false,
+                        plantId: null,
+                      })
+                    }
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                    onClick={confirmDeletePlant}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="overflow-x-auto rounded-lg  max-h-[400px] overflow-y-auto border border-white/30">
-            <table className="min-w-full text-left border border-white/30 backdrop-blur">
+            <table className="min-w-full text-left border border-white/30 backdrop-blur min-h-[389px]">
               <thead className="bg-cyan-700 text-white sticky top-0 z-10">
                 <tr>
                   <th
                     className="px-4 py-2 cursor-pointer"
-                    onClick={() => handleSort("plant_name")}
+                    onClick={() => handleSort("PlantName")}
                   >
                     <div className="flex items-center gap-1">
                       Plant Name
-                      {sortConfig.key === "plant_name" ? (
+                      {sortConfig.key === "PlantName" ? (
                         sortConfig.direction === "asc" ? (
                           <FaSortUp />
                         ) : (
@@ -202,11 +264,11 @@ const Dashboard = ({ user }) => {
                   </th>
                   <th
                     className="px-4 py-2 cursor-pointer"
-                    onClick={() => handleSort("is_active")}
+                    onClick={() => handleSort("IsActive")}
                   >
                     <div className="flex items-center gap-1">
                       Status
-                      {sortConfig.key === "is_active" ? (
+                      {sortConfig.key === "IsActive" ? (
                         sortConfig.direction === "asc" ? (
                           <FaSortUp />
                         ) : (
@@ -266,12 +328,11 @@ const Dashboard = ({ user }) => {
 
                       <button
                         className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
-                        onClick={() => {
-                          handleDeletePlant(plant.PlantId);
-                        }}
+                        onClick={() => handleDeletePlant(plant.PlantId)}
                       >
                         Delete
                       </button>
+                      {/* Custom Delete Confirmation Modal */}
                     </td>
                   </tr>
                 ))}

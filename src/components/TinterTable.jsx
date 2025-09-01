@@ -7,6 +7,7 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import tinterService from "../services/tinterService"; // ✅ import API service
 import tinterBatchService from "../services/tinterBatchService";
 import { MdDelete } from "react-icons/md";
+import { Toaster, toast } from "sonner";
 
 const TinterTable = ({ plantId, user, plantName }) => {
   console.log("TinterTable props - PlantId:", plantId);
@@ -48,17 +49,29 @@ const TinterTable = ({ plantId, user, plantName }) => {
 
   // ✅ Add Tinter (API + state update)
   const handleAddTinter = (createdTinter) => {
-    setTinterList((prev) => [...prev, createdTinter]);
+    try {
+      setTinterList((prev) => [...prev, createdTinter]);
+      toast.success("Tinter added successfully.");
+    } catch (error) {
+      console.error("Failed to add tinter", error);
+      toast.error("Failed to add tinter.");
+    }
   };
 
   // ✅ Update Tinter
   const handleUpdateTinter = (updatedTinter) => {
-    setTinterList((prev) =>
-      prev.map((t) =>
-        t.TinterId === updatedTinter.TinterId ? updatedTinter : t
-      )
-    );
-    setShowEditModal(false);
+    try {
+      setTinterList((prev) =>
+        prev.map((t) =>
+          t.TinterId === updatedTinter.TinterId ? updatedTinter : t
+        )
+      );
+      setShowEditModal(false);
+      toast.success("Tinter updated successfully.");
+    } catch (error) {
+      console.error("Failed to update tinter", error);
+      toast.error("Failed to update tinter.");
+    }
   };
 
   // ✅ Delete Tinter with confirmation
@@ -81,6 +94,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
 
   return (
     <div className="overflow-x-auto rounded-lg">
+      <Toaster richColors position="top-right" />
       <div className="mb-4 flex items-center justify-center gap-2">
         <span className="text-lg font-semibold text-white">Plant:</span>
         <span className="text-lg font-bold text-cyan-600 bg-cyan-100 px-3 py-1 rounded shadow-sm">

@@ -2,7 +2,7 @@ import React from "react";
 
 const DishCleanCheckTable = ({ calibrationList }) => {
   return (
-    <div className="overflow-x-auto rounded-lg shadow-lg max-h-60 overflow-y-auto">
+    <div className="overflow-x-auto rounded-lg shadow-lg max-h-75 overflow-y-auto">
       <table className="min-w-full bg-white/80 text-sm rounded-lg backdrop-blur-md">
         <thead className="bg-cyan-600 text-white sticky top-0 z-10">
           <tr>

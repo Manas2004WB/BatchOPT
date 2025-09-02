@@ -18,3 +18,11 @@ export const postSkuWithVersionMeasurements = async (skuData) => {
   });
   return res.data;
 };
+
+export const GetTargetDeltaEBySkuVersion = async (skuVersionId) => {
+  const res = await axios.get(
+    `https://localhost:7130/api/Sku/GetTargetDeltaEBySkuVersion/${skuVersionId}`,
+    { headers: authHeader() }
+  );
+  return res.data;
+};

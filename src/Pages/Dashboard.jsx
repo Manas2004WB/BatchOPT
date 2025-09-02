@@ -17,9 +17,13 @@ import {
   createPlant,
   updatePlant,
   deletePlant,
-} from "../services/plantApi"; // Import API service
+} from "../services/plantApi";
 
 const Dashboard = ({ user }) => {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const userId = storedUser?.UserId;
+  console.log("User ID from localStorage:", userId);
+  const hasFullAccess = userId === 6;
   const [plantList, setPlantList] = useState([]);
   const [confirmDelete, setConfirmDelete] = useState({
     open: false,
@@ -96,7 +100,9 @@ const Dashboard = ({ user }) => {
   useEffect(() => {
     if (sortConfig.key) {
       toast.info(
-        `Sorted by ${sortConfig.key} (${sortConfig.direction.toUpperCase()})`,
+        `Sorted by ${
+          sortConfig.key == "PlantName" ? "plant name" : "is active"
+        } (${sortConfig.direction.toUpperCase()})`,
         { autoClose: 2000 }
       );
     }
@@ -316,22 +322,26 @@ const Dashboard = ({ user }) => {
                       >
                         View
                       </button>
-                      <button
-                        className="bg-cyan-500 hover:bg-cyan-600 text-white px-5 py-1 rounded text-sm"
-                        onClick={() => {
-                          setSelectedPlant(plant);
-                          setShowUpdateModal(true);
-                        }}
-                      >
-                        Edit
-                      </button>
+                      {hasFullAccess && (
+                        <>
+                          <button
+                            className="bg-cyan-500 hover:bg-cyan-600 text-white px-5 py-1 rounded text-sm"
+                            onClick={() => {
+                              setSelectedPlant(plant);
+                              setShowUpdateModal(true);
+                            }}
+                          >
+                            Edit
+                          </button>
 
-                      <button
-                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
-                        onClick={() => handleDeletePlant(plant.PlantId)}
-                      >
-                        Delete
-                      </button>
+                          <button
+                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                            onClick={() => handleDeletePlant(plant.PlantId)}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
                       {/* Custom Delete Confirmation Modal */}
                     </td>
                   </tr>

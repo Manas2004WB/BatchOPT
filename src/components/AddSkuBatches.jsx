@@ -6,7 +6,7 @@ import AddSkuBatchForm from "./AddSkuBatchForm";
 import { users } from "../Data/Data";
 import { useNavigate } from "react-router-dom";
 import { plants } from "../Data/PlantData";
-import { getBatchesByPlantId } from "../services/batchService";
+import { getBatchesByPlantId, postBatch } from "../services/batchService";
 import { getUserNameById } from "../services/userService";
 
 const AddSkuBatches = ({ user, plantId }) => {
@@ -18,22 +18,23 @@ const AddSkuBatches = ({ user, plantId }) => {
     const plant = plants.find((p) => Number(p.plant_id) === Number(plant_Id));
     return plant ? plant.plant_name : "Unknown Plant";
   };
-
+  const fetchBatches = async () => {
+    try {
+      const data = await getBatchesByPlantId(plantId);
+      setBatchList(data || []);
+      console.log("Fetched batches:", data);
+    } catch (error) {
+      console.error("Failed to fetch batches", error);
+    }
+  };
   useEffect(() => {
-    const fetchBatches = async () => {
-      try {
-        const data = await getBatchesByPlantId(plantId);
-        setBatchList(data || []);
-        console.log("Fetched batches:", data);
-      } catch (error) {
-        console.error("Failed to fetch batches", error);
-      }
-    };
+    fetchBatches();
     if (plantId) fetchBatches();
   }, [plantId]);
 
   const handleAddBatch = (newBatch) => {
     setBatchList((prev) => [...prev, newBatch]);
+    fetchBatches();
     setShowAddBatchModal(false);
   };
 
@@ -61,6 +62,7 @@ const AddSkuBatches = ({ user, plantId }) => {
               &times;
             </button>
             <AddSkuBatchForm
+              fetchBatches={fetchBatches}
               user={user}
               plantId={plantId}
               skuData={skuData}
@@ -105,8 +107,8 @@ const AddSkuBatches = ({ user, plantId }) => {
                 <td className="px-4 py-2 ">{index + 1}</td>
                 <td className="px-4 py-2 ">{batch.BatchCode}</td>
                 <td className="px-4 py-2  text-center">
-                  {batch.SkuVersion.Sku.SkuName} -{" "}
-                  {batch.SkuVersion.VersionName}
+                  {batch.SkuVersion?.Sku?.SkuName || "Unknown"} -{" "}
+                  {batch.SkuVersion?.VersionName || ""}
                 </td>
                 <td className="px-4 py-2  text-center">{batch.BatchSize}</td>
                 <td className="px-4 py-2 text-center">

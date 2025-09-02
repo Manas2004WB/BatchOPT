@@ -14,3 +14,7 @@ export const getBatchesByPlantId = async (plantId) => {
   });
   return res.data;
 };
+export const postBatch = async (batchData) => {
+  const res = await axios.post(API_BASE, batchData, { headers: authHeader() });
+  return res.data;
+};

@@ -20,6 +20,7 @@ import {
 } from "../services/plantApi";
 
 const Dashboard = ({ user }) => {
+  console.log("Dashboard user prop:", user);
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userId = storedUser?.UserId;
   console.log("User ID from localStorage:", userId);

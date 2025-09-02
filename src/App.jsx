@@ -1,54 +1,68 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Login from "./Pages/Login";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
-  useNavigate,
 } from "react-router-dom";
 import Dashboard from "./Pages/Dashboard";
 import PlantDetails from "./Pages/PlantDetails";
 import ShotsPage from "./Pages/ShotsPage";
 
 const App = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
+  // ✅ Initialize directly from localStorage
+  const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false); // <-- mark loading complete
-  }, []);
-  if (loading) return null;
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
   return (
-    <div>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login setUser={setUser} />} />
-          <Route
-            path="/"
-            element={
-              user ? <Navigate to="/dashboard" /> : <Login setUser={setUser} />
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={user ? <Dashboard user={user} /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/plant/:id"
-            element={user ? <PlantDetails user={user} /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/shots/:batchId"
-            element={user ? <ShotsPage user={user} /> : <Navigate to="/" />}
-          />
-        </Routes>
-      </Router>
-    </div>
+    <Router>
+      <Routes>
+        {/* Login route */}
+        <Route path="/login" element={<Login setUser={setUser} />} />
+
+        {/* Root route → redirect if logged in */}
+        <Route
+          path="/"
+          element={
+            user ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+        {/* Protected routes */}
+        <Route
+          path="/dashboard"
+          element={
+            user ? <Dashboard user={user} /> : <Navigate to="/login" replace />
+          }
+        />
+        <Route
+          path="/plant/:id"
+          element={
+            user ? (
+              <PlantDetails user={user} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/shots/:batchId"
+          element={
+            user ? <ShotsPage user={user} /> : <Navigate to="/login" replace />
+          }
+        />
+
+        {/* Catch-all → redirect */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 };
 

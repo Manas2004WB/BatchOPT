@@ -106,87 +106,90 @@ const AddSkuBatchForm = ({ plantId, user, onAddBatch, fetchBatches }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="mb-6 p-6 border rounded-lg bg-gray-50 shadow-sm"
-    >
-      {/* Row 1: SKU + Target ΔE */}
-      <div className="grid grid-cols-2 gap-6 mb-4">
-        {/* SKU Dropdown */}
-        <div>
-          <label className="block text-sm font-medium mb-1 text-gray-700">
-            SKU
-          </label>
-          <select
-            value={selectedSkuId}
-            onChange={(e) => setSelectedSkuId(e.target.value)}
-            className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-blue-500"
+    <>
+      <h2 className="text-xl mb-2">Add Batch :</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="mb-6 p-6 border rounded-lg bg-gray-50 shadow-sm"
+      >
+        {/* Row 1: SKU + Target ΔE */}
+        <div className="grid grid-cols-2 gap-6 mb-4">
+          {/* SKU Dropdown */}
+          <div>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              SKU
+            </label>
+            <select
+              value={selectedSkuId}
+              onChange={(e) => setSelectedSkuId(e.target.value)}
+              className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">-- Select SKU --</option>
+              {skus.map((sku) => (
+                <option key={sku.SkuId} value={sku.SkuId}>
+                  {sku.SkuName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Target ΔE */}
+          <div>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Target ΔE
+            </label>
+            <input
+              type="number"
+              readOnly
+              value={targetDeltaE}
+              placeholder="Auto-filled"
+              className="border rounded px-3 py-2 w-full bg-gray-100 text-gray-800"
+            />
+          </div>
+        </div>
+
+        {/* Row 2: Batch Code + Batch Size */}
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          {/* Batch Code */}
+          <div>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Batch Code
+            </label>
+            <input
+              type="text"
+              value={batchCode}
+              onChange={(e) => setBatchCode(e.target.value)}
+              className="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          {/* Batch Size */}
+          <div>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Batch Size
+            </label>
+            <input
+              type="number"
+              value={batchSize}
+              onChange={(e) => setBatchSize(e.target.value)}
+              className="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className="px-5 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition"
           >
-            <option value="">-- Select SKU --</option>
-            {skus.map((sku) => (
-              <option key={sku.SkuId} value={sku.SkuId}>
-                {sku.SkuName}
-              </option>
-            ))}
-          </select>
+            Add Batch
+          </button>
         </div>
-
-        {/* Target ΔE */}
-        <div>
-          <label className="block text-sm font-medium mb-1 text-gray-700">
-            Target ΔE
-          </label>
-          <input
-            type="number"
-            readOnly
-            value={targetDeltaE}
-            placeholder="Auto-filled"
-            className="border rounded px-3 py-2 w-full bg-gray-100 text-gray-800"
-          />
-        </div>
-      </div>
-
-      {/* Row 2: Batch Code + Batch Size */}
-      <div className="grid grid-cols-2 gap-6 mb-6">
-        {/* Batch Code */}
-        <div>
-          <label className="block text-sm font-medium mb-1 text-gray-700">
-            Batch Code
-          </label>
-          <input
-            type="text"
-            value={batchCode}
-            onChange={(e) => setBatchCode(e.target.value)}
-            className="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        {/* Batch Size */}
-        <div>
-          <label className="block text-sm font-medium mb-1 text-gray-700">
-            Batch Size
-          </label>
-          <input
-            type="number"
-            value={batchSize}
-            onChange={(e) => setBatchSize(e.target.value)}
-            className="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-      </div>
-
-      {/* Submit Button */}
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          className="px-5 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition"
-        >
-          Add Batch
-        </button>
-      </div>
-    </form>
+      </form>
+    </>
   );
 };
 

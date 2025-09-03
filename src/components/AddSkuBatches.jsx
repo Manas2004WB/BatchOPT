@@ -119,7 +119,13 @@ const AddSkuBatches = ({ user, plantId }) => {
                     : "Abondon"}
                 </td>
                 <td className="px-4 py-2  text-center">
-                  {formatDate(batch.UpdatedAt)}
+                  {new Date(batch.UpdatedAt).toLocaleString("en-IN", {
+                    year: "numeric",
+                    month: "short",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </td>
                 <td className="px-4 py-2 text-center">
                   {getUsernamebyUserId(batch.UpdatedBy)}
@@ -143,18 +149,6 @@ const AddSkuBatches = ({ user, plantId }) => {
       </table>
     </div>
   );
-};
-
-const formatDate = (dateString) => {
-  if (!dateString) return "-";
-  const date = new Date(dateString);
-  return date.toLocaleString("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
 };
 
 export default AddSkuBatches;

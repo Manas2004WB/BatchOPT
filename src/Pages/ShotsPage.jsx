@@ -312,6 +312,40 @@ const ShotsPage = ({ user }) => {
             ))}
           </tbody>
         </table>
+        {showCloseModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/40 bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h3 className="text-lg font-bold mb-4">Close Batch</h3>
+              <p>Are you sure you want to complete / abandon this batch?</p>
+              <div className="mt-4 flex justify-center space-x-4">
+                <button
+                  className="bg-gray-300 px-4 py-2 rounded mr-2"
+                  onClick={() => setShowCloseModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-cyan-600 text-white px-4 py-2 rounded"
+                  onClick={() => {
+                    handleCloseShot(batchId, "Abondon");
+                    setShowCloseModal(false);
+                  }}
+                >
+                  Abandon
+                </button>
+                <button
+                  className="bg-cyan-600 text-white px-4 py-2 rounded"
+                  onClick={() => {
+                    handleCloseShot(batchId, "Complete");
+                    setShowCloseModal(false);
+                  }}
+                >
+                  Complete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Add Next Shot - only if not completed */}
@@ -333,40 +367,6 @@ const ShotsPage = ({ user }) => {
           Close Batch
         </button>
       ) : null}
-      {showCloseModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-lg font-bold mb-4">Close Batch</h3>
-            <p>Are you sure you want to complete / abandon this batch?</p>
-            <div className="mt-4 flex justify-center space-x-4">
-              <button
-                className="bg-gray-300 px-4 py-2 rounded mr-2"
-                onClick={() => setShowCloseModal(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-cyan-600 text-white px-4 py-2 rounded"
-                onClick={() => {
-                  handleCloseShot(batchId, "Abondon");
-                  setShowCloseModal(false);
-                }}
-              >
-                Abandon
-              </button>
-              <button
-                className="bg-cyan-600 text-white px-4 py-2 rounded"
-                onClick={() => {
-                  handleCloseShot(batchId, "Complete");
-                  setShowCloseModal(false);
-                }}
-              >
-                Complete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Tinter Selection Modal */}
       <ShotTinterAddModal

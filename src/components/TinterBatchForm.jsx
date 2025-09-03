@@ -126,7 +126,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             value={newBatch.BatchTinterName}
             onChange={handleInputChange}
             placeholder="Tinter Name"
-            className="border p-2 rounded w-full"
+            className="border px-1 rounded w-full"
             required
           />
           <input
@@ -135,7 +135,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             value={newBatch.TinterBatchCode}
             onChange={handleInputChange}
             placeholder="Batch Code"
-            className="border p-2 rounded w-full"
+            className="border px-1 rounded w-full"
             required
           />
           <input
@@ -145,7 +145,14 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             value={newBatch.Strength}
             onChange={handleInputChange}
             placeholder="Strength"
-            className="border p-2 rounded w-full"
+            className="border px-1 rounded w-full"
+          />
+          <textarea
+            name="Comments"
+            value={newBatch.Comments}
+            onChange={handleInputChange}
+            placeholder="Comments"
+            className="border px-1 rounded w-full resize-none"
           />
           <label className="flex items-center justify-center">
             <input
@@ -157,13 +164,6 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             />
             Active
           </label>
-          <textarea
-            name="Comments"
-            value={newBatch.Comments}
-            onChange={handleInputChange}
-            placeholder="Comments"
-            className="border p-2 rounded w-full resize-none"
-          />
         </div>
 
         {/* Second Row */}
@@ -202,7 +202,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+            className="bg-cyan-600 text-white px-6 py-2 rounded-lg hover:bg-cyan-700"
           >
             Add Batch
           </button>
@@ -247,7 +247,8 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
                                 key={`${batch.TinterBatchId}-${type}`}
                                 className="px-2 py-1 border"
                               >
-                                {m?.MeasurementValue ?? "-"}
+                                {parseFloat(m?.MeasurementValue).toFixed(2) ??
+                                  "-"}
                               </td>
                             );
                           })}
@@ -269,7 +270,8 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
                                 key={`${batch.TinterBatchId}-${type}`}
                                 className="px-2 py-1 border"
                               >
-                                {m?.MeasurementValue ?? "-"}
+                                {parseFloat(m?.MeasurementValue).toFixed(2) ??
+                                  "-"}
                               </td>
                             );
                           })}
@@ -282,7 +284,13 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
                     {batch.IsActive ? "Yes" : "No"}
                   </td>
                   <td className="border p-2 text-xs text-gray-500">
-                    {new Date(batch.UpdatedAt).toLocaleString()}
+                    {new Date(batch.UpdatedAt).toLocaleString("en-IN", {
+                      year: "numeric",
+                      month: "short",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </td>
                 </tr>
               ))}

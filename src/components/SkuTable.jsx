@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getSkusWithVersionMeasurements } from "../services/skuService";
 import AddSkuModal from "./AddSkuModal";
+import { Toaster, toast } from "sonner";
 
 const SkuTable = ({ user, plantId, plantName }) => {
   const [skus, setSkus] = useState([]);
@@ -32,6 +33,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
 
   return (
     <div className="overflow-x-auto mt-2">
+      <Toaster richColors position="top-right" />
       <div className="mb-4 flex items-center justify-center gap-2">
         <span className="text-lg font-semibold text-white">Plant:</span>
         <span className="text-lg font-bold text-cyan-600 bg-cyan-100 px-3 py-1 rounded shadow-sm">
@@ -53,6 +55,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
           user={user}
           onClose={() => setShowAddModal(false)}
           onSuccess={() => {
+            toast.success("SKU added successfully!");
             setShowAddModal(false);
             // refresh SKUs after adding
             getSkusWithVersionMeasurements(plantId).then(setSkus);
@@ -115,14 +118,20 @@ const SkuTable = ({ user, plantId, plantName }) => {
                               <table className="w-full text-center border border-gray-200 rounded">
                                 <tbody>
                                   <tr>
-                                    <td className="px-2 py-1 border">
-                                      {version.StdLiquid.L ?? "-"}
+                                    <td className="px-1 py-1 border">
+                                      {parseFloat(version.StdLiquid.L).toFixed(
+                                        2
+                                      ) ?? "-"}
                                     </td>
-                                    <td className="px-2 py-1 border">
-                                      {version.StdLiquid.A ?? "-"}
+                                    <td className="px-1 py-1 border">
+                                      {parseFloat(version.StdLiquid.A).toFixed(
+                                        2
+                                      ) ?? "-"}
                                     </td>
-                                    <td className="px-2 py-1 border">
-                                      {version.StdLiquid.B ?? "-"}
+                                    <td className="px-1 py-1 border">
+                                      {parseFloat(version.StdLiquid.B).toFixed(
+                                        2
+                                      ) ?? "-"}
                                     </td>
                                   </tr>
                                 </tbody>
@@ -137,14 +146,20 @@ const SkuTable = ({ user, plantId, plantName }) => {
                               <table className="w-full text-center border border-gray-200 rounded">
                                 <tbody>
                                   <tr>
-                                    <td className="px-2 py-1 border">
-                                      {version.PanelColor.L ?? "-"}
+                                    <td className="px-1 py-1 border">
+                                      {parseFloat(version.PanelColor.L).toFixed(
+                                        2
+                                      ) ?? "-"}
                                     </td>
-                                    <td className="px-2 py-1 border">
-                                      {version.PanelColor.A ?? "-"}
+                                    <td className="px-1 py-1 border">
+                                      {parseFloat(version.PanelColor.A).toFixed(
+                                        2
+                                      ) ?? "-"}
                                     </td>
-                                    <td className="px-2 py-1 border">
-                                      {version.PanelColor.B ?? "-"}
+                                    <td className="px-1 py-1 border">
+                                      {parseFloat(version.PanelColor.B).toFixed(
+                                        2
+                                      ) ?? "-"}
                                     </td>
                                   </tr>
                                 </tbody>
@@ -159,14 +174,20 @@ const SkuTable = ({ user, plantId, plantName }) => {
                               <table className="w-full text-center border border-gray-200 rounded">
                                 <tbody>
                                   <tr>
-                                    <td className="px-2 py-1 border">
-                                      {version.SpectroColor.L ?? "-"}
+                                    <td className="px-1 py-1 border">
+                                      {parseFloat(
+                                        version.SpectroColor.L
+                                      ).toFixed(2) ?? "-"}
                                     </td>
-                                    <td className="px-2 py-1 border">
-                                      {version.SpectroColor.A ?? "-"}
+                                    <td className="px-1 py-1 border">
+                                      {parseFloat(
+                                        version.SpectroColor.A
+                                      ).toFixed(2) ?? "-"}
                                     </td>
-                                    <td className="px-2 py-1 border">
-                                      {version.SpectroColor.B ?? "-"}
+                                    <td className="px-1 py-1 border">
+                                      {parseFloat(
+                                        version.SpectroColor.B
+                                      ).toFixed(2) ?? "-"}
                                     </td>
                                   </tr>
                                 </tbody>

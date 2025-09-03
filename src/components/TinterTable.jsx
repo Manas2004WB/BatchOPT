@@ -5,9 +5,9 @@ import TinterBatchForm from "./TinterBatchForm";
 import { FaEdit } from "react-icons/fa";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import tinterService from "../services/tinterService"; // ✅ import API service
-import tinterBatchService from "../services/tinterBatchService";
 import { MdDelete } from "react-icons/md";
 import { Toaster, toast } from "sonner";
+import { users } from "../Data/Data";
 
 const TinterTable = ({ plantId, user, plantName }) => {
   console.log("TinterTable props - PlantId:", plantId);
@@ -22,6 +22,10 @@ const TinterTable = ({ plantId, user, plantName }) => {
     open: false,
     tinterId: null,
   });
+  const getUsernamebyUserId = (updatedBy) => {
+    const thisUser = users.find((u) => u.user_id === updatedBy);
+    return thisUser?.username || "-";
+  };
 
   // ✅ Fetch tinters for this plant
   useEffect(() => {
@@ -233,8 +237,19 @@ const TinterTable = ({ plantId, user, plantName }) => {
                     <span className="text-red-500 font-semibold">Inactive</span>
                   )}
                 </td>
-                <td className="px-4 py-2">{tinter.UpdatedBy}</td>
-                <td className="px-4 py-2">{tinter.UpdatedAt}</td>
+                <td className="px-4 py-2">
+                  {getUsernamebyUserId(tinter.UpdatedBy)}
+                </td>
+                <td className="px-4 py-2">
+                  {new Date(tinter.UpdatedAt).toLocaleString("en-IN", {
+                    year: "numeric",
+                    month: "short",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </td>
+
                 <td className="px-4 py-2">
                   <button
                     className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"

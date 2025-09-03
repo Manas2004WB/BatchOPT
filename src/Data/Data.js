@@ -1,9 +1,9 @@
-
 export const users = [
   {
     user_id: 1,
     username: "Berger Admin",
-    password_hash: "$2b$12$24RDDUHPOsjWC0JAAUoDFe0XFI7I2Iei7I5jAlIuFXX6ipALzgw9C", 
+    password_hash:
+      "$2b$12$24RDDUHPOsjWC0JAAUoDFe0XFI7I2Iei7I5jAlIuFXX6ipALzgw9C",
     email: "admin@berger.com",
     user_role_id: 1,
     is_active: 1,
@@ -15,7 +15,8 @@ export const users = [
   {
     user_id: 2,
     username: "Berger Operator",
-    password_hash: "$2b$12$pL/eS4JAl5eUTgFOaZjjhuq7gPtK2qXH1LClVzsqj5sT0ZAAnrMfC", 
+    password_hash:
+      "$2b$12$pL/eS4JAl5eUTgFOaZjjhuq7gPtK2qXH1LClVzsqj5sT0ZAAnrMfC",
     email: "operator@berger.com",
     user_role_id: 2,
     is_active: 1,
@@ -25,9 +26,10 @@ export const users = [
     updated_by: 1,
   },
   {
-    user_id: 3,
-    username: "Berger Management",
-    password_hash: "$2b$12$24RDDUHPOsjWC0JAAUoDFe0XFI7I2Iei7I5jAlIuFXX6ipALzgw9C", 
+    user_id: 6,
+    username: "senior_manager",
+    password_hash:
+      "$2b$12$24RDDUHPOsjWC0JAAUoDFe0XFI7I2Iei7I5jAlIuFXX6ipALzgw9C",
     email: "management@berger.com",
     user_role_id: 3,
     is_active: 1,
@@ -38,10 +40,8 @@ export const users = [
   },
 ];
 
-
-
-
-{/* <nav className=" w-full z-50 bg-transparent backdrop-blur-md ">
+{
+  /* <nav className=" w-full z-50 bg-transparent backdrop-blur-md ">
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <div className="text-black text-3xl font-bold tracking-wide drop-shadow">Batch Optimization</div>
             <div className="space-x-6 text-black font-medium text-sm drop-shadow">
@@ -51,4 +51,5 @@ export const users = [
               <a href="#">Plants</a>
             </div>
           </div>
-        </nav> */}
+        </nav> */
+}

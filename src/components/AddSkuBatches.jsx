@@ -5,19 +5,15 @@ import { skuVersions } from "../Data/SkuVersionData";
 import AddSkuBatchForm from "./AddSkuBatchForm";
 import { users } from "../Data/Data";
 import { useNavigate } from "react-router-dom";
-import { plants } from "../Data/PlantData";
+
 import { getBatchesByPlantId, postBatch } from "../services/batchService";
 import { getUserNameById } from "../services/userService";
 
-const AddSkuBatches = ({ user, plantId }) => {
+const AddSkuBatches = ({ user, plantId, plantName }) => {
   const navigate = useNavigate();
   const [batchList, setBatchList] = useState([]);
   const [showAddBatchModal, setShowAddBatchModal] = useState(false);
 
-  const getPlantNameById = (plant_Id) => {
-    const plant = plants.find((p) => Number(p.plant_id) === Number(plant_Id));
-    return plant ? plant.plant_name : "Unknown Plant";
-  };
   const fetchBatches = async () => {
     try {
       const data = await getBatchesByPlantId(plantId);
@@ -48,7 +44,7 @@ const AddSkuBatches = ({ user, plantId }) => {
       <div className="mb-4 flex items-cente justify-center gap-2">
         <span className="text-lg font-semibold text-white">Plant:</span>
         <span className="text-lg font-bold text-cyan-600 bg-cyan-100 px-3 py-1 rounded shadow-sm">
-          {getPlantNameById(plantId)}
+          {plantName || "Unknown Plant"}
         </span>
       </div>
       {showAddBatchModal && (

@@ -6,6 +6,32 @@ import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { Toaster, toast } from "sonner";
 
 const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
+  // Helper to generate random value within range
+  const randomInRange = (min, max) => {
+    return (Math.random() * (max - min) + min).toFixed(2);
+  };
+
+  // Ranges for L, a, b (adjust as needed)
+  const liquidRanges = { l: [0, 100], a: [-128, 128], b: [-128, 128] };
+  const panelRanges = { l: [0, 100], a: [-128, 128], b: [-128, 128] };
+
+  // Fetch random values for Liquid
+  const fetchRandomLiquid = () => {
+    setLiquid({
+      l: randomInRange(...liquidRanges.l),
+      a: randomInRange(...liquidRanges.a),
+      b: randomInRange(...liquidRanges.b),
+    });
+  };
+
+  // Fetch random values for Panel
+  const fetchRandomPanel = () => {
+    setPanel({
+      l: randomInRange(...panelRanges.l),
+      a: randomInRange(...panelRanges.a),
+      b: randomInRange(...panelRanges.b),
+    });
+  };
   const [skuMode, setSkuMode] = useState("select"); // "select" or "input"
   const [skuList, setSkuList] = useState([]);
   const [skuCode, setSkuCode] = useState("");
@@ -81,7 +107,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
 
   return (
     <div className="fixed inset-0 bg-black/35 bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-cyan-50 rounded-lg shadow-lg p-6 w-[700px]">
+      <div className="bg-cyan-50 rounded-lg shadow-lg p-6 w-[800px]">
         <h2 className="text-lg font-bold mb-4">Add New SKU</h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           {/* SKU Code Dropdown/Input Toggle */}
@@ -124,8 +150,8 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
           )}
 
           {/* ...existing code... */}
-          {/* Liquid L,a,b */}
-          <div className="flex gap-2 flex-row">
+          {/* Liquid L,a,b + Fetch Button (visible only if SKU selected/typed) */}
+          <div className="flex gap-2 flex-row items-center">
             {["l", "a", "b"].map((k) => (
               <input
                 key={k}
@@ -140,10 +166,19 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
                 required
               />
             ))}
+            {skuCode && (
+              <button
+                type="button"
+                onClick={fetchRandomLiquid}
+                className="ml-2 px-3 py-1 bg-cyan-200 text-cyan-800 rounded hover:bg-cyan-300 text-xs font-semibold border border-cyan-300"
+              >
+                Fetch
+              </button>
+            )}
           </div>
 
-          {/* Panel L,a,b */}
-          <div className="flex gap-2">
+          {/* Panel L,a,b + Fetch Button (visible only if SKU selected/typed) */}
+          <div className="flex gap-2 items-center">
             {["l", "a", "b"].map((k) => (
               <input
                 key={k}
@@ -158,6 +193,15 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
                 required
               />
             ))}
+            {skuCode && (
+              <button
+                type="button"
+                onClick={fetchRandomPanel}
+                className="ml-2 px-3 py-1 bg-cyan-200 text-cyan-800 rounded hover:bg-cyan-300 text-xs font-semibold border border-cyan-300"
+              >
+                Fetch
+              </button>
+            )}
           </div>
 
           {/* Spectro L,a,b */}
@@ -176,6 +220,14 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
                 required
               />
             ))}
+            {skuCode && (
+              <button
+                type="button"
+                className="disable  ml-2 px-3 py-1 bg-cyan-50 text-cyan-50 rounded hover:bg-cyan-50 text-xs font-semibold border border-cyan-50"
+              >
+                Fetch
+              </button>
+            )}
           </div>
 
           {/* Target ΔE */}

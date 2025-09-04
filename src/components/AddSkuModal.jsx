@@ -145,6 +145,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
               value={skuCode}
               onChange={(e) => setSkuCode(e.target.value)}
               className="w-full border rounded p-2"
+              pattern="^SKU-[A-Za-z0-9\s\-_]+$"
               required
             />
           )}
@@ -238,6 +239,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
             value={targetDE}
             onChange={(e) => setTargetDE(e.target.value)}
             className="w-full border rounded p-2"
+            required
           />
 
           {/* Comments */}

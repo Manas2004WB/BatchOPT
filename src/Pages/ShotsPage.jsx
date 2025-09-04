@@ -86,6 +86,7 @@ const ShotsPage = ({ user }) => {
         if (shot.id !== shotId) return shot;
 
         let newValues = { ...shot.values };
+
         if (type === "liquid") {
           newValues.l_liquid = (randomLLiquid - liquidL).toFixed(2);
           newValues.a_liquid = (randomALiquid - liquidA).toFixed(2);
@@ -98,7 +99,14 @@ const ShotsPage = ({ user }) => {
             liquidA,
             liquidB
           );
+          // ✅ Save the actual LAB values for rendering
+          newValues.lab_liquid = {
+            l: randomLLiquid,
+            a: randomALiquid,
+            b: randomBLiquid,
+          };
         }
+
         if (type === "panel") {
           newValues.l_panel = (randomLPanel - panelL).toFixed(2);
           newValues.a_panel = (randomAPanel - panelA).toFixed(2);
@@ -111,9 +119,15 @@ const ShotsPage = ({ user }) => {
             panelA,
             panelB
           );
+          // ✅ Save the actual LAB values for rendering
+          newValues.lab_panel = {
+            l: randomLPanel,
+            a: randomAPanel,
+            b: randomBPanel,
+          };
         }
+
         if (type === "colorimeter") {
-          // Use current input values for colorimeter
           const l = shot.values.l_colorimeter ?? 0;
           const a = shot.values.a_colorimeter ?? 0;
           const b = shot.values.b_colorimeter ?? 0;
@@ -126,6 +140,7 @@ const ShotsPage = ({ user }) => {
             colorimeterB
           );
         }
+
         return {
           ...shot,
           values: newValues,

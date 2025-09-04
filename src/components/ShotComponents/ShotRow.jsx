@@ -12,12 +12,6 @@ const ShotRow = ({
   colorimeterL,
   colorimeterA,
   colorimeterB,
-  randomLLiquid,
-  randomALiquid,
-  randomBLiquid,
-  randomLPanel,
-  randomAPanel,
-  randomBPanel,
 }) => {
   const [visibleSections, setVisibleSections] = useState({
     liquid: false,
@@ -31,13 +25,33 @@ const ShotRow = ({
     handleFetch(shot.id, type);
   };
 
-  const rgbLiquid = lab2rgb(randomLLiquid, randomALiquid, randomBLiquid);
-  const rgbPanel = lab2rgb(randomLPanel, randomAPanel, randomBPanel);
-  const rgbColorimeter = lab2rgb(
-    shot.values.l_colorimeter + colorimeterL,
-    shot.values.a_colorimeter + colorimeterA,
-    shot.values.b_colorimeter + colorimeterB
-  );
+  const rgbLiquid = shot.values.lab_liquid
+    ? lab2rgb(
+        shot.values.lab_liquid.l,
+        shot.values.lab_liquid.a,
+        shot.values.lab_liquid.b
+      )
+    : { r: 255, g: 255, b: 255 };
+
+  const rgbPanel = shot.values.lab_panel
+    ? lab2rgb(
+        shot.values.lab_panel.l,
+        shot.values.lab_panel.a,
+        shot.values.lab_panel.b
+      )
+    : { r: 255, g: 255, b: 255 };
+
+  const rgbColorimeter =
+    shot.values.l_colorimeter !== undefined &&
+    shot.values.a_colorimeter !== undefined &&
+    shot.values.b_colorimeter !== undefined
+      ? lab2rgb(
+          shot.values.l_colorimeter + colorimeterL,
+          shot.values.a_colorimeter + colorimeterA,
+          shot.values.b_colorimeter + colorimeterB
+        )
+      : { r: 255, g: 255, b: 255 };
+
   return (
     <>
       <tr className="border-t border-white/30 hover:bg-white/80 transition bg-white/70 text-black">

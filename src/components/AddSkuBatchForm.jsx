@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { authHeader } from "../services/authHeader";
-const API_BASE = "https://localhost:7130/api"; // 🔹 change to your backend base
+import { Toaster, toast } from "sonner";
+const API_BASE = "https://localhost:7130/api";
 
 const AddSkuBatchForm = ({ plantId, user, onAddBatch, fetchBatches }) => {
   const [skus, setSkus] = useState([]);
@@ -63,14 +64,45 @@ const AddSkuBatchForm = ({ plantId, user, onAddBatch, fetchBatches }) => {
     fetchLatestVersionAndTarget();
   }, [selectedSkuId]);
 
+  const validateForm = () => {
+    if (!selectedSkuId) {
+      toast.error("Please select an SKU");
+      return false;
+    }
+
+    if (!batchCode) {
+      toast.error("Batch Code is required");
+      return false;
+    }
+    if (!/^[A-Za-z0-9-]+$/.test(batchCode.trim())) {
+      toast.error("Batch Code can only contain letters, numbers, and '-'");
+      return false;
+    }
+    if (batchCode.length > 30) {
+      toast.error("Batch Code must not exceed 30 characters");
+      return false;
+    }
+
+    if (!batchSize) {
+      toast.error("Batch Size is required");
+      return false;
+    }
+    if (isNaN(batchSize) || batchSize <= 0) {
+      toast.error("Batch Size must be a positive number");
+      return false;
+    }
+    if (batchSize >= 1000) {
+      toast.error("Batch Size must be less than 1000");
+      return false;
+    }
+
+    return true;
+  };
+
   // 🔹 Handle Form Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!selectedSkuId || !batchCode || !batchSize) {
-      alert("Please fill all required fields.");
-      return;
-    }
+    if (!validateForm()) return;
 
     // ✅ Body matches what backend expects
     const newBatch = {
@@ -98,15 +130,16 @@ const AddSkuBatchForm = ({ plantId, user, onAddBatch, fetchBatches }) => {
       setBatchSize("");
       setSelectedSkuId("");
       setTargetDeltaE("");
-      alert("Batch created successfully ✅");
+      toast.success("Batch created successfully");
     } catch (err) {
       console.error("Error creating batch:", err);
-      alert("Failed to create batch ❌");
+      toast.error("Failed to create batch");
     }
   };
 
   return (
     <>
+      <Toaster position="top-right" richColors />
       <h2 className="text-xl mb-2">Add Batch :</h2>
       <form
         onSubmit={handleSubmit}
@@ -144,6 +177,7 @@ const AddSkuBatchForm = ({ plantId, user, onAddBatch, fetchBatches }) => {
               value={targetDeltaE}
               placeholder="Auto-filled"
               className="border rounded px-3 py-2 w-full bg-gray-100 text-gray-800"
+              required
             />
           </div>
         </div>

@@ -6,6 +6,7 @@ import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { Toaster, toast } from "sonner";
 
 const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
+  const [tinterSearch, setTinterSearch] = useState("");
   // Helper to generate random value within range
   const randomInRange = (min, max) => {
     return (Math.random() * (max - min) + min).toFixed(2);
@@ -67,13 +68,84 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
     }
   }, [plantId]);
 
+  const validateForm = () => {
+    // SKU Code
+    if (!skuCode) {
+      toast.error("SKU Code is required");
+      return false;
+    }
+    if (skuCode.length > 30) {
+      toast.error("SKU Code must not exceed 30 characters");
+      return false;
+    }
+    if (!/^(?! )[A-Za-z0-9- ]*(?<! )$/.test(skuCode)) {
+      toast.error(
+        "SKU Code can contain letters, numbers, '-', spaces (but not at start/end)"
+      );
+      return false;
+    }
+
+    // Validate ranges (Liquid, Panel, Spectro/Colorimeter)
+    const validateRange = (value, min, max, label) => {
+      if (value === "" || isNaN(value)) {
+        toast.error(`${label} is required`);
+        return false;
+      }
+      if (value < min || value > max) {
+        toast.error(`${label} must be between ${min} and ${max}`);
+        return false;
+      }
+      return true;
+    };
+
+    if (
+      !validateRange(liquid.l, 0, 100, "Liquid L") ||
+      !validateRange(liquid.a, -128, 128, "Liquid a") ||
+      !validateRange(liquid.b, -128, 128, "Liquid b") ||
+      !validateRange(panel.l, 0, 100, "Panel L") ||
+      !validateRange(panel.a, -128, 128, "Panel a") ||
+      !validateRange(panel.b, -128, 128, "Panel b") ||
+      !validateRange(spectro.l, 0, 100, "Spectro L") ||
+      !validateRange(spectro.a, -128, 128, "Spectro a") ||
+      !validateRange(spectro.b, -128, 128, "Spectro b")
+    ) {
+      return false;
+    }
+
+    // Target ΔE
+    if (targetDE === "" || isNaN(targetDE)) {
+      toast.error("Target ΔE is required");
+      return false;
+    }
+    if (targetDE < 0 || targetDE >= 10) {
+      toast.error("Target ΔE must be between 0 and 10 (exclusive of 10)");
+      return false;
+    }
+
+    // Comments
+    if (comments.length > 100) {
+      toast.error("Comments must be less than 100 characters");
+      return false;
+    }
+
+    // Tinters
+    if (selectedTinters.length === 0) {
+      toast.error("At least one Standard Tinter must be selected");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     setLoading(true);
-
     const payload = {
       PlantId: plantId,
-      SkuCode: skuCode,
+      SkuCode: skuCode.trim(),
       StdLiquid: {
         L: parseFloat(liquid.l),
         A: parseFloat(liquid.a),
@@ -91,7 +163,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
       },
       TargetDeltaE: parseFloat(targetDE),
       StdTinters: selectedTinters.map((id) => ({ TinterId: id })), // 👈 important
-      Comments: comments,
+      Comments: comments.trim(),
     };
 
     try {
@@ -107,11 +179,12 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
 
   return (
     <div className="fixed inset-0 bg-black/35 bg-opacity-40 flex justify-center items-center z-50">
+      <Toaster position="top-right" richColors />
       <div className="bg-cyan-50 rounded-lg shadow-lg p-6 w-[800px]">
-        <h2 className="text-lg font-bold mb-4">Add New SKU</h2>
+        <h2 className="text-lg font-bold mb-2">Add New SKU</h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           {/* SKU Code Dropdown/Input Toggle */}
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-3">
             <label className="font-semibold">SKU Code:</label>
             <button
               type="button"
@@ -128,7 +201,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
             <select
               value={skuCode}
               onChange={(e) => setSkuCode(e.target.value)}
-              className="w-full border rounded p-2"
+              className="w-full border rounded p-1"
               required
             >
               <option value="">-- Select SKU --</option>
@@ -144,8 +217,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
               placeholder="Type new SKU Code"
               value={skuCode}
               onChange={(e) => setSkuCode(e.target.value)}
-              className="w-full border rounded p-2"
-              pattern="^SKU-[A-Za-z0-9\s\-_]+$"
+              className="w-full border rounded p-1"
               required
             />
           )}
@@ -163,7 +235,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
                 onChange={(e) =>
                   setLiquid((prev) => ({ ...prev, [k]: e.target.value }))
                 }
-                className="flex-1 border rounded p-2"
+                className="flex-1 border rounded p-1"
                 required
               />
             ))}
@@ -190,7 +262,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
                 onChange={(e) =>
                   setPanel((prev) => ({ ...prev, [k]: e.target.value }))
                 }
-                className="flex-1 border rounded p-2"
+                className="flex-1 border rounded p-1"
                 required
               />
             ))}
@@ -217,7 +289,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
                 onChange={(e) =>
                   setSpectro((prev) => ({ ...prev, [k]: e.target.value }))
                 }
-                className="flex-1 border rounded p-2"
+                className="flex-1 border rounded p-1"
                 required
               />
             ))}
@@ -250,38 +322,54 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
             className="w-full border rounded p-2"
           />
 
-          {/* Tinters Multi-select */}
+          {/* Tinters Multi-select with Search Filter */}
           <div>
             <label className="block font-medium mb-1">Standard Tinters</label>
-            <div className="border rounded p-2 bg-gray-50 max-h-25 overflow-y-auto flex flex-col gap-1">
+            <input
+              type="text"
+              value={tinterSearch}
+              onChange={(e) => setTinterSearch(e.target.value)}
+              placeholder="Search tinters..."
+              className="mb-2 px-2 py-1 border rounded w-full"
+            />
+            <div className="border rounded p-2 bg-gray-50 max-h-25 min-h-25 overflow-y-auto flex flex-col gap-1">
               {tinters.length === 0 ? (
                 <span className="text-gray-400">No tinters available</span>
               ) : (
-                tinters.map((t) => (
-                  <label
-                    key={t.TinterId}
-                    className="flex items-center gap-2 cursor-pointer hover:bg-cyan-100 rounded px-2 py-1"
-                  >
-                    <input
-                      type="checkbox"
-                      value={t.TinterId}
-                      checked={selectedTinters.includes(t.TinterId)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedTinters([...selectedTinters, t.TinterId]);
-                        } else {
-                          setSelectedTinters(
-                            selectedTinters.filter((id) => id !== t.TinterId)
-                          );
-                        }
-                      }}
-                      className="accent-cyan-600"
-                    />
-                    <span className="font-semibold text-cyan-800 text-sm">
-                      {t.TinterCode}
-                    </span>
-                  </label>
-                ))
+                tinters
+                  .filter((t) =>
+                    t.TinterCode.toLowerCase().includes(
+                      tinterSearch.toLowerCase()
+                    )
+                  )
+                  .map((t) => (
+                    <label
+                      key={t.TinterId}
+                      className="flex items-center gap-1 cursor-pointer hover:bg-cyan-100 rounded px-2 py-1"
+                    >
+                      <input
+                        type="checkbox"
+                        value={t.TinterId}
+                        checked={selectedTinters.includes(t.TinterId)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedTinters([
+                              ...selectedTinters,
+                              t.TinterId,
+                            ]);
+                          } else {
+                            setSelectedTinters(
+                              selectedTinters.filter((id) => id !== t.TinterId)
+                            );
+                          }
+                        }}
+                        className="accent-cyan-600"
+                      />
+                      <span className="font-semibold text-cyan-800 text-sm">
+                        {t.TinterCode}
+                      </span>
+                    </label>
+                  ))
               )}
             </div>
           </div>

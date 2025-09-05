@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import tinterService from "../services/tinterService";
+import { Toaster, toast } from "sonner";
 
 const AddTinterForm = ({ onAdd, plantId }) => {
   console.log("AddTinterForm props - PlantId:", plantId);
@@ -8,23 +9,30 @@ const AddTinterForm = ({ onAdd, plantId }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const validateForm = () => {
+    if (!tinterCode.trim()) {
+      toast.error("Tinter code is required");
+      return false;
+    }
+    if (tinterCode.length < 2 || tinterCode.length > 20) {
+      toast.error("Tinter code must be in range 2-20 characters");
+      return false;
+    }
+    if (!/^(?! )[A-Za-z0-9- ]*(?<! )$/.test(tinterCode)) {
+      toast.error(
+        "Tinter Code can contain letters, numbers, '-', spaces (but not at start/end)"
+      );
+      return false;
+    }
+    return true;
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const code = tinterCode.trim();
-
-    // ✅ Validation
-    if (!code) return setError("Tinter code is required");
-    if (code.length < 2)
-      return setError("Tinter code must be at least 2 characters");
-    if (code.length > 20)
-      return setError("Tinter code must be at most 20 characters");
-    if (!/^[a-zA-Z0-9 \-]+$/.test(code)) {
-      return setError(
-        "Tinter code can only contain letters, numbers, spaces, and hyphens"
-      );
+    if (!validateForm()) {
+      return;
     }
-
+    setLoading(true);
+    const code = tinterCode.trim();
     setError("");
     setLoading(true);
 
@@ -57,12 +65,6 @@ const AddTinterForm = ({ onAdd, plantId }) => {
       <h2 className="text-xl font-bold text-black drop-shadow mb-4">
         Add New Tinter
       </h2>
-
-      {error && (
-        <p className="text-red-600 bg-red-100 px-2 py-1 rounded mb-4">
-          {error}
-        </p>
-      )}
 
       <input
         type="text"

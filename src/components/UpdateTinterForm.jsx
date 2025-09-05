@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import tinterService from "../services/tinterService"; // make sure path is correct
+import tinterService from "../services/tinterService";
+import { toast } from "sonner";
 
 const UpdateTinterForm = ({ tinterToEdit, onUpdate, plantId, user }) => {
   const [tinter, setTinter] = useState({
     TinterCode: "",
     IsActive: true,
   });
-  const [error, setError] = useState("");
 
   useEffect(() => {
     if (tinterToEdit) {
@@ -17,25 +17,39 @@ const UpdateTinterForm = ({ tinterToEdit, onUpdate, plantId, user }) => {
     }
   }, [tinterToEdit]);
 
+  const validateForm = () => {
+    const code = tinter.TinterCode.trim();
+
+    if (!code) {
+      toast.error("Tinter code is required");
+      return false;
+    }
+    if (code.length < 2 || code.length > 20) {
+      toast.error("Tinter code must be 2–20 characters long");
+      return false;
+    }
+    if (!/^(?! )[A-Za-z0-9- ]*(?<! )$/.test(code)) {
+      toast.error(
+        "Tinter Code can contain letters, numbers, '-', spaces (but not at start/end)"
+      );
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
 
     const code = tinter.TinterCode.trim();
-    if (!code) return setError("Tinter code is required");
-    if (code.length < 2)
-      return setError("Tinter code must be at least 2 characters");
-    if (code.length > 20)
-      return setError("Tinter code must be at most 20 characters");
 
     try {
-      // ✅ API Call here
       const updated = await tinterService.updateTinter(tinterToEdit.TinterId, {
         PlantId: Number(plantId),
         TinterCode: code,
         IsActive: tinter.IsActive,
       });
 
-      // ✅ Add extra frontend fields (not coming from backend)
       const updatedTinter = {
         ...updated,
         updated_by: user?.user_id || "Unknown",
@@ -52,11 +66,10 @@ const UpdateTinterForm = ({ tinterToEdit, onUpdate, plantId, user }) => {
           .replace(",", ""),
       };
 
-      onUpdate(updatedTinter); // send back to parent
-      setError("");
+      onUpdate(updatedTinter);
     } catch (err) {
       console.error("Error updating tinter:", err);
-      setError("Failed to update tinter. Please try again.");
+      toast.error("Failed to update tinter. Please try again.");
     }
   };
 
@@ -68,12 +81,6 @@ const UpdateTinterForm = ({ tinterToEdit, onUpdate, plantId, user }) => {
       <h2 className="text-xl font-bold text-black drop-shadow mb-4">
         Edit Tinter
       </h2>
-
-      {error && (
-        <p className="text-red-600 bg-red-100 px-2 py-1 rounded mb-4">
-          {error}
-        </p>
-      )}
 
       <input
         type="text"

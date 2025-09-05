@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import tinterBatchService from "../services/tinterBatchService";
-
+import { Toaster, toast } from "sonner";
 const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
   const [batches, setBatches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,6 +21,42 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
       liquid_b: "",
     },
   });
+
+  // States for random color generation (if needed)
+  const randomInRange = (min, max) => {
+    return (Math.random() * (max - min) + min).toFixed(2);
+  };
+
+  // Ranges for L, a, b (adjust as needed)
+  const liquidRanges = { l: [0, 100], a: [-128, 128], b: [-128, 128] };
+  const panelRanges = { l: [0, 100], a: [-128, 128], b: [-128, 128] };
+
+  // Fetch random values for Liquid
+  // Fetch random values for Liquid
+  const fetchRandomLiquid = () => {
+    setNewBatch((prev) => ({
+      ...prev,
+      Measurements: {
+        ...prev.Measurements,
+        liquid_l: randomInRange(...liquidRanges.l),
+        liquid_a: randomInRange(...liquidRanges.a),
+        liquid_b: randomInRange(...liquidRanges.b),
+      },
+    }));
+  };
+
+  // Fetch random values for Panel
+  const fetchRandomPanel = () => {
+    setNewBatch((prev) => ({
+      ...prev,
+      Measurements: {
+        ...prev.Measurements,
+        panel_l: randomInRange(...panelRanges.l),
+        panel_a: randomInRange(...panelRanges.a),
+        panel_b: randomInRange(...panelRanges.b),
+      },
+    }));
+  };
 
   // ✅ Fetch batches whenever tinterId changes
   useEffect(() => {
@@ -57,14 +93,69 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
     }
   };
 
+  const validateBatch = (batch) => {
+    // --- TinterBatchCode ---
+    if (!batch.TinterBatchCode.trim()) {
+      toast.error("Batch Code is required");
+      return false;
+    }
+    if (batch.TinterBatchCode.length < 3 || batch.TinterBatchCode.length > 30) {
+      toast.error("Batch Code must be 3–30 characters long");
+      return false;
+    }
+    if (!/^(?! )[A-Za-z0-9- ]*(?<! )$/.test(batch.TinterBatchCode)) {
+      toast.error(
+        "Batch Code can only contain letters, numbers, hyphen (-), spaces (not at start/end)"
+      );
+      return false;
+    }
+
+    // --- BatchTinterName ---
+    if (!batch.BatchTinterName.trim()) {
+      toast.error("Batch Tinter Name is required");
+      return false;
+    }
+    if (batch.BatchTinterName.length < 3 || batch.BatchTinterName.length > 30) {
+      toast.error("Batch Tinter Name must be 3–30 characters long");
+      return false;
+    }
+    if (!/^(?! )[A-Za-z0-9 ]*(?<! )$/.test(batch.BatchTinterName)) {
+      toast.error(
+        "Batch Tinter Name can only contain letters, numbers, and spaces (no leading/trailing spaces)"
+      );
+      return false;
+    }
+
+    // --- Strength ---
+    if (!batch.Strength || isNaN(batch.Strength)) {
+      toast.error("Strength must be a number");
+      return false;
+    }
+    if (Number(batch.Strength) >= 1000) {
+      toast.error("Strength must be less than 1000");
+      return false;
+    }
+
+    // --- Comments ---
+    if (batch.Comments && batch.Comments.length > 500) {
+      toast.error("Comments must be less than 500 characters");
+      return false;
+    }
+    return true; // ✅ all validations passed
+  };
+
   // ✅ Submit new batch
   const handleAddBatch = async (e) => {
     e.preventDefault();
+
+    // ✅ validate the raw state, not the DTO
+    if (!validateBatch(newBatch)) return;
+
     try {
       const dto = {
         TinterId: tinterId,
         TinterBatchCode: newBatch.TinterBatchCode,
-        BatchTinterName: newBatch.BatchTinterName, // <-- ensure this is included
+        BatchTinterName: newBatch.BatchTinterName,
         Strength: parseFloat(newBatch.Strength) || null,
         Comments: newBatch.Comments,
         IsActive: newBatch.IsActive,
@@ -80,11 +171,12 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
 
       const created =
         await tinterBatchService.createTinterBatchWithMeasurements(dto);
+      toast.success("Batch created successfully");
 
-      // Add new batch to state
+      // ✅ Add new batch to state
       setBatches((prev) => [...prev, created]);
 
-      // Reset form
+      // ✅ Reset form
       setNewBatch({
         TinterBatchCode: "",
         BatchTinterName: "",
@@ -101,6 +193,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
         },
       });
     } catch (err) {
+      toast.error("Error creating batch");
       console.error("Error creating batch:", err);
     }
   };
@@ -167,8 +260,8 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
         </div>
 
         {/* Second Row */}
-        <div className="grid grid-cols-2 gap-6">
-          <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-4 gap-2">
             {["panel_l", "panel_a", "panel_b"].map((name) => (
               <input
                 key={name}
@@ -179,10 +272,23 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
                 onChange={handleInputChange}
                 placeholder={`Panel ${name.split("_")[1].toUpperCase()}`}
                 className="border p-2 rounded w-full"
+                disabled
               />
             ))}
+            {newBatch.TinterBatchCode && (
+              <button
+                type="button"
+                onClick={fetchRandomPanel}
+                className="ml-2 px-3 py-1 bg-cyan-200 text-cyan-800 rounded hover:bg-cyan-300 text-xs font-semibold border border-cyan-300"
+              >
+                Fetch
+              </button>
+            )}
           </div>
-          <div className="grid grid-cols-3 gap-2">
+        </div>
+        {/* Third Row */}
+        <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-4 gap-2">
             {["liquid_l", "liquid_a", "liquid_b"].map((name) => (
               <input
                 key={name}
@@ -193,8 +299,18 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
                 onChange={handleInputChange}
                 placeholder={`Liquid ${name.split("_")[1].toUpperCase()}`}
                 className="border p-2 rounded w-full"
+                disabled
               />
             ))}
+            {newBatch.TinterBatchCode && (
+              <button
+                type="button"
+                onClick={fetchRandomLiquid}
+                className="ml-2 px-3 py-1 bg-cyan-200 text-cyan-800 rounded hover:bg-cyan-300 text-xs font-semibold border border-cyan-300"
+              >
+                Fetch
+              </button>
+            )}
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import tinterBatchService from "../services/tinterBatchService";
 import { Toaster, toast } from "sonner";
+import { formatUtcToLocal } from "../utility/utc2ist";
 const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
   const [batches, setBatches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -212,25 +213,26 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
         className="mb-2 flex flex-col gap-4 p-4 border rounded-lg bg-gray-50"
       >
         {/* Top Row */}
-        <div className="grid grid-cols-5 gap-4">
-          <input
-            type="text"
-            name="BatchTinterName"
-            value={newBatch.BatchTinterName}
-            onChange={handleInputChange}
-            placeholder="Tinter Name"
-            className="border px-1 rounded w-full"
-            required
-          />
+        <div className="grid grid-cols-6 gap-3">
           <input
             type="text"
             name="TinterBatchCode"
             value={newBatch.TinterBatchCode}
             onChange={handleInputChange}
             placeholder="Batch Code"
-            className="border px-1 rounded w-full"
+            className="col-span-2 border px-2 py-1 rounded w-full text-sm"
             required
           />
+          <input
+            type="text"
+            name="BatchTinterName"
+            value={newBatch.BatchTinterName}
+            onChange={handleInputChange}
+            placeholder="Tinter Name"
+            className="col-span-2 border px-2 py-1 rounded w-full text-sm"
+            required
+          />
+
           <input
             type="number"
             step="0.01"
@@ -238,87 +240,95 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             value={newBatch.Strength}
             onChange={handleInputChange}
             placeholder="Strength"
-            className="border px-1 rounded w-full"
+            className="col-span-1 border px-2 py-1 rounded w-full text-sm"
           />
-          <textarea
-            name="Comments"
-            value={newBatch.Comments}
-            onChange={handleInputChange}
-            placeholder="Comments"
-            className="border px-1 rounded w-full resize-none"
-          />
-          <label className="flex items-center justify-center">
+          <label className="col-span-1 flex items-center justify-center text-sm">
             <input
               type="checkbox"
               name="IsActive"
               checked={newBatch.IsActive}
               onChange={handleInputChange}
-              className="mr-2"
+              className="mr-1"
             />
             Active
           </label>
         </div>
 
-        {/* Second Row */}
-        <div className="grid grid-cols-1 gap-6">
-          <div className="grid grid-cols-4 gap-2">
-            {["panel_l", "panel_a", "panel_b"].map((name) => (
-              <input
-                key={name}
-                type="number"
-                step="0.01"
-                name={name}
-                value={newBatch.Measurements[name]}
-                onChange={handleInputChange}
-                placeholder={`Panel ${name.split("_")[1].toUpperCase()}`}
-                className="border p-2 rounded w-full"
-                disabled
-              />
-            ))}
-            {newBatch.TinterBatchCode && (
-              <button
-                type="button"
-                onClick={fetchRandomPanel}
-                className="ml-2 px-3 py-1 bg-cyan-200 text-cyan-800 rounded hover:bg-cyan-300 text-xs font-semibold border border-cyan-300"
-              >
-                Fetch
-              </button>
-            )}
-          </div>
-        </div>
-        {/* Third Row */}
-        <div className="grid grid-cols-1 gap-6">
-          <div className="grid grid-cols-4 gap-2">
-            {["liquid_l", "liquid_a", "liquid_b"].map((name) => (
-              <input
-                key={name}
-                type="number"
-                step="0.01"
-                name={name}
-                value={newBatch.Measurements[name]}
-                onChange={handleInputChange}
-                placeholder={`Liquid ${name.split("_")[1].toUpperCase()}`}
-                className="border p-2 rounded w-full"
-                disabled
-              />
-            ))}
-            {newBatch.TinterBatchCode && (
-              <button
-                type="button"
-                onClick={fetchRandomLiquid}
-                className="ml-2 px-3 py-1 bg-cyan-200 text-cyan-800 rounded hover:bg-cyan-300 text-xs font-semibold border border-cyan-300"
-              >
-                Fetch
-              </button>
-            )}
-          </div>
+        {/* Comments */}
+        <textarea
+          name="Comments"
+          value={newBatch.Comments}
+          onChange={handleInputChange}
+          placeholder="Comments"
+          className="border px-2 py-1 rounded w-full resize-none text-sm"
+        />
+
+        {/* Panel Measurements */}
+        <div className="grid grid-cols-4 gap-2 items-center">
+          {["panel_l", "panel_a", "panel_b"].map((name) => (
+            <input
+              key={name}
+              type="number"
+              step="0.01"
+              name={name}
+              value={newBatch.Measurements[name]}
+              onChange={handleInputChange}
+              placeholder={`Panel ${name.split("_")[1].toUpperCase()}`}
+              className="border px-2 py-1 rounded w-full text-sm"
+              disabled
+            />
+          ))}
+          <button
+            type="button"
+            onClick={fetchRandomPanel}
+            disabled={!newBatch.TinterBatchCode}
+            className={`px-3 py-1 rounded border text-xs font-semibold
+                        ${
+                          newBatch.TinterBatchCode.length > 3
+                            ? "bg-cyan-200 text-cyan-800 hover:bg-cyan-300 border-cyan-300"
+                            : "bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                        }`}
+          >
+            Fetch
+          </button>
         </div>
 
-        {/* Submit Button */}
+        {/* Liquid Measurements */}
+        <div className="grid grid-cols-4 gap-2 items-center">
+          {["liquid_l", "liquid_a", "liquid_b"].map((name) => (
+            <input
+              key={name}
+              type="number"
+              step="0.01"
+              name={name}
+              value={newBatch.Measurements[name]}
+              onChange={handleInputChange}
+              placeholder={`Liquid ${name.split("_")[1].toUpperCase()}`}
+              className="border px-2 py-1 rounded w-full text-sm"
+              disabled
+            />
+          ))}
+
+          <button
+            type="button"
+            onClick={fetchRandomLiquid}
+            disabled={!newBatch.TinterBatchCode}
+            className={`px-3 py-1 rounded border text-xs font-semibold
+                      ${
+                        newBatch.TinterBatchCode.length > 3
+                          ? "bg-cyan-200 text-cyan-800 hover:bg-cyan-300 border-cyan-300"
+                          : "bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+                      }`}
+          >
+            Fetch
+          </button>
+        </div>
+
+        {/* Submit */}
         <div className="flex justify-end">
           <button
             type="submit"
-            className="bg-cyan-600 text-white px-6 py-2 rounded-lg hover:bg-cyan-700"
+            className="bg-cyan-600 text-white px-6 py-2 rounded-lg hover:bg-cyan-700 text-sm"
           >
             Add Batch
           </button>
@@ -400,13 +410,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
                     {batch.IsActive ? "Yes" : "No"}
                   </td>
                   <td className="border p-2 text-xs text-gray-500">
-                    {new Date(batch.UpdatedAt).toLocaleString("en-IN", {
-                      year: "numeric",
-                      month: "short",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {formatUtcToLocal(batch.UpdatedAt)}
                   </td>
                 </tr>
               ))}

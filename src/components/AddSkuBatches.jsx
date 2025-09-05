@@ -5,7 +5,7 @@ import { skuVersions } from "../Data/SkuVersionData";
 import AddSkuBatchForm from "./AddSkuBatchForm";
 import { users } from "../Data/Data";
 import { useNavigate } from "react-router-dom";
-
+import { formatUtcToLocal } from "../utility/utc2ist";
 import { getBatchesByPlantId, postBatch } from "../services/batchService";
 import { getUserNameById } from "../services/userService";
 
@@ -115,13 +115,7 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
                     : "Abondon"}
                 </td>
                 <td className="px-4 py-2  text-center">
-                  {new Date(batch.UpdatedAt).toLocaleString("en-IN", {
-                    year: "numeric",
-                    month: "short",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {formatUtcToLocal(batch.UpdatedAt)}
                 </td>
                 <td className="px-4 py-2 text-center">
                   {getUsernamebyUserId(batch.UpdatedBy)}

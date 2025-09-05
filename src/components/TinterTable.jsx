@@ -8,6 +8,7 @@ import tinterService from "../services/tinterService"; // ✅ import API service
 import { MdDelete } from "react-icons/md";
 import { Toaster, toast } from "sonner";
 import { users } from "../Data/Data";
+import { formatUtcToLocal } from "../utility/utc2ist";
 
 const TinterTable = ({ plantId, user, plantName }) => {
   console.log("TinterTable props - PlantId:", plantId);
@@ -241,13 +242,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
                   {getUsernamebyUserId(tinter.UpdatedBy)}
                 </td>
                 <td className="px-4 py-2">
-                  {new Date(tinter.UpdatedAt).toLocaleString("en-IN", {
-                    year: "numeric",
-                    month: "short",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {formatUtcToLocal(tinter.UpdatedAt)}
                 </td>
 
                 <td className="px-4 py-2">

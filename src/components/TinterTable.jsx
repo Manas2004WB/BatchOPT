@@ -42,8 +42,6 @@ const TinterTable = ({ plantId, user, plantName }) => {
 
         console.log("Filtered tinters:", filtered);
         setTinterList(filtered);
-
-        setTinterList(filtered);
         console.log("Fetched tinters:", filtered);
       } catch (error) {
         console.error("Error fetching tinters:", error);
@@ -87,6 +85,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
   const confirmDeleteTinter = async () => {
     try {
       await tinterService.deleteTinter(confirmDelete.tinterId);
+      toast.success("Tinter deleted successfully.");
       setTinterList((prev) =>
         prev.filter((t) => t.TinterId !== confirmDelete.tinterId)
       );
@@ -242,9 +241,8 @@ const TinterTable = ({ plantId, user, plantName }) => {
                   {getUsernamebyUserId(tinter.UpdatedBy)}
                 </td>
                 <td className="px-4 py-2">
-                  {formatUtcToLocal(tinter.UpdatedAt)}
+                  {tinter.UpdatedAt ? formatUtcToLocal(tinter.UpdatedAt) : "--"}
                 </td>
-
                 <td className="px-4 py-2">
                   <button
                     className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"

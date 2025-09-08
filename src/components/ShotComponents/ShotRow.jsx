@@ -19,6 +19,13 @@ const ShotRow = ({
     colorimeter: false,
   });
 
+  console.log(
+    "Rendering calorimeter values",
+    colorimeterL,
+    colorimeterA,
+    colorimeterB
+  );
+
   // Handle button clicks
   const showSection = (type) => {
     setVisibleSections((prev) => ({ ...prev, [type]: true }));

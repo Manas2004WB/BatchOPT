@@ -18,7 +18,7 @@ import {
   deletePlant,
 } from "../services/plantApi";
 
-const Dashboard = ({ user }) => {
+const Dashboard = ({ user, setUser }) => {
   console.log("Dashboard user prop:", user);
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userId = storedUser?.UserId;
@@ -165,6 +165,7 @@ const Dashboard = ({ user }) => {
   const handleLogout = () => {
     // Clear user session (e.g., remove token from localStorage)
     localStorage.clear();
+    setUser(null); // Update user state in App component
     navigate("/login");
   };
 

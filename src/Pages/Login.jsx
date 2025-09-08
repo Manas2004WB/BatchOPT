@@ -52,11 +52,15 @@ const Login = ({ setUser }) => {
             Welcome Back
           </h1>
 
-          {error && (
-            <p className="text-red-600 bg-white/50 px-2 py-1 rounded mb-4 text-center">
-              {error}
-            </p>
-          )}
+          <div className="h-6 mb-4 flex items-center justify-center">
+            {error ? (
+              <p className="text-red-600 bg-white/50 px-2 py-1 rounded text-center">
+                {error}
+              </p>
+            ) : (
+              <span>&nbsp;</span> // keeps height
+            )}
+          </div>
 
           <form onSubmit={handleSubmit}>
             <input

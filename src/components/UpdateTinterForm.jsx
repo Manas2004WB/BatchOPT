@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import tinterService from "../services/tinterService";
 import { toast } from "sonner";
+import { formatUtcToLocal } from "../utility/utc2ist";
 
 const UpdateTinterForm = ({ tinterToEdit, onUpdate, plantId, user }) => {
   const [tinter, setTinter] = useState({
@@ -52,18 +53,7 @@ const UpdateTinterForm = ({ tinterToEdit, onUpdate, plantId, user }) => {
 
       const updatedTinter = {
         ...updated,
-        updated_by: user?.user_id || "Unknown",
-        updated_at: new Date()
-          .toLocaleString("en-GB", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false,
-          })
-          .replace(",", ""),
+        UpdatedBy: user?.user_id || updated.UpdatedBy, // use PascalCase, same as backend
       };
 
       onUpdate(updatedTinter);

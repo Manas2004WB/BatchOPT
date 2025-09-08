@@ -8,19 +8,28 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
     setUpdatedPlant(plant);
   }, [plant]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const name = updatedPlant.PlantName.trim();
-    if (!name) {
-      return setError("Plant name is required");
+  const validatePlantName = (name) => {
+    if (!name.trim()) {
+      toast.error("Plant name is required");
+      return false;
     }
-    if (name.length < 3) {
-      return setError("Plant name must be at least 3 characters");
+    if (name.length < 3 || name.length > 30) {
+      toast.error("Plant name must be between 3 and 30 characters");
+      return false;
     }
-    if (name.length > 30) {
-      return setError("Plant name must be at most 30 characters");
+    // only letters, numbers, spaces, and hyphens allowed
+    if (!/^(?! )[A-Za-z0-9 -]+(?<! )$/.test(name)) {
+      toast.error(
+        "Plant name can only contain letters, numbers, spaces, and hyphens (no special symbols)"
+      );
+      return false;
     }
+    return true;
+  };
 
+  const handleSubmit = (e) => {
+    e.preventDefault(); // <-- also missing to prevent page reload
+    if (!validatePlantName(plant.PlantName)) return;
     onUpdate(updatedPlant);
     setError("");
   };

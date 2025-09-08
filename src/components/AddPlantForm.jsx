@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Toaster, toast } from "sonner";
 
 const AddPlantForm = ({ onAdd }) => {
   const [plant, setPlant] = useState({
@@ -7,24 +8,28 @@ const AddPlantForm = ({ onAdd }) => {
   });
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const name = plant.PlantName.trim();
-    if (!name) {
-      return setError("Plant name is required");
+  const validatePlantName = (name) => {
+    if (!name.trim()) {
+      toast.error("Plant name is required");
+      return false;
     }
-    if (name.length < 3) {
-      return setError("Plant name must be at least 3 characters");
+    if (name.length < 3 || name.length > 30) {
+      toast.error("Plant name must be between 3 and 30 characters");
+      return false;
     }
-    if (name.length > 30) {
-      return setError("Plant name must be at most 30 characters");
-    }
-    if (!/^[a-zA-Z0-9 ]+$/.test(name)) {
-      return setError(
-        "Plant name can only contain letters, numbers, and spaces"
+    // only letters, numbers, spaces, and hyphens allowed
+    if (!/^(?! )[A-Za-z0-9 -]+(?<! )$/.test(name)) {
+      toast.error(
+        "Plant name can only contain letters, numbers, spaces, and hyphens (no special symbols)"
       );
+      return false;
     }
+    return true;
+  };
 
+  const handleSubmit = (e) => {
+    e.preventDefault(); // <-- also missing to prevent page reload
+    if (!validatePlantName(plant.PlantName)) return;
     onAdd(plant);
     setPlant({ PlantName: "", IsActive: true });
     setError("");

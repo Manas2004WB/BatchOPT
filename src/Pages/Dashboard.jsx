@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { plants as initialPlants } from "../Data/PlantData";
 import heroBg from "../assets/hero-bg.jpg";
 import AddPlantForm from "../components/AddPlantForm";
 import UpdatePlantForm from "../components/UpdateForm";
@@ -7,7 +6,7 @@ import SearchBar from "../components/SearchBar";
 import Pagination from "../components/Pagination";
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
-import { FaArrowsAltV, FaSortUp, FaSortDown, FaSort } from "react-icons/fa";
+import { FaSortUp, FaSortDown, FaSort } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import { Toaster, toast } from "sonner";
 
@@ -248,8 +247,8 @@ const Dashboard = ({ user }) => {
             </div>
           )}
 
-          <div className="overflow-x-auto rounded-lg  max-h-[400px] overflow-y-auto border border-white/30">
-            <table className="min-w-full text-left border border-white/30 backdrop-blur min-h-[389px]">
+          <div className="overflow-x-auto rounded-lg  min-h-[400px] max-h-[400px]  overflow-y-auto border border-white/30">
+            <table className="min-w-full text-left border border-white/30 backdrop-blur min-h-[398px]">
               <thead className="bg-cyan-700 text-white sticky top-0 z-10">
                 <tr>
                   <th

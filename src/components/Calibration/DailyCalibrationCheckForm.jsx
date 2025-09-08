@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 
 const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
-  const [entryValues, setEntryValues] = React.useState({
+  const [entryValues, setEntryValues] = useState({
     dateTime: "",
     lValue: "",
     aValue: "",
     bValue: "",
     comments: "",
   });
+  const [loading, setLoading] = useState(false);
   const handleEntrySave = () => {
     console.log("Saving entry:", entryValues);
     const newObj = {
@@ -44,6 +45,24 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
       comments: "",
     });
   };
+
+  // Generate random float in range with 2 decimals
+  const getRandomValue = (min, max) => {
+    return (Math.random() * (max - min) + min).toFixed(2);
+  };
+
+  const handleFetch = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setEntryValues((prev) => ({
+        ...prev,
+        lValue: getRandomValue(60, 100),
+        aValue: getRandomValue(-10, 10),
+        bValue: getRandomValue(-10, 10),
+      }));
+      setLoading(false);
+    }, 3000);
+  };
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-[30px] space-y-2">
       <div className="flex w-full max-w-4xl items-center gap-x-6">
@@ -69,6 +88,7 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
               setEntryValues({ ...entryValues, lValue: e.target.value })
             }
             className="w-16 p-1 rounded bg-white border"
+            disabled={loading}
           />
           <span className="text-white">A</span>
           <input
@@ -78,6 +98,7 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
               setEntryValues({ ...entryValues, aValue: e.target.value })
             }
             className="w-16 p-1 rounded bg-white border"
+            disabled={loading}
           />
           <span className="text-white">B</span>
           <input
@@ -87,9 +108,41 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
               setEntryValues({ ...entryValues, bValue: e.target.value })
             }
             className="w-16 p-1 rounded bg-white border"
+            disabled={loading}
           />
-          <button className="bg-cyan-700  text-white px-3 py-1 ml-2">
-            Fetch
+          <button
+            className="bg-cyan-700 text-white px-3 py-1 ml-2 flex items-center justify-center min-w-[70px]"
+            onClick={handleFetch}
+            type="button"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="flex items-center">
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Loading...
+              </span>
+            ) : (
+              "Fetch"
+            )}
           </button>
         </div>
       </div>
@@ -105,12 +158,16 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
             setEntryValues({ ...entryValues, comments: e.target.value })
           }
           className="flex-1 bg-white rounded border p-2"
+          disabled={loading}
         ></textarea>
       </div>
       <div>
         <button
           disabled={
-            !entryValues.lValue || !entryValues.aValue || !entryValues.bValue
+            !entryValues.lValue ||
+            !entryValues.aValue ||
+            !entryValues.bValue ||
+            loading
           }
           onClick={handleEntrySave}
           className="bg-cyan-700 px-3 py-1 text-white"

@@ -8,6 +8,22 @@ const DishCleanCheckForm = ({ onSave, calibrationList }) => {
     bValue: "",
     comments: "",
   });
+
+  // Generate random float in range with 2 decimals
+  const getRandomValue = (min, max) => {
+    return (Math.random() * (max - min) + min).toFixed(2);
+  };
+
+  const handleFetch = () => {
+    setTimeout(() => {
+      setEntryValues((prev) => ({
+        ...prev,
+        lValue: getRandomValue(60, 100),
+        aValue: getRandomValue(-10, 10),
+        bValue: getRandomValue(-10, 10),
+      }));
+    }, 1000);
+  };
   const handleEntrySave = () => {
     console.log("Saving entry:", entryValues);
     const newObj = {
@@ -91,7 +107,10 @@ const DishCleanCheckForm = ({ onSave, calibrationList }) => {
             }
             className="w-16 p-1 rounded bg-white border"
           />
-          <button className="bg-cyan-700 rounded-lg text-white px-3 py-1 ml-2">
+          <button
+            onClick={handleFetch}
+            className="bg-cyan-700 rounded-lg text-white px-3 py-1 ml-2"
+          >
             Check
           </button>
         </div>

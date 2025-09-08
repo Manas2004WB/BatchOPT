@@ -32,7 +32,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
   let srNo = 1;
 
   return (
-    <div className="overflow-x-auto mt-2">
+    <div className="overflow-x-auto">
       <div className=" flex items-center justify-center gap-1">
         <span className="text-lg font-semibold text-white">Plant:</span>
         <span className="text-lg font-bold text-cyan-600 bg-cyan-100 px-3 py-1 rounded shadow-sm">
@@ -62,7 +62,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
         />
       )}
 
-      <div className="max-h-[420px] overflow-y-auto">
+      <div className="max-h-[420px] overflow-y-auto overflow-x-hidden">
         <table className="min-w-full border border-white/30 shadow-2xl rounded-2xl bg-white/60 backdrop-blur">
           <thead className="bg-cyan-700 text-white sticky top-0 z-10">
             <tr>

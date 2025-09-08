@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { postSkuWithVersionMeasurements } from "../services/skuService";
 import { getSkusWithVersionMeasurements } from "../services/skuService";
 import { getTinterByPlantId } from "../services/tinterService"; // fetch tinters by plant
-import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { Toaster, toast } from "sonner";
 
 const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
@@ -181,7 +180,9 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
     <div className="fixed inset-0 bg-black/35 bg-opacity-40 flex justify-center items-center z-50">
       <Toaster position="top-right" richColors />
       <div className="bg-white rounded-lg shadow-lg p-6 w-[800px]">
-        <h2 className="text-lg font-bold mb-2">Add New SKU</h2>
+        <h2 className="text-lg font-bold mb-2">
+          {skuMode === "select" ? "Create new SKU Version" : "Create new SKU"}
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           {/* SKU Code Dropdown/Input Toggle */}
           <div className="flex items-center gap-2 mb-3">

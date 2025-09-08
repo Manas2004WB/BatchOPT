@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { batches } from "../Data/Batches";
-import { skuData } from "../Data/SkuData";
-import { skuVersions } from "../Data/SkuVersionData";
 import AddSkuBatchForm from "./AddSkuBatchForm";
 import { users } from "../Data/Data";
 import { useNavigate } from "react-router-dom";
 import { formatUtcToLocal } from "../utility/utc2ist";
 import { getBatchesByPlantId, postBatch } from "../services/batchService";
-import { getUserNameById } from "../services/userService";
+import { Toaster, toast } from "sonner";
 
 const AddSkuBatches = ({ user, plantId, plantName }) => {
   const navigate = useNavigate();
@@ -31,6 +28,7 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
   const handleAddBatch = (newBatch) => {
     setBatchList((prev) => [...prev, newBatch]);
     fetchBatches();
+    toast.success("Batch added successfully!");
     setShowAddBatchModal(false);
   };
 
@@ -61,8 +59,6 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
               fetchBatches={fetchBatches}
               user={user}
               plantId={plantId}
-              skuData={skuData}
-              skuVersions={skuVersions}
               onAddBatch={handleAddBatch}
             />
           </div>

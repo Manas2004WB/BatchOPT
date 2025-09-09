@@ -228,7 +228,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             name="BatchTinterName"
             value={newBatch.BatchTinterName}
             onChange={handleInputChange}
-            placeholder="Tinter Name"
+            placeholder="Tinter Batch Name"
             className="col-span-2 border px-2 py-1 rounded w-full text-sm"
             required
           />

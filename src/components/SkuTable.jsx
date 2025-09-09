@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getSkusWithVersionMeasurements } from "../services/skuService";
 import AddSkuModal from "./AddSkuModal";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 
 const SkuTable = ({ user, plantId, plantName }) => {
   const [skus, setSkus] = useState([]);
@@ -21,7 +21,6 @@ const SkuTable = ({ user, plantId, plantName }) => {
         setLoading(false);
       }
     };
-
     if (plantId) fetchSkus();
   }, [plantId]);
 

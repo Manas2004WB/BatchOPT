@@ -32,7 +32,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
       b: randomInRange(...panelRanges.b),
     });
   };
-  const [skuMode, setSkuMode] = useState("select"); // "select" or "input"
+  const [skuMode, setSkuMode] = useState("input"); // "select" or "input"
   const [skuList, setSkuList] = useState([]);
   const [skuCode, setSkuCode] = useState("");
   const [liquid, setLiquid] = useState({ l: "", a: "", b: "" });

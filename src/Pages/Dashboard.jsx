@@ -96,7 +96,7 @@ const Dashboard = ({ user, setUser }) => {
     console.log("sortedPlants (after sort):", sorted);
     return sorted;
   }, [filteredPlants, sortConfig]);
-  // 🔔 Trigger toast when sortConfig changes
+  // Trigger toast when sortConfig changes
   useEffect(() => {
     if (sortConfig.key) {
       toast.info(

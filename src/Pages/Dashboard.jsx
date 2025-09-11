@@ -18,7 +18,7 @@ import {
   deletePlant,
 } from "../services/plantApi";
 
-const Dashboard = ({ user, setUser }) => {
+const Dashboard = ({ user, handleLogout }) => {
   console.log("Dashboard user prop:", user);
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userId = storedUser?.UserId;
@@ -39,6 +39,7 @@ const Dashboard = ({ user, setUser }) => {
   const [plantPerPage, setPlantPerPage] = useState(7);
 
   const navigate = useNavigate();
+  // Remove doLogout indirection, use handleLogout directly
 
   // ✅ Fetch plants on mount
   useEffect(() => {
@@ -161,12 +162,6 @@ const Dashboard = ({ user, setUser }) => {
         ? { key, direction: prev.direction === "asc" ? "desc" : "asc" }
         : { key, direction: "asc" }
     );
-  };
-  const handleLogout = () => {
-    // Clear user session (e.g., remove token from localStorage)
-    localStorage.clear();
-    setUser(null); // Update user state in App component
-    navigate("/login");
   };
 
   return (
@@ -343,7 +338,6 @@ const Dashboard = ({ user, setUser }) => {
                           </button>
                         </>
                       )}
-                      {/* Custom Delete Confirmation Modal */}
                     </td>
                   </tr>
                 ))}

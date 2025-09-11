@@ -16,6 +16,11 @@ const App = () => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
+  const handleLogout = () => {
+    // Clear user session (e.g., remove token from localStorage)
+    localStorage.clear();
+    setUser(null); // Update user state in App component
+  };
 
   return (
     <Router>
@@ -40,7 +45,11 @@ const App = () => {
           path="/dashboard"
           element={
             user ? (
-              <Dashboard user={user} setUser={setUser} />
+              <Dashboard
+                user={user}
+                handleLogout={handleLogout}
+                setUser={setUser}
+              />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -50,7 +59,7 @@ const App = () => {
           path="/plant/:id"
           element={
             user ? (
-              <PlantDetails user={user} />
+              <PlantDetails user={user} handleLogout={handleLogout} />
             ) : (
               <Navigate to="/login" replace />
             )

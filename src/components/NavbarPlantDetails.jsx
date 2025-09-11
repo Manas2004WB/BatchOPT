@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { MdArrowBackIos } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+const NavbarPlantDetails = ({ activeTab, setActiveTab, handleLogout }) => {
+  const navigate = useNavigate();
+  const doLogout = () => {
+    handleLogout();
+    navigate("/login");
+  };
 
-const NavbarPlantDetails = ({ activeTab, setActiveTab }) => {
   return (
     <nav className="w-full bg-white/60 backdrop-blur-md shadow-lg px-8 py-3 fixed top-0 left-0 z-50 flex justify-between items-center border-b border-gray-300">
       {/* Left Section: Title + Tabs */}
@@ -31,13 +37,21 @@ const NavbarPlantDetails = ({ activeTab, setActiveTab }) => {
       </div>
 
       {/* Right Section: Back Button */}
-      <button
-        onClick={() => window.history.back()}
-        className="flex items-center gap-1 bg-white text-cyan-800 font-medium text-sm px-4 py-1.5 rounded-md shadow hover:bg-gray-100 transition duration-200"
-      >
-        <MdArrowBackIos className="text-base" />
-        <span>Back</span>
-      </button>
+      <div className="flex items-center gap-4">
+        <button
+          onClick={() => window.history.back()}
+          className="flex items-center gap-1 bg-white text-cyan-800 font-medium text-sm px-4 py-1.5 rounded-md shadow hover:bg-gray-100 transition duration-200"
+        >
+          <MdArrowBackIos className="text-base" />
+          <span>Back</span>
+        </button>
+        <button
+          onClick={doLogout}
+          className="px-2 py-1 bg-cyan-700 text-white rounded-md"
+        >
+          Logout
+        </button>
+      </div>
     </nav>
   );
 };

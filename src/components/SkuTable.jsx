@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getSkusWithVersionMeasurements } from "../services/skuService";
 import AddSkuModal from "./AddSkuModal";
-import { toast } from "sonner";
 import { Toaster } from "sonner";
 
 const SkuTable = ({ user, plantId, plantName }) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import heroBg from "../assets/hero-bg.jpg";
 import TinterTable from "../components/TinterTable";
 import SkuTable from "../components/SkuTable";
@@ -7,23 +7,34 @@ import NavbarPlantDetails from "../components/NavbarPlantDetails";
 import AddSkuBatches from "../components/AddSkuBatches";
 import Calibration from "../components/Calibration/Calibration";
 
-const PlantDetails = ({ user }) => {
-  const { id: plantId } = useParams(); // more meaningful name
+const PlantDetails = ({ user, handleLogout }) => {
+  const { id: plantId } = useParams();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("tinter");
   const [plantName, setPlantName] = useState("");
 
   useEffect(() => {
-    async function fetchPlantName() {
+    async function fetchPlant() {
       try {
         const res = await import("../services/plantApi");
         const plant = await res.getPlantById(plantId);
+
+        if (!plant) {
+          navigate("/not-found");
+          return;
+        }
+        if (!plant.IsActive) {
+          navigate("/not-authorized");
+          return;
+        }
         setPlantName(plant.PlantName || "");
       } catch (err) {
-        setPlantName("");
+        console.error("Error fetching plant:", err);
+        navigate("/not-found");
       }
     }
-    fetchPlantName();
-  }, [plantId]);
+    fetchPlant();
+  }, [plantId, navigate]);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -73,10 +84,12 @@ const PlantDetails = ({ user }) => {
       className="w-full min-h-screen bg-cover bg-center"
       style={{ backgroundImage: `url(${heroBg})` }}
     >
-      {/* Navbar with tab buttons */}
-      <NavbarPlantDetails activeTab={activeTab} setActiveTab={setActiveTab} />
+      <NavbarPlantDetails
+        handleLogout={handleLogout}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
 
-      {/* Main blurred card */}
       <div className="bg-cover bg-center px-4 pt-24 w-full h-screen flex justify-center p-10">
         <div className="w-full max-w-7xl bg-white/30 backdrop-blur-xl shadow-2xl rounded-2xl p-8">
           {renderTabContent()}

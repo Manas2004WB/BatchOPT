@@ -168,6 +168,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
     try {
       await postSkuWithVersionMeasurements(payload);
       onSuccess();
+      toast.success("SKU created successfully");
     } catch (err) {
       console.error("Error creating SKU:", err.response?.data || err);
       alert("Failed to create SKU");

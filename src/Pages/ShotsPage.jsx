@@ -128,16 +128,21 @@ const ShotsPage = ({ user }) => {
         }
 
         if (type === "colorimeter") {
-          const l = shot.values.l_colorimeter ?? 0;
-          const a = shot.values.a_colorimeter ?? 0;
-          const b = shot.values.b_colorimeter ?? 0;
+          const l = Number(shot.values.l_colorimeter ?? 0);
+          const a = Number(shot.values.a_colorimeter ?? 0);
+          const b = Number(shot.values.b_colorimeter ?? 0);
           newValues.deltaE_colorimeter = calcDeltaE(
             l,
             a,
-            b,
-            colorimeterL,
-            colorimeterA,
-            colorimeterB
+            b, //user inputs
+            0,
+            0,
+            0 //device values
+          );
+
+          console.log(
+            "Final deltaE_colorimeter:",
+            newValues.deltaE_colorimeter
           );
         }
 

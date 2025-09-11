@@ -36,39 +36,41 @@ const Login = ({ setUser }) => {
       style={{ backgroundImage: `url(${heroBg})` }}
     >
       {/* Container for Image + Form */}
-      <div className="flex bg-white/40 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden max-w-4xl w-full">
+      <div className="flex bg-white/30 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden max-w-4xl w-full animate-fadeIn">
         {/* Left Image Section */}
-        <div className="hidden md:flex items-center justify-center  p-8 w-1/2">
+        <div className="hidden md:flex items-center justify-center p-8 w-1/2">
           <img
             src={BatchOptLogin}
             alt="BatchOpt Login"
-            className="max-h-80 object-contain"
+            className="max-h-80 object-contain drop-shadow-lg"
           />
         </div>
 
         {/* Right Form Section */}
-        <div className="w-full md:w-1/2 p-8">
-          <h1 className="text-3xl font-bold text-white text-center mb-6 drop-shadow">
+        <div className="w-full md:w-1/2 p-10">
+          <h1 className="text-4xl font-extrabold text-white text-center mb-4 drop-shadow-lg">
             Welcome Back
           </h1>
 
-          <div className="h-6 mb-4 flex items-center justify-center">
+          {/* Error Message */}
+          <div className="h-8 mb-6 flex items-center justify-center">
             {error ? (
-              <p className="text-red-600 bg-white/50 px-2 py-1 rounded text-center">
+              <p className="text-red-600 bg-white/70 backdrop-blur px-3 py-1 rounded-lg text-sm font-medium shadow">
                 {error}
               </p>
             ) : (
-              <span>&nbsp;</span> // keeps height
+              <span>&nbsp;</span>
             )}
           </div>
 
-          <form onSubmit={handleSubmit}>
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
             <input
               type="email"
               placeholder="Email"
               value={login.email}
               onChange={(e) => setLogin({ ...login, email: e.target.value })}
-              className="w-full px-4 py-2 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-700"
+              className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/40 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:bg-white/30 transition"
             />
 
             <input
@@ -76,15 +78,17 @@ const Login = ({ setUser }) => {
               placeholder="Password"
               value={login.password}
               onChange={(e) => setLogin({ ...login, password: e.target.value })}
-              className="w-full px-4 py-2 mb-6 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-700"
+              className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/40 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:bg-white/30 transition"
             />
 
             <button
               type="submit"
               disabled={loading}
               className={`w-full ${
-                loading ? "bg-cyan-300" : "bg-cyan-400 hover:bg-cyan-500"
-              } text-white font-bold py-2 rounded`}
+                loading
+                  ? "bg-cyan-300 cursor-not-allowed"
+                  : "bg-cyan-400 hover:bg-cyan-500 hover:scale-[1.02]"
+              } text-white font-bold py-3 rounded-xl shadow-md transition transform`}
             >
               {loading ? "Logging in..." : "Login"}
             </button>

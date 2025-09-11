@@ -50,10 +50,14 @@ const TinterTable = ({ plantId, user, plantName }) => {
     fetchTinters();
   }, [plantId]);
 
-  // ✅ Add Tinter (API + state update)
   const handleAddTinter = (createdTinter) => {
     try {
-      setTinterList((prev) => [...prev, createdTinter]);
+      setTinterList((prev) => {
+        const updatedList = [...prev, createdTinter];
+        return updatedList.sort(
+          (a, b) => new Date(b.UpdatedAt) - new Date(a.UpdatedAt)
+        );
+      });
       toast.success("Tinter added successfully.");
     } catch (error) {
       console.error("Failed to add tinter", error);
@@ -64,11 +68,17 @@ const TinterTable = ({ plantId, user, plantName }) => {
   // ✅ Update Tinter
   const handleUpdateTinter = (updatedTinter) => {
     try {
-      setTinterList((prev) =>
-        prev.map((t) =>
+      setTinterList((prev) => {
+        const updatedList = prev.map((t) =>
           t.TinterId === updatedTinter.TinterId ? updatedTinter : t
-        )
-      );
+        );
+
+        // ✅ sort by UpdatedAt (latest first)
+        return updatedList.sort(
+          (a, b) => new Date(b.UpdatedAt) - new Date(a.UpdatedAt)
+        );
+      });
+
       setShowEditModal(false);
       toast.success("Tinter updated successfully.");
     } catch (error) {
@@ -203,82 +213,89 @@ const TinterTable = ({ plantId, user, plantName }) => {
           </div>
         </div>
       )}
-
-      <table className="min-w-full text-left border border-white/30 backdrop-blur">
-        <thead className="bg-cyan-700 text-white sticky top-0 z-10">
-          <tr>
-            <th className="px-4 py-2">Tinter Code</th>
-            <th className="px-4 py-2">Status</th>
-            <th className="px-4 py-2">Updated By</th>
-            <th className="px-4 py-2">Updated At</th>
-            <th className="px-4 py-2">Edit</th>
-            <th className="px-4 py-2">Batches</th>
-            <th className="px-4 py-2">Delete</th>
-          </tr>
-        </thead>
-        <tbody className="bg-white/60">
-          {tinterList.length === 0 ? (
+      <div className="overflow-x-auto overflow-y-auto max-h-[350px] border border-white/30 rounded">
+        <table className="min-w-full text-left border border-white/30 backdrop-blur">
+          <thead className="bg-cyan-700 text-white sticky top-0 z-10">
             <tr>
-              <td colSpan="7" className="text-center py-4 text-gray-500">
-                No tinter data for this plant.
-              </td>
+              <th className="px-4 py-2">Tinter Code</th>
+              <th className="px-4 py-2">Status</th>
+              <th className="px-4 py-2">Updated By</th>
+              <th className="px-4 py-2">Updated At</th>
+              <th className="px-4 py-2">Edit</th>
+              <th className="px-4 py-2">Batches</th>
+              <th className="px-4 py-2">Delete</th>
             </tr>
-          ) : (
-            tinterList.map((tinter) => (
-              <tr
-                key={tinter.TinterId}
-                className="border-t border-white/30 hover:bg-white/80 transition"
-              >
-                <td className="px-4 py-2">{tinter.TinterCode}</td>
-                <td className="px-4 py-2">
-                  {tinter.IsActive ? (
-                    <span className="text-green-600 font-semibold">Active</span>
-                  ) : (
-                    <span className="text-red-500 font-semibold">Inactive</span>
-                  )}
+          </thead>
+          <tbody className="bg-white/60">
+            {tinterList.length === 0 ? (
+              <tr>
+                <td colSpan="7" className="text-center py-4 text-gray-500">
+                  No tinter data for this plant.
                 </td>
-                <td className="px-4 py-2">
-                  {getUsernamebyUserId(tinter.UpdatedBy)}
-                </td>
-                <td className="px-4 py-2">
-                  {tinter.UpdatedAt ? formatUtcToLocal(tinter.UpdatedAt) : "--"}
-                </td>
-                <td className="px-4 py-2">
-                  <button
-                    className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
-                    onClick={() => {
-                      setEditingTinter(tinter);
-                      setShowEditModal(true);
-                    }}
-                  >
-                    <FaEdit />
-                  </button>
-                </td>
-                <td className="px-4 py-2">
-                  <button
-                    onClick={() => {
-                      setSelectedTinter(tinter);
-                      setShowBatchForm(true);
-                    }}
-                    className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
-                  >
-                    <IoIosAddCircleOutline />
-                  </button>
-                </td>
-                <td className="px-4 py-2">
-                  <button
-                    onClick={() => handleDeleteTinter(tinter.TinterId)}
-                    className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
-                  >
-                    <MdDelete />
-                  </button>
-                </td>
-                {/* Custom Delete Confirmation Modal */}
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              tinterList.map((tinter) => (
+                <tr
+                  key={tinter.TinterId}
+                  className="border-t border-white/30 hover:bg-white/80 transition"
+                >
+                  <td className="px-4 py-2">{tinter.TinterCode}</td>
+                  <td className="px-4 py-2">
+                    {tinter.IsActive ? (
+                      <span className="text-green-600 font-semibold">
+                        Active
+                      </span>
+                    ) : (
+                      <span className="text-red-500 font-semibold">
+                        Inactive
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-2">
+                    {getUsernamebyUserId(tinter.UpdatedBy)}
+                  </td>
+                  <td className="px-4 py-2">
+                    {tinter.UpdatedAt
+                      ? formatUtcToLocal(tinter.UpdatedAt)
+                      : "--"}
+                  </td>
+                  <td className="px-4 py-2">
+                    <button
+                      className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
+                      onClick={() => {
+                        setEditingTinter(tinter);
+                        setShowEditModal(true);
+                      }}
+                    >
+                      <FaEdit />
+                    </button>
+                  </td>
+                  <td className="px-4 py-2">
+                    <button
+                      onClick={() => {
+                        setSelectedTinter(tinter);
+                        setShowBatchForm(true);
+                      }}
+                      className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
+                    >
+                      <IoIosAddCircleOutline />
+                    </button>
+                  </td>
+                  <td className="px-4 py-2">
+                    <button
+                      onClick={() => handleDeleteTinter(tinter.TinterId)}
+                      className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
+                    >
+                      <MdDelete />
+                    </button>
+                  </td>
+                  {/* Custom Delete Confirmation Modal */}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

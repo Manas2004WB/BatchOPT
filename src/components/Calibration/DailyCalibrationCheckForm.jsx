@@ -9,6 +9,7 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
     comments: "",
   });
   const [loading, setLoading] = useState(false);
+  const [buttonState, setButtonState] = useState("Re-Check");
   const handleEntrySave = () => {
     console.log("Saving entry:", entryValues);
     const newObj = {
@@ -111,10 +112,14 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
             disabled={loading}
           />
           <button
-            className="bg-cyan-700 text-white px-3 py-1 ml-2 flex items-center justify-center min-w-[70px]"
+            className={
+              buttonState !== "Re-Check"
+                ? "bg-cyan-700 text-white px-3 py-1 ml-2 flex items-center justify-center min-w-[70px]"
+                : "bg-gray-400 text-white px-3 py-1 ml-2 flex items-center justify-center min-w-[70px]"
+            }
             onClick={handleFetch}
+            disabled={buttonState === "Re-Check" || loading}
             type="button"
-            disabled={loading}
           >
             {loading ? (
               <span className="flex items-center">
@@ -163,16 +168,24 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
       </div>
       <div>
         <button
-          disabled={
-            !entryValues.lValue ||
-            !entryValues.aValue ||
-            !entryValues.bValue ||
-            loading
-          }
-          onClick={handleEntrySave}
+          onClick={() => {
+            if (buttonState === "Save") {
+              if (
+                !entryValues.lValue ||
+                !entryValues.aValue ||
+                !entryValues.bValue
+              ) {
+                alert("All values (L, A, B) are required before saving.");
+                return;
+              }
+              handleEntrySave();
+            } else if (buttonState === "Re-Check") {
+              setButtonState("Save");
+            }
+          }}
           className="bg-cyan-700 px-3 py-1 text-white"
         >
-          Re-Check
+          {buttonState}
         </button>
       </div>
     </div>

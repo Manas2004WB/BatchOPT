@@ -78,7 +78,7 @@ const PlantDetails = ({ user }) => {
 
       {/* Main blurred card */}
       <div className="bg-cover bg-center px-4 pt-24 w-full h-screen flex justify-center p-10">
-        <div className="w-full max-w-7xl bg-white/25 backdrop-blur-md shadow-2xl rounded-2xl p-8">
+        <div className="w-full max-w-7xl bg-white/30 backdrop-blur-xl shadow-2xl rounded-2xl p-8">
           {renderTabContent()}
         </div>
       </div>

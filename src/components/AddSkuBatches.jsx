@@ -26,7 +26,12 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
   }, [plantId]);
 
   const handleAddBatch = (newBatch) => {
-    setBatchList((prev) => [...prev, newBatch]);
+    setBatchList((prev) => {
+      const updatedList = [...prev, newBatch];
+      return updatedList.sort(
+        (a, b) => new Date(b.UpdatedAt) - new Date(a.UpdatedAt)
+      );
+    });
     fetchBatches();
     toast.success("Batch added successfully!");
     setShowAddBatchModal(false);
@@ -70,69 +75,71 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
       >
         + Add Batches
       </button>
-      <table className="min-w-full text-centre border border-white/30 backdrop-blur">
-        <thead className="bg-cyan-700 text-white sticky top-0 z-10">
-          <tr>
-            <th className="px-4 py-2 ">#</th>
-            <th className="px-4 py-2 ">Batch Code</th>
-            <th className="px-4 py-2 ">SKU Version </th>
-            <th className="px-4 py-2 ">Batch Size</th>
-            <th className="px-4 py-2 ">Status </th>
-            <th className="px-4 py-2 ">Updated On</th>
-            <th className="px-4 py-2 ">Updated By</th>
-            <th className="px-4 py-2 ">Shots</th>
-          </tr>
-        </thead>
-        <tbody className="bg-white/60 ">
-          {batchList.length === 0 ? (
+      <div className="overflow-x-auto overflow-y-auto max-h-[350px] border border-white/30 rounded">
+        <table className="min-w-full text-centre border border-white/30 backdrop-blur">
+          <thead className="bg-cyan-700 text-white sticky top-0 z-10">
             <tr>
-              <td colSpan="9" className="text-center py-4 text-gray-500">
-                No batches available.
-              </td>
+              <th className="px-4 py-2 ">#</th>
+              <th className="px-4 py-2 ">Batch Code</th>
+              <th className="px-4 py-2 ">SKU Version </th>
+              <th className="px-4 py-2 ">Batch Size</th>
+              <th className="px-4 py-2 ">Status </th>
+              <th className="px-4 py-2 ">Updated On</th>
+              <th className="px-4 py-2 ">Updated By</th>
+              <th className="px-4 py-2 ">Shots</th>
             </tr>
-          ) : (
-            batchList.map((batch, index) => (
-              <tr
-                key={batch.BatchId}
-                className="border-t border-white/30 hover:bg-white/80 transition"
-              >
-                <td className="px-4 py-2 ">{index + 1}</td>
-                <td className="px-4 py-2 ">{batch.BatchCode}</td>
-                <td className="px-4 py-2  text-center">
-                  {batch.SkuVersion?.Sku?.SkuName || "Unknown"} -{" "}
-                  {batch.SkuVersion?.VersionName || ""}
-                </td>
-                <td className="px-4 py-2  text-center">{batch.BatchSize}</td>
-                <td className="px-4 py-2 text-center">
-                  {batch.BatchStatusId === 1
-                    ? "In-Progress"
-                    : batch.BatchStatusId === 2
-                    ? "Completed"
-                    : "Abondon"}
-                </td>
-                <td className="px-4 py-2  text-center">
-                  {formatUtcToLocal(batch.UpdatedAt)}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  {getUsernamebyUserId(batch.UpdatedBy)}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  <button
-                    className="bg-cyan-700 p-1 rounded-xl text-white"
-                    onClick={() =>
-                      navigate(`/shots/${batch.BatchId}`, {
-                        state: { batch, plantId },
-                      })
-                    }
-                  >
-                    Shots
-                  </button>
+          </thead>
+          <tbody className="bg-white/60 ">
+            {batchList.length === 0 ? (
+              <tr>
+                <td colSpan="9" className="text-center py-4 text-gray-500">
+                  No batches available.
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              batchList.map((batch, index) => (
+                <tr
+                  key={batch.BatchId}
+                  className="border-t border-white/30 hover:bg-white/80 transition"
+                >
+                  <td className="px-4 py-2 ">{index + 1}</td>
+                  <td className="px-4 py-2 ">{batch.BatchCode}</td>
+                  <td className="px-4 py-2  text-center">
+                    {batch.SkuVersion?.Sku?.SkuName || "Unknown"} -{" "}
+                    {batch.SkuVersion?.VersionName || ""}
+                  </td>
+                  <td className="px-4 py-2  text-center">{batch.BatchSize}</td>
+                  <td className="px-4 py-2 text-center">
+                    {batch.BatchStatusId === 1
+                      ? "In-Progress"
+                      : batch.BatchStatusId === 2
+                      ? "Completed"
+                      : "Abondon"}
+                  </td>
+                  <td className="px-4 py-2  text-center">
+                    {formatUtcToLocal(batch.UpdatedAt)}
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    {getUsernamebyUserId(batch.UpdatedBy)}
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    <button
+                      className="bg-cyan-700 p-1 rounded-xl text-white"
+                      onClick={() =>
+                        navigate(`/shots/${batch.BatchId}`, {
+                          state: { batch, plantId },
+                        })
+                      }
+                    >
+                      Shots
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

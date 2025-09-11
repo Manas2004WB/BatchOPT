@@ -4,45 +4,52 @@ const CalibrationForm = ({ onSave, calibrationList }) => {
   const [autoModStarted, setAutoModStarted] = useState(false);
   const [readjustment, setReadjustment] = useState(false);
   const [autoModStatus, setAutoModStatus] = useState("Not Done");
+  const [loading, setLoading] = useState(false);
+
   const handleAutoModBegin = () => {
     setAutoModStarted(true);
     setAutoModStatus("Done");
   };
+
   const handleEntrySave = () => {
-    // Helper to generate random float < 100 with 2 decimals
-    const randomFloat = (max = 100) => (Math.random() * max).toFixed(2);
-    // Helper to generate random float between -5 and 5 for a/b
-    const randomAB = () => (Math.random() * 10 - 5).toFixed(2);
-    const now = new Date();
-    const newObj = {
-      calibration_id: calibrationList.length + 1, // Example ID generation
-      sensor_id: "-",
-      calibration_source_used: "-",
-      calibration_datetime: now.toISOString(),
-      absolute_calibration_l: randomFloat(),
-      absolute_calibration_a: randomAB(),
-      absolute_calibration_b: randomAB(),
-      daily_calibration_l: "-",
-      daily_calibration_a: "-",
-      daily_calibration_b: "-",
-      dc_source: "-",
-      auto_modulation: autoModStatus,
-      readjustment: readjustment ? "Done" : "Not-Done",
-      delta_e: "-",
-      calibration_type_id: 2, // Assuming Daily Calibration Check has ID 2
-      white_reference: now.toLocaleString() || "",
-      auto_modulation_status: autoModStatus,
-      white_reference_status: "Done",
-      comments: "-",
-      dish_clean_check_l: "-",
-      dish_clean_check_a: "-",
-      dish_clean_check_b: "-",
-      dish_clean_check_source: "-",
-    };
-    if (onSave) onSave(newObj);
-    setAutoModStarted(false);
-    setAutoModStatus("Not Done");
-    setReadjustment(false);
+    setLoading(true);
+    setTimeout(() => {
+      // Helper to generate random float < 100 with 2 decimals
+      const randomFloat = (max = 100) => (Math.random() * max).toFixed(2);
+      // Helper to generate random float between -5 and 5 for a/b
+      const randomAB = () => (Math.random() * 10 - 5).toFixed(2);
+      const now = new Date();
+      const newObj = {
+        calibration_id: calibrationList.length + 1, // Example ID generation
+        sensor_id: "-",
+        calibration_source_used: "-",
+        calibration_datetime: now.toISOString(),
+        absolute_calibration_l: randomFloat(),
+        absolute_calibration_a: randomAB(),
+        absolute_calibration_b: randomAB(),
+        daily_calibration_l: "-",
+        daily_calibration_a: "-",
+        daily_calibration_b: "-",
+        dc_source: "-",
+        auto_modulation: autoModStatus,
+        readjustment: readjustment ? "Done" : "Not-Done",
+        delta_e: "-",
+        calibration_type_id: 2, // Assuming Daily Calibration Check has ID 2
+        white_reference: now.toLocaleString() || "",
+        auto_modulation_status: autoModStatus,
+        white_reference_status: "Done",
+        comments: "-",
+        dish_clean_check_l: "-",
+        dish_clean_check_a: "-",
+        dish_clean_check_b: "-",
+        dish_clean_check_source: "-",
+      };
+      if (onSave) onSave(newObj);
+      setAutoModStarted(false);
+      setAutoModStatus("Not Done");
+      setReadjustment(false);
+      setLoading(false);
+    }, 2000);
   };
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-[30px] space-y-2">
@@ -97,9 +104,36 @@ const CalibrationForm = ({ onSave, calibrationList }) => {
           </span>
           <button
             onClick={handleEntrySave}
-            className="bg-cyan-600 text-white px-3 py-1  hover:bg-cyan-700 transition"
+            className="bg-cyan-600 text-white px-3 py-1  hover:bg-cyan-700 transition flex items-center justify-center min-w-[70px]"
+            disabled={loading}
           >
-            Begin
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Loading...
+              </span>
+            ) : (
+              "Begin"
+            )}
           </button>
           <div className="flex justify-between text-black">
             <span>Status :</span>

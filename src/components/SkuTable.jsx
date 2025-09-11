@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { getSkusWithVersionMeasurements } from "../services/skuService";
 import AddSkuModal from "./AddSkuModal";
 import { toast } from "sonner";
+import { Toaster } from "sonner";
 
 const SkuTable = ({ user, plantId, plantName }) => {
   const [skus, setSkus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showAddModal, setShowAddModal] = useState(false); // modal state
+  const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
     const fetchSkus = async () => {
@@ -32,6 +33,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
 
   return (
     <div className="overflow-x-auto">
+      <Toaster position="top-right" richColors />
       <div className=" flex items-center justify-center gap-1">
         <span className="text-lg font-semibold text-white">Plant:</span>
         <span className="text-lg font-bold text-cyan-600 bg-cyan-100 px-3 py-1 rounded shadow-sm">
@@ -53,7 +55,6 @@ const SkuTable = ({ user, plantId, plantName }) => {
           user={user}
           onClose={() => setShowAddModal(false)}
           onSuccess={() => {
-            toast.success("SKU added successfully!");
             setShowAddModal(false);
             // refresh SKUs after adding
             getSkusWithVersionMeasurements(plantId).then(setSkus);
@@ -61,9 +62,9 @@ const SkuTable = ({ user, plantId, plantName }) => {
         />
       )}
 
-      <div className="max-h-[420px] overflow-y-auto overflow-x-hidden">
+      <div className="max-h-[420px] overflow-y-auto scrollbar-thin overflow-x-hidden">
         <table className="min-w-full border border-white/30 shadow-2xl rounded-2xl bg-white/60 backdrop-blur">
-          <thead className="bg-cyan-700 text-white sticky top-0 z-10">
+          <thead className="bg-cyan-700 text-white sticky top-[-2px] z-10 shadow-md">
             <tr>
               <th className="px-4 py-2">Sr. No</th>
               <th className="px-4 py-2">SKU Revision</th>
@@ -78,7 +79,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
               <th className="px-4 py-2">Comments</th>
             </tr>
           </thead>
-          <tbody className="bg-white/60">
+          <tbody className="bg-white">
             {skus.length > 0 ? (
               skus.map((sku, skuIdx) => {
                 if (sku.SkuVersions && sku.SkuVersions.length > 0) {

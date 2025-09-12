@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import tinterBatchService from "../services/tinterBatchService";
 import { Toaster, toast } from "sonner";
 import { formatUtcToLocal } from "../utility/utc2ist";
+import TinterBatchTable from "./TinterBatchTable";
 const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
   const [batches, setBatches] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -175,7 +176,12 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
       toast.success("Batch created successfully");
 
       // ✅ Add new batch to state
-      setBatches((prev) => [...prev, created]);
+      setBatches((prev) => {
+        const updated = [...prev, created];
+        return updated.sort(
+          (a, b) => new Date(b.UpdatedAt) - new Date(a.UpdatedAt)
+        );
+      });
 
       // ✅ Reset form
       setNewBatch({
@@ -202,15 +208,15 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
   if (loading) return <p>Loading batches...</p>;
 
   return (
-    <div className="p-4 bg-white/60 shadow rounded-2xl max-h-[550px]">
-      <h2 className="text-xl font-bold mb-4">
+    <div className="p-4 bg-white/60 shadow rounded-2xl max-h-[550px] border border-green-100">
+      <h2 className="text-xl font-bold text-green-800 mb-4">
         Tinter Batches for {tinterCode}
       </h2>
 
       {/* ✅ Add Batch Form */}
       <form
         onSubmit={handleAddBatch}
-        className="mb-2 flex flex-col gap-4 p-4 border rounded-lg bg-gray-50"
+        className="mb-2 flex flex-col gap-4 p-4 border border-green-100 rounded-lg bg-green-50"
       >
         {/* Top Row */}
         <div className="grid grid-cols-6 gap-3">
@@ -220,7 +226,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             value={newBatch.TinterBatchCode}
             onChange={handleInputChange}
             placeholder="Batch Code"
-            className="col-span-2 border px-2 py-1 rounded w-full text-sm"
+            className="col-span-2 border border-gray-300 px-2 py-1 rounded w-full text-sm"
             required
           />
           <input
@@ -229,7 +235,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             value={newBatch.BatchTinterName}
             onChange={handleInputChange}
             placeholder="Tinter Batch Name"
-            className="col-span-2 border px-2 py-1 rounded w-full text-sm"
+            className="col-span-2 border border-gray-300 px-2 py-1 rounded w-full text-sm"
             required
           />
 
@@ -240,15 +246,15 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             value={newBatch.Strength}
             onChange={handleInputChange}
             placeholder="Strength"
-            className="col-span-1 border px-2 py-1 rounded w-full text-sm"
+            className="col-span-1 border border-gray-300 px-2 py-1 rounded w-full text-sm"
           />
-          <label className="col-span-1 flex items-center justify-center text-sm">
+          <label className="col-span-1 flex items-center justify-center text-sm text-green-800">
             <input
               type="checkbox"
               name="IsActive"
               checked={newBatch.IsActive}
               onChange={handleInputChange}
-              className="mr-1"
+              className="mr-1 accent-green-600"
             />
             Active
           </label>
@@ -260,7 +266,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
           value={newBatch.Comments}
           onChange={handleInputChange}
           placeholder="Comments"
-          className="border px-2 py-1 rounded w-full resize-none text-sm"
+          className="border border-gray-300 px-2 py-1 rounded w-full resize-none text-sm"
         />
 
         {/* Panel Measurements */}
@@ -274,7 +280,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
               value={newBatch.Measurements[name]}
               onChange={handleInputChange}
               placeholder={`Panel ${name.split("_")[1].toUpperCase()}`}
-              className="border px-2 py-1 rounded w-full text-sm"
+              className="border border-gray-300 px-2 py-1 rounded w-full text-sm"
               disabled
             />
           ))}
@@ -283,11 +289,11 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             onClick={fetchRandomPanel}
             disabled={!newBatch.TinterBatchCode}
             className={`px-3 py-1 rounded border text-xs font-semibold
-                        ${
-                          newBatch.TinterBatchCode.length > 3
-                            ? "bg-cyan-200 text-cyan-800 hover:bg-cyan-300 border-cyan-300"
-                            : "bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
-                        }`}
+            ${
+              newBatch.TinterBatchCode.length > 3
+                ? "bg-green-200 text-green-800 hover:bg-green-300 border-green-300"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+            }`}
           >
             Fetch
           </button>
@@ -304,7 +310,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
               value={newBatch.Measurements[name]}
               onChange={handleInputChange}
               placeholder={`Liquid ${name.split("_")[1].toUpperCase()}`}
-              className="border px-2 py-1 rounded w-full text-sm"
+              className="border border-gray-300 px-2 py-1 rounded w-full text-sm"
               disabled
             />
           ))}
@@ -314,11 +320,11 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             onClick={fetchRandomLiquid}
             disabled={!newBatch.TinterBatchCode}
             className={`px-3 py-1 rounded border text-xs font-semibold
-                      ${
-                        newBatch.TinterBatchCode.length > 3
-                          ? "bg-cyan-200 text-cyan-800 hover:bg-cyan-300 border-cyan-300"
-                          : "bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
-                      }`}
+            ${
+              newBatch.TinterBatchCode.length > 3
+                ? "bg-green-200 text-green-800 hover:bg-green-300 border-green-300"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
+            }`}
           >
             Fetch
           </button>
@@ -328,7 +334,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="bg-cyan-600 text-white px-6 py-2 rounded-lg hover:bg-cyan-700 text-sm"
+            className="bg-green-700 text-white px-6 py-2 rounded-lg hover:bg-green-800 text-sm"
           >
             Add Batch
           </button>
@@ -336,88 +342,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
       </form>
 
       {/* ✅ Batch Table */}
-      {batches.length === 0 ? (
-        <p>No batches found for this tinter.</p>
-      ) : (
-        <div className="max-h-[200px] overflow-y-auto border border-gray-300 rounded">
-          <table className="w-full border-collapse border border-gray-300 ">
-            <thead className="sticky top-0 bg-gray-200">
-              <tr className="bg-cyan-600 text-white">
-                <th className="border p-2">Batch Code</th>
-                <th className="border p-2">Name</th>
-                <th className="border p-2">Panel (L, a, b)</th>
-                <th className="border p-2">Liquid (L, a, b)</th>
-                <th className="border p-2">Strength</th>
-                <th className="border p-2">Active</th>
-                <th className="border p-2">Updated</th>
-              </tr>
-            </thead>
-            <tbody>
-              {batches.map((batch) => (
-                <tr key={batch.TinterBatchId}>
-                  <td className="border p-2">
-                    {batch.TinterBatchCode || batch.tinterBatchCode || "-"}
-                  </td>
-                  <td className="border p-2">{batch.BatchTinterName}</td>
-                  {/* Panel */}
-                  <td className="border p-2">
-                    <table className="w-full text-center border border-gray-200 rounded">
-                      <tbody>
-                        <tr>
-                          {["panel_l", "panel_a", "panel_b"].map((type) => {
-                            const m = batch.Measurements?.find(
-                              (m) => m.MeasurementType === type
-                            );
-                            return (
-                              <td
-                                key={`${batch.TinterBatchId}-${type}`}
-                                className="px-2 py-1 border"
-                              >
-                                {parseFloat(m?.MeasurementValue).toFixed(2) ??
-                                  "-"}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                  {/* Liquid */}
-                  <td className="border p-2">
-                    <table className="w-full text-center border border-gray-200 rounded">
-                      <tbody>
-                        <tr>
-                          {["liquid_l", "liquid_a", "liquid_b"].map((type) => {
-                            const m = batch.Measurements?.find(
-                              (m) => m.MeasurementType === type
-                            );
-                            return (
-                              <td
-                                key={`${batch.TinterBatchId}-${type}`}
-                                className="px-2 py-1 border"
-                              >
-                                {parseFloat(m?.MeasurementValue).toFixed(2) ??
-                                  "-"}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                  <td className="border p-2">{batch.Strength}</td>
-                  <td className="border p-2">
-                    {batch.IsActive ? "Yes" : "No"}
-                  </td>
-                  <td className="border p-2 text-xs text-gray-500">
-                    {formatUtcToLocal(batch.UpdatedAt)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <TinterBatchTable tinterId={tinterId} batches={batches} />
     </div>
   );
 };

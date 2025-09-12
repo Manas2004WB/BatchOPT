@@ -80,18 +80,15 @@ const PlantDetails = ({ user, handleLogout }) => {
   };
 
   return (
-    <div
-      className="w-full min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: `url(${heroBg})` }}
-    >
+    <div className="w-full min-h-screen bg-green-50 bg-cover bg-center">
       <NavbarPlantDetails
         handleLogout={handleLogout}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
 
-      <div className="bg-cover bg-center px-4 pt-24 w-full h-screen flex justify-center p-10">
-        <div className="w-full max-w-7xl bg-white/30 backdrop-blur-xl shadow-2xl rounded-2xl p-8">
+      <div className="bg-cover bg-center px-4 pt-20 w-full h-screen flex justify-center p-5">
+        <div className="w-full max-w-full bg-white/60 backdrop-blur-xl shadow-2xl rounded-2xl p-8 border border-green-100">
           {renderTabContent()}
         </div>
       </div>

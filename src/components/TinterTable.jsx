@@ -110,14 +110,14 @@ const TinterTable = ({ plantId, user, plantName }) => {
     <div className="overflow-x-auto rounded-lg">
       <Toaster position="top-right" richColors />
       <div className="mb-4 flex items-center justify-center gap-2">
-        <span className="text-lg font-semibold text-white">Plant:</span>
-        <span className="text-lg font-bold text-cyan-600 bg-cyan-100 px-3 py-1 rounded shadow-sm">
+        <span className="text-lg font-semibold text-green-800">Plant:</span>
+        <span className="text-lg font-bold text-green-700 bg-green-100 px-3 py-1 rounded shadow-sm">
           {plantName}
         </span>
       </div>
 
       <button
-        className="mb-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded"
+        className="mb-4 bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded"
         onClick={() => setShowAddModal(true)}
       >
         + Add Tinter
@@ -125,7 +125,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
 
       {/* Add Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">
             <button
               onClick={() => setShowAddModal(false)}
@@ -147,7 +147,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
 
       {/* Update Modal */}
       {showEditModal && editingTinter && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">
             <button
               onClick={() => setShowEditModal(false)}
@@ -167,7 +167,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
 
       {/* Batch Form */}
       {showBatchForm && selectedTinter && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-5xl relative">
             <button
               onClick={() => setShowBatchForm(false)}
@@ -184,10 +184,11 @@ const TinterTable = ({ plantId, user, plantName }) => {
         </div>
       )}
 
+      {/* Delete Confirmation */}
       {confirmDelete.open && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm  flex items-center justify-center z-10">
+        <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex items-center justify-center z-10">
           <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
-            <h2 className="text-lg font-bold mb-2 text-cyan-700">
+            <h2 className="text-lg font-bold mb-2 text-green-700">
               Delete Tinter?
             </h2>
             <p className="mb-4 text-gray-700">
@@ -213,20 +214,21 @@ const TinterTable = ({ plantId, user, plantName }) => {
           </div>
         </div>
       )}
-      <div className="overflow-x-auto overflow-y-auto max-h-[350px] border border-white/30 rounded">
-        <table className="min-w-full text-left border border-white/30 backdrop-blur">
-          <thead className="bg-cyan-700 text-white sticky top-0 z-10">
+
+      {/* Table */}
+      <div className="overflow-x-auto overflow-y-auto max-h-[350px] border border-green-100 rounded">
+        <table className="min-w-full text-left border border-green-100 backdrop-blur">
+          <thead className="bg-green-500 text-white sticky top-0 z-10">
             <tr>
               <th className="px-4 py-2">Tinter Code</th>
               <th className="px-4 py-2">Status</th>
               <th className="px-4 py-2">Updated By</th>
               <th className="px-4 py-2">Updated At</th>
-              <th className="px-4 py-2">Edit</th>
-              <th className="px-4 py-2">Batches</th>
-              <th className="px-4 py-2">Delete</th>
+              <th className="px-4 py-2">Add Batches</th>
+              <th className="px-4 py-2">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white/60">
+          <tbody className="bg-white/70">
             {tinterList.length === 0 ? (
               <tr>
                 <td colSpan="7" className="text-center py-4 text-gray-500">
@@ -237,12 +239,12 @@ const TinterTable = ({ plantId, user, plantName }) => {
               tinterList.map((tinter) => (
                 <tr
                   key={tinter.TinterId}
-                  className="border-t border-white/30 hover:bg-white/80 transition"
+                  className="border-t border-green-100 hover:bg-green-50 transition"
                 >
                   <td className="px-4 py-2">{tinter.TinterCode}</td>
                   <td className="px-4 py-2">
                     {tinter.IsActive ? (
-                      <span className="text-green-600 font-semibold">
+                      <span className="text-green-700 font-semibold">
                         Active
                       </span>
                     ) : (
@@ -261,35 +263,34 @@ const TinterTable = ({ plantId, user, plantName }) => {
                   </td>
                   <td className="px-4 py-2">
                     <button
-                      className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
-                      onClick={() => {
-                        setEditingTinter(tinter);
-                        setShowEditModal(true);
-                      }}
-                    >
-                      <FaEdit />
-                    </button>
-                  </td>
-                  <td className="px-4 py-2">
-                    <button
                       onClick={() => {
                         setSelectedTinter(tinter);
                         setShowBatchForm(true);
                       }}
-                      className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
+                      className="p-1 mx-2 text-green-700 hover:text-green-900"
                     >
                       <IoIosAddCircleOutline />
                     </button>
                   </td>
                   <td className="px-4 py-2">
-                    <button
-                      onClick={() => handleDeleteTinter(tinter.TinterId)}
-                      className="border-1 p-1 mx-2 text-cyan-600 hover:text-cyan-800"
-                    >
-                      <MdDelete />
-                    </button>
+                    <div className="flex items-center gap-5">
+                      <button
+                        onClick={() => handleDeleteTinter(tinter.TinterId)}
+                        className="p-1 mx-2 text-green-700 hover:text-green-900"
+                      >
+                        <MdDelete />
+                      </button>
+                      <button
+                        className="p-1 mx-2 text-green-700 hover:text-green-900"
+                        onClick={() => {
+                          setEditingTinter(tinter);
+                          setShowEditModal(true);
+                        }}
+                      >
+                        <FaEdit />
+                      </button>
+                    </div>
                   </td>
-                  {/* Custom Delete Confirmation Modal */}
                 </tr>
               ))
             )}

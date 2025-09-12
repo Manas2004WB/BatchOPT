@@ -247,7 +247,7 @@ const Dashboard = ({ user, handleLogout }) => {
 
           <div className="overflow-x-auto rounded-lg min-h-[508px] max-h-[508px] overflow-y-auto border border-gray-200">
             <table className="min-w-full text-left border border-gray-200 backdrop-blur">
-              <thead className="bg-green-500/80 text-white sticky top-0 z-10">
+              <thead className="bg-green-400 text-white sticky top-0 z-10">
                 <tr>
                   <th
                     className="px-4 py-2 cursor-pointer"

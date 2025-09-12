@@ -60,26 +60,24 @@ const AddTinterForm = ({ onAdd, plantId }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl mb-8 max-w-lg w-full"
+      className="bg-white p-6 rounded-xl shadow-xl mb-8 max-w-lg w-full border border-green-100"
     >
-      <h2 className="text-xl font-bold text-black drop-shadow mb-4">
-        Add New Tinter
-      </h2>
+      <h2 className="text-xl font-bold text-green-800 mb-4">Add New Tinter</h2>
 
       <input
         type="text"
         placeholder="Tinter Code"
         value={tinterCode}
         onChange={(e) => setTinterCode(e.target.value)}
-        className="w-full px-4 py-2 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+        className="w-full px-4 py-2 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600"
       />
 
-      <label className="text-black flex items-center mb-4">
+      <label className="text-green-800 flex items-center mb-4">
         <input
           type="checkbox"
           checked={isActive}
           onChange={(e) => setIsActive(e.target.checked)}
-          className="mr-2"
+          className="mr-2 accent-green-600"
         />
         Active
       </label>
@@ -87,7 +85,7 @@ const AddTinterForm = ({ onAdd, plantId }) => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 rounded disabled:opacity-50"
+        className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-2 rounded disabled:opacity-50 transition-colors"
       >
         {loading ? "Adding..." : "Add Tinter"}
       </button>

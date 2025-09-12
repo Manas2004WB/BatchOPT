@@ -17,7 +17,7 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 disabled:hover:bg-gray-200"
         >
           ⟵ Prev
         </button>
@@ -26,10 +26,10 @@ const Pagination = ({
           <button
             key={num}
             onClick={() => onPageChange(num)}
-            className={`px-3 py-1 rounded ${
+            className={`px-3 py-1 rounded transition-colors ${
               num === currentPage
-                ? "bg-cyan-500 text-white"
-                : "bg-gray-100 hover:bg-gray-300"
+                ? "bg-green-700 text-white"
+                : "bg-white border border-gray-300 hover:bg-green-50"
             }`}
           >
             {num}
@@ -39,7 +39,7 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 disabled:hover:bg-gray-200"
         >
           Next ⟶
         </button>
@@ -47,7 +47,10 @@ const Pagination = ({
 
       {/* Right: Plants per page selector */}
       <div className="flex items-center gap-2 text-sm">
-        <label htmlFor="plantPerPage" className="text-white whitespace-nowrap">
+        <label
+          htmlFor="plantPerPage"
+          className="text-green-800 font-medium whitespace-nowrap"
+        >
           Plants per page:
         </label>
         <select
@@ -58,17 +61,21 @@ const Pagination = ({
             setPlantPerPage(val);
             onPageChange(1); // Reset to page 1
           }}
-          className="border text-white border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          className="border text-green-800 border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-green-600 bg-white"
         >
-          {[7, 20, 50, 100].map((option) => (
-            <option key={option} value={option} className="text-black">
+          {[10, 20, 50, 100].map((option) => (
+            <option key={option} value={option} className="text-green-800">
               {option}
             </option>
           ))}
         </select>
       </div>
+
       <div>
-        <label htmlFor="plantPerPage" className="text-white whitespace-nowrap">
+        <label
+          htmlFor="plantPerPage"
+          className="text-green-800 font-medium whitespace-nowrap"
+        >
           Total Plants: {plantList.length}
         </label>
       </div>

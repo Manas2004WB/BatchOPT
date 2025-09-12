@@ -9,7 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { FaSortUp, FaSortDown, FaSort } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import { Toaster, toast } from "sonner";
-
+import { MdRemoveRedEye, MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 import {
   getPlants,
   getPlantById,
@@ -36,7 +37,7 @@ const Dashboard = ({ user, handleLogout }) => {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
-  const [plantPerPage, setPlantPerPage] = useState(7);
+  const [plantPerPage, setPlantPerPage] = useState(10);
 
   const navigate = useNavigate();
   // Remove doLogout indirection, use handleLogout directly
@@ -117,7 +118,13 @@ const Dashboard = ({ user, handleLogout }) => {
   const handleAddPlant = async (newPlant) => {
     try {
       const created = await createPlant(newPlant);
-      setPlantList((prev) => [...prev, created]);
+      setPlantList((prev) => {
+        const updated = [...prev, created];
+        return updated.sort(
+          (a, b) => new Date(b.UpdatedAt) - new Date(a.UpdatedAt)
+        );
+      });
+
       toast.success("Plant added successfully!");
     } catch (err) {
       console.error("Failed to create plant", err);
@@ -168,15 +175,12 @@ const Dashboard = ({ user, handleLogout }) => {
     <>
       <Toaster richColors position="top-right" />
       <Navbar user={user} onLogout={handleLogout} />
-      <div
-        className="min-h-screen bg-cover bg-center flex items-center justify-center px-4 pt-24"
-        style={{ backgroundImage: `url(${heroBg})` }}
-      >
-        <div className="w-full max-w-6xl bg-white/30 backdrop-blur-md shadow-2xl rounded-2xl p-8 overflow-hidden">
+      <div className="max-h-screen bg-cover bg-center flex items-center justify-center pt-12 overflow-y-hidden">
+        <div className="w-full max-w-full bg-white backdrop-blur-md  rounded-2xl p-8 overflow-hidden">
           <div className="flex flex-row gap-10 justify-between mt-1.5">
             <button
               onClick={() => setShowModal(true)}
-              className="mb-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded"
+              className="mb-4 bg-green-500 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded"
             >
               + Add Plant
             </button>
@@ -189,17 +193,15 @@ const Dashboard = ({ user, handleLogout }) => {
           </div>
 
           {showModal && (
-            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex items-center justify-center z-50">
               <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">
-                {/* Close button */}
                 <button
                   onClick={() => setShowModal(false)}
-                  className="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl"
+                  className="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-xl"
                 >
                   &times;
                 </button>
 
-                {/* Add Plant Form */}
                 <AddPlantForm
                   onAdd={(plant) => {
                     handleAddPlant(plant);
@@ -211,7 +213,7 @@ const Dashboard = ({ user, handleLogout }) => {
           )}
 
           {confirmDelete.open && (
-            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
               <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
                 <h2 className="text-lg font-bold mb-2 text-red-700">
                   Delete Plant?
@@ -222,7 +224,7 @@ const Dashboard = ({ user, handleLogout }) => {
                 </p>
                 <div className="flex justify-end gap-2">
                   <button
-                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                    className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
                     onClick={() =>
                       setConfirmDelete({
                         open: false,
@@ -243,9 +245,9 @@ const Dashboard = ({ user, handleLogout }) => {
             </div>
           )}
 
-          <div className="overflow-x-auto rounded-lg  min-h-[400px] max-h-[400px]  overflow-y-auto border border-white/30">
-            <table className="min-w-full text-left border border-white/30 backdrop-blur min-h-[398px]">
-              <thead className="bg-cyan-700 text-white sticky top-0 z-10">
+          <div className="overflow-x-auto rounded-lg min-h-[508px] max-h-[508px] overflow-y-auto border border-gray-200">
+            <table className="min-w-full text-left border border-gray-200 backdrop-blur">
+              <thead className="bg-green-500/80 text-white sticky top-0 z-10">
                 <tr>
                   <th
                     className="px-4 py-2 cursor-pointer"
@@ -264,6 +266,7 @@ const Dashboard = ({ user, handleLogout }) => {
                       )}
                     </div>
                   </th>
+                  <th className="px-4 py-2">SKU Tinter Count</th>
                   <th
                     className="px-4 py-2 cursor-pointer"
                     onClick={() => handleSort("IsActive")}
@@ -281,19 +284,31 @@ const Dashboard = ({ user, handleLogout }) => {
                       )}
                     </div>
                   </th>
+
                   <th className="px-4 py-2">Action</th>
                 </tr>
               </thead>
-              <tbody className="bg-white/60 min-h-52">
+              <tbody className="bg-white/80 min-h-52">
                 {currentPlants.map((plant) => (
                   <tr
                     key={plant.PlantId || "N/A"}
-                    className="border-t border-white/30 hover:bg-white/80 transition"
+                    className="border-t border-gray-200 hover:bg-green-50 transition"
                   >
                     <td className="px-4 py-2">{plant.PlantName}</td>
                     <td className="px-4 py-2">
+                      <div className="flex flex-row gap-4">
+                        <span className="px-2 py-1 bg-green-300 rounded-2xl">
+                          SKUS:{plant.Skus.length}
+                        </span>
+                        <span className="px-2 py-1 bg-green-300 rounded-2xl">
+                          Tinters:
+                          {plant.Tinters.length}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-2">
                       {plant.IsActive ? (
-                        <span className="text-green-600 font-semibold">
+                        <span className="text-green-700 font-semibold">
                           Active
                         </span>
                       ) : (
@@ -302,11 +317,12 @@ const Dashboard = ({ user, handleLogout }) => {
                         </span>
                       )}
                     </td>
+
                     <td className="px-4 py-2 space-x-2">
                       <button
-                        className={`px-4 py-1 rounded text-sm ${
+                        className={`px-4 py-2 rounded text-sm ${
                           plant.IsActive
-                            ? "bg-green-500 hover:bg-green-600 text-white"
+                            ? "bg-amber-300 hover:bg-amber-500 text-white"
                             : "bg-gray-400 cursor-not-allowed text-white"
                         }`}
                         disabled={!plant.IsActive}
@@ -316,36 +332,35 @@ const Dashboard = ({ user, handleLogout }) => {
                           }
                         }}
                       >
-                        View
+                        <MdRemoveRedEye />
                       </button>
                       {hasFullAccess && (
                         <>
                           <button
-                            className="bg-cyan-500 hover:bg-cyan-600 text-white px-5 py-1 rounded text-sm"
+                            className="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded sm"
                             onClick={() => {
                               setSelectedPlant(plant);
                               setShowUpdateModal(true);
                             }}
                           >
-                            Edit
+                            <FaEdit />
                           </button>
 
                           <button
-                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm "
                             onClick={() => handleDeletePlant(plant.PlantId)}
                           >
-                            Delete
+                            <MdDelete />
                           </button>
                         </>
                       )}
                     </td>
                   </tr>
                 ))}
-                {/* Add empty rows to keep table height consistent */}
                 {Array.from({
                   length: plantPerPage - currentPlants.length,
                 }).map((_, idx) => (
-                  <tr key={"empty-" + idx} className="border-t border-white/30">
+                  <tr key={"empty-" + idx} className="border-t border-gray-200">
                     <td className="px-4 py-2">&nbsp;</td>
                     <td className="px-4 py-2"></td>
                     <td className="px-4 py-2"></td>
@@ -355,22 +370,20 @@ const Dashboard = ({ user, handleLogout }) => {
             </table>
 
             {showUpdateModal && (
-              <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+              <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex items-center justify-center z-50">
                 <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">
-                  {/* Close Button */}
                   <button
                     onClick={() => setShowUpdateModal(false)}
-                    className="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl"
+                    className="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-xl"
                   >
                     &times;
                   </button>
 
-                  {/* Update Form */}
                   <UpdatePlantForm
                     plant={selectedPlant}
                     onUpdate={(updatedPlant) => {
                       handleUpdatePlant(updatedPlant);
-                      setShowUpdateModal(false); // close modal
+                      setShowUpdateModal(false);
                     }}
                   />
                 </div>

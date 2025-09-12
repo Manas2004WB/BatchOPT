@@ -35,11 +35,14 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2 className="text-xl font-bold text-gray-800 mb-4">Update Plant</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-6 rounded-xl shadow-xl border border-gray-200"
+    >
+      <h2 className="text-xl font-bold text-green-800 mb-4">Update Plant</h2>
 
       {error && (
-        <p className="text-red-600 bg-red-100 px-3 py-1 mb-4 rounded">
+        <p className="text-red-600 bg-red-100 px-3 py-1 mb-4 rounded border border-red-300">
           {error}
         </p>
       )}
@@ -51,24 +54,24 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
           setUpdatedPlant({ ...updatedPlant, PlantName: e.target.value })
         }
         placeholder="Plant Name"
-        className="w-full px-4 py-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
+        className="w-full px-4 py-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600"
       />
 
-      <label className="flex items-center mb-4 text-gray-700">
+      <label className="flex items-center mb-4 text-green-800">
         <input
           type="checkbox"
           checked={updatedPlant.IsActive}
           onChange={(e) =>
             setUpdatedPlant({ ...updatedPlant, IsActive: e.target.checked })
           }
-          className="mr-2"
+          className="mr-2 accent-green-600"
         />
         Active
       </label>
 
       <button
         type="submit"
-        className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 rounded"
+        className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-2 rounded transition-colors"
       >
         Save Changes
       </button>

@@ -9,7 +9,7 @@ const NavbarPlantDetails = ({ activeTab, setActiveTab, handleLogout }) => {
   };
 
   return (
-    <nav className="w-full bg-white/70 backdrop-blur-md shadow-lg px-8 py-3 fixed top-0 left-0 z-50 flex justify-between items-center border-b border-green-200">
+    <nav className="w-full bg-white/70 backdrop-blur-md shadow-lg px-8 py-3 fixed top-0 left-0  flex justify-between items-center border-b border-green-200">
       {/* Left Section: Title + Tabs */}
       <div className="flex items-center gap-10">
         {/* Title */}

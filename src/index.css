@@ -26,7 +26,7 @@ input[type=number] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(45, 74, 38); /* cyan shades */
+  background: #28873a; /* cyan shades */
   border-radius: 9999px;
 }
 

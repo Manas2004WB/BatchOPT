@@ -133,7 +133,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
   return (
     <div className="overflow-x-auto rounded-lg">
       <Toaster position="top-right" richColors />
-      <div className="mb-4 flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-2">
         <span className="text-lg font-semibold text-[#3dcd58]">Plant:</span>
         <span className="text-lg font-bold text-[#3dcd58] bg-green-100 px-3 py-1 rounded shadow-sm">
           {plantName}
@@ -240,7 +240,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto overflow-y-auto max-h-[350px] border border-green-100 rounded">
+      <div className="overflow-x-auto overflow-y-auto max-h-[500px] border border-green-100 rounded">
         <table className="min-w-full text-left border border-green-100 backdrop-blur">
           <thead className="bg-[#3dcd58] text-white sticky top-0 z-10">
             <tr>

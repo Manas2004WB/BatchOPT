@@ -44,6 +44,7 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
 
   return (
     <div className="overflow-x-auto">
+      <Toaster position="top-right" richColors />
       <div className="mb-4 flex items-cente justify-center gap-2">
         <span className="text-lg font-semibold text-white">Plant:</span>
         <span className="text-lg font-bold text-cyan-600 bg-cyan-100 px-3 py-1 rounded shadow-sm">

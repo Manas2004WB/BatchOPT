@@ -178,9 +178,9 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/35 bg-opacity-40 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex justify-center items-center z-50">
       <Toaster position="top-right" richColors />
-      <div className="bg-white rounded-lg shadow-lg p-6 w-[800px]">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-[900px]">
         <h2 className="text-lg font-bold mb-2">
           {skuMode === "select" ? "Create new SKU Version" : "Create new SKU"}
         </h2>
@@ -190,7 +190,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
             <label className="font-semibold">SKU Code:</label>
             <button
               type="button"
-              className="text-xs px-2 py-1 rounded bg-cyan-100 text-cyan-700 border border-cyan-300 hover:bg-cyan-200"
+              className="text-xs px-2 py-1 rounded bg-[#3dcd58] text-white border border-emerald-700 hover:bg-emerald-600"
               onClick={() => {
                 setSkuMode(skuMode === "select" ? "input" : "select");
                 setSkuCode("");
@@ -245,7 +245,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
               <button
                 type="button"
                 onClick={fetchRandomLiquid}
-                className="ml-2 px-3 py-1 bg-cyan-200 text-cyan-800 rounded hover:bg-cyan-300 text-xs font-semibold border border-cyan-300"
+                className="ml-2 px-3 py-1 bg-emerald-500 text-white rounded hover:bg-emerald-700 text-xs font-semibold border border-emerald-700"
               >
                 Fetch
               </button>
@@ -272,7 +272,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
               <button
                 type="button"
                 onClick={fetchRandomPanel}
-                className="ml-2 px-3 py-1 bg-cyan-200 text-cyan-800 rounded hover:bg-cyan-300 text-xs font-semibold border border-cyan-300"
+                className="ml-2 px-3 py-1 bg-emerald-500 text-white rounded hover:bg-emerald-700 text-xs font-semibold border border-emerald-700"
               >
                 Fetch
               </button>
@@ -298,7 +298,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
             {skuCode && (
               <button
                 type="button"
-                className="disable  ml-2 px-3 py-1 bg-cyan-50 text-cyan-50 rounded hover:bg-cyan-50 text-xs font-semibold border border-cyan-50"
+                className="disable  ml-2 px-3 py-1 bg-white text-white rounded "
               >
                 Fetch
               </button>
@@ -334,7 +334,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
               placeholder="Search tinters..."
               className="mb-2 px-2 py-1 border rounded w-full"
             />
-            <div className="border rounded p-2 bg-gray-50 max-h-25 min-h-25 overflow-y-auto flex flex-col gap-1">
+            <div className="border rounded p-2 bg-emerald-50 max-h-25 min-h-25 overflow-y-auto flex flex-col gap-1">
               {tinters.length === 0 ? (
                 <span className="text-gray-400">No tinters available</span>
               ) : (
@@ -347,7 +347,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
                   .map((t) => (
                     <label
                       key={t.TinterId}
-                      className="flex items-center gap-1 cursor-pointer hover:bg-cyan-100 rounded px-2 py-1"
+                      className="flex items-center gap-1 cursor-pointer hover:bg-emerald-100 rounded px-2 py-1"
                     >
                       <input
                         type="checkbox"
@@ -365,9 +365,9 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
                             );
                           }
                         }}
-                        className="accent-cyan-600"
+                        className="accent-emerald-600"
                       />
-                      <span className="font-semibold text-cyan-800 text-sm">
+                      <span className="font-semibold text-emerald-800 text-sm">
                         {t.TinterCode}
                       </span>
                     </label>
@@ -388,7 +388,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700"
+              className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
             >
               {loading ? "Saving..." : "Save"}
             </button>

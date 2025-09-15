@@ -33,16 +33,16 @@ const SkuTable = ({ user, plantId, plantName }) => {
   return (
     <div className="overflow-x-auto">
       <Toaster position="top-right" richColors />
-      <div className=" flex items-center justify-center gap-1">
+      <div className=" flex items-center justify-center gap-2">
         <span className="text-lg font-semibold text-white">Plant:</span>
-        <span className="text-lg font-bold text-cyan-600 bg-cyan-100 px-3 py-1 rounded shadow-sm">
+        <span className="text-lg font-bold text-white bg-[#3dcd58] px-3 py-1 rounded shadow-sm">
           {plantName}
         </span>
       </div>
 
       <button
         onClick={() => setShowAddModal(true)}
-        className="mb-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded"
+        className="mb-4 bg-[#3dcd58] hover:bg-emerald-600 text-white font-semibold px-4 py-2 rounded"
       >
         + Add SKU
       </button>
@@ -61,17 +61,74 @@ const SkuTable = ({ user, plantId, plantName }) => {
         />
       )}
 
-      <div className="max-h-[420px] overflow-y-auto scrollbar-thin overflow-x-hidden">
+      <div className="max-h-[500px] overflow-y-auto scrollbar-thin overflow-x-hidden">
         <table className="min-w-full border border-white/30 shadow-2xl rounded-2xl bg-white/60 backdrop-blur">
-          <thead className="bg-cyan-700 text-white sticky top-[-2px] z-10 shadow-md">
+          <thead className="bg-[#3dcd58] text-white sticky top-[-2px] z-10 shadow-md">
             <tr>
               <th className="px-4 py-2">Sr. No</th>
               <th className="px-4 py-2">SKU Revision</th>
               <th className="px-4 py-2">SKU Code</th>
               <th className="px-4 py-2">Batches</th>
-              <th className="px-4 py-2">Std. Liquid (L, a, b)</th>
-              <th className="px-4 py-2">Panel Color (L, a, b)</th>
-              <th className="px-4 py-2">Spectro Color (L, a, b)</th>
+              <th className="px-4 py-2">
+                <div className="flex flex-col item-centre gap-2">
+                  <span>Liquid Color</span>
+                  <table>
+                    <thead>
+                      <tr className="flex justify-between">
+                        <th className="px-2 py-1 bg-white  text-[#3dcd58] text-l">
+                          L
+                        </th>
+                        <th className="px-2 py-1  bg-white text-[#3dcd58] text-l">
+                          a
+                        </th>
+                        <th className="px-2 py-1  bg-white  text-[#3dcd58] text-l">
+                          b
+                        </th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+              </th>
+              <th className="px-4 py-2">
+                <div className="flex flex-col item-centre gap-2">
+                  <span>Panel Color</span>
+                  <table>
+                    <thead>
+                      <tr className="flex justify-between">
+                        <th className="px-2 py-1 bg-white  text-[#3dcd58] text-l">
+                          L
+                        </th>
+                        <th className="px-2 py-1  bg-white text-[#3dcd58] text-l">
+                          a
+                        </th>
+                        <th className="px-2 py-1  bg-white  text-[#3dcd58] text-l">
+                          b
+                        </th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+              </th>
+              <th className="px-4 py-2">
+                <div className="flex flex-col item-centre gap-2">
+                  <span>Spectro Color</span>
+                  <table>
+                    <thead>
+                      <tr className="flex justify-between">
+                        <th className="px-2 py-1 bg-white  text-[#3dcd58] text-l">
+                          L
+                        </th>
+                        <th className="px-2 py-1  bg-white text-[#3dcd58] text-l">
+                          a
+                        </th>
+                        <th className="px-2 py-1  bg-white  text-[#3dcd58] text-l">
+                          b
+                        </th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+              </th>
               <th className="px-4 py-2">Std. Tinters</th>
               <th className="px-4 py-2">Target dE</th>
               <th className="px-4 py-2">Last Updated</th>
@@ -91,7 +148,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
                         <tr>
                           <td
                             colSpan="11"
-                            style={{ borderTop: "4px solid #0e7490" }}
+                            style={{ borderTop: "4px solid #3dcd58" }}
                           ></td>
                         </tr>
                       )}
@@ -109,7 +166,11 @@ const SkuTable = ({ user, plantId, plantName }) => {
                             {version.SkuRevision ?? "-"}
                           </td>
                           <td className="px-4 py-2">{sku.SkuName ?? "-"}</td>
-                          <td className="px-4 py-2 text-center">{"Batches"}</td>
+
+                          <td className="px-4 py-2 text-center">
+                            {version.Batches ? version.Batches.length : "-"}
+                          </td>
+
                           {/* Nested table for Std. Liquid */}
                           <td className="px-2 py-1 text-center">
                             {version.StdLiquid ? (
@@ -200,7 +261,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
                                 {version.StdTinters.map((tinter, idx) => (
                                   <span
                                     key={tinter.TinterCode + idx}
-                                    className="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-2 py-1 rounded-full shadow"
+                                    className="inline-block bg-emerald-100 text-emerald-800 text-xs font-semibold px-2 py-1 rounded-full shadow"
                                   >
                                     {tinter.TinterCode}
                                   </span>

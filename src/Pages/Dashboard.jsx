@@ -180,7 +180,7 @@ const Dashboard = ({ user, handleLogout }) => {
           <div className="flex flex-row gap-10 justify-between mt-1.5">
             <button
               onClick={() => setShowModal(true)}
-              className="mb-4 bg-green-500 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded"
+              className="mb-4 bg-[#3dcd58] hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
             >
               + Add Plant
             </button>
@@ -247,7 +247,7 @@ const Dashboard = ({ user, handleLogout }) => {
 
           <div className="overflow-x-auto rounded-lg min-h-[508px] max-h-[508px] overflow-y-auto border border-gray-200">
             <table className="min-w-full text-left border border-gray-200 backdrop-blur">
-              <thead className="bg-green-400 text-white sticky top-0 z-10">
+              <thead className="bg-[#3dcd58] text-white sticky top-0 z-10">
                 <tr>
                   <th
                     className="px-4 py-2 cursor-pointer"

@@ -13,20 +13,20 @@ const NavbarPlantDetails = ({ activeTab, setActiveTab, handleLogout }) => {
       {/* Left Section: Title + Tabs */}
       <div className="flex items-center gap-10">
         {/* Title */}
-        <h1 className="text-3xl font-semibold text-green-800 tracking-wide">
+        <h1 className="text-3xl font-semibold text-[#3dcd58] tracking-wide">
           Plant Details
         </h1>
 
         {/* Tabs */}
-        <ul className="flex gap-6 text-green-800 font-medium text-sm tracking-wide">
+        <ul className="flex gap-6 text-[#3dcd58] font-medium text-sm tracking-wide">
           {["sku", "batches", "tinter", "calibration"].map((tab) => (
             <li key={tab}>
               <button
                 onClick={() => setActiveTab(tab)}
                 className={`transition duration-200 pb-1 border-b-2 ${
                   activeTab === tab
-                    ? "border-green-700 text-green-800"
-                    : "border-transparent hover:border-green-500 hover:text-green-700"
+                    ? "border-green-500 text-green-600"
+                    : "border-transparent hover:border-green-400 hover:text-green-600"
                 }`}
               >
                 {tab.toUpperCase()}

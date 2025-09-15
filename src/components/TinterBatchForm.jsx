@@ -340,9 +340,6 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
           </button>
         </div>
       </form>
-
-      {/* ✅ Batch Table */}
-      <TinterBatchTable tinterId={tinterId} batches={batches} />
     </div>
   );
 };

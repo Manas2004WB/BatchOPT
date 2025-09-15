@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import AddTinterForm from "./AddTinterForm";
 import UpdateTinterForm from "./UpdateTinterForm";
 import TinterBatchForm from "./TinterBatchForm";
@@ -9,6 +9,8 @@ import { MdDelete } from "react-icons/md";
 import { Toaster, toast } from "sonner";
 import { users } from "../Data/Data";
 import { formatUtcToLocal } from "../utility/utc2ist";
+import TinterBatchTable from "./TinterBatchTable";
+import tinterBatchService from "../services/tinterBatchService";
 
 const TinterTable = ({ plantId, user, plantName }) => {
   console.log("TinterTable props - PlantId:", plantId);
@@ -18,7 +20,8 @@ const TinterTable = ({ plantId, user, plantName }) => {
   const [tinterList, setTinterList] = useState([]);
   const [selectedTinter, setSelectedTinter] = useState(null);
   const [showBatchForm, setShowBatchForm] = useState(false);
-  const [batches, setBatches] = useState([]);
+  const [expandedTinterId, setExpandedTinterId] = useState(null);
+  const [batches, setBatches] = useState({}); // { tinterId: [batches] }
   const [confirmDelete, setConfirmDelete] = useState({
     open: false,
     tinterId: null,
@@ -106,18 +109,39 @@ const TinterTable = ({ plantId, user, plantName }) => {
     }
   };
 
+  const toggleAccordion = async (tinterId) => {
+    if (expandedTinterId === tinterId) {
+      // collapse
+      setExpandedTinterId(null);
+    } else {
+      // expand
+      setExpandedTinterId(tinterId);
+
+      // fetch batches only if not already loaded
+      if (!batches[tinterId]) {
+        try {
+          const data =
+            await tinterBatchService.getTinterBatchesWithMeasurements(tinterId);
+          setBatches((prev) => ({ ...prev, [tinterId]: data }));
+        } catch (err) {
+          console.error("Error fetching batches:", err);
+        }
+      }
+    }
+  };
+
   return (
     <div className="overflow-x-auto rounded-lg">
       <Toaster position="top-right" richColors />
       <div className="mb-4 flex items-center justify-center gap-2">
-        <span className="text-lg font-semibold text-green-800">Plant:</span>
-        <span className="text-lg font-bold text-green-700 bg-green-100 px-3 py-1 rounded shadow-sm">
+        <span className="text-lg font-semibold text-[#3dcd58]">Plant:</span>
+        <span className="text-lg font-bold text-[#3dcd58] bg-green-100 px-3 py-1 rounded shadow-sm">
           {plantName}
         </span>
       </div>
 
       <button
-        className="mb-4 bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded"
+        className="mb-4 bg-[#3dcd58] hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
         onClick={() => setShowAddModal(true)}
       >
         + Add Tinter
@@ -218,7 +242,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
       {/* Table */}
       <div className="overflow-x-auto overflow-y-auto max-h-[350px] border border-green-100 rounded">
         <table className="min-w-full text-left border border-green-100 backdrop-blur">
-          <thead className="bg-green-500 text-white sticky top-0 z-10">
+          <thead className="bg-[#3dcd58] text-white sticky top-0 z-10">
             <tr>
               <th className="px-4 py-2">Tinter Code</th>
               <th className="px-4 py-2">Status</th>
@@ -228,7 +252,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
               <th className="px-4 py-2">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white/70">
+          <tbody className="bg-emerald-50/60">
             {tinterList.length === 0 ? (
               <tr>
                 <td colSpan="7" className="text-center py-4 text-gray-500">
@@ -237,61 +261,77 @@ const TinterTable = ({ plantId, user, plantName }) => {
               </tr>
             ) : (
               tinterList.map((tinter) => (
-                <tr
-                  key={tinter.TinterId}
-                  className="border-t border-green-100 hover:bg-green-50 transition"
-                >
-                  <td className="px-4 py-2">{tinter.TinterCode}</td>
-                  <td className="px-4 py-2">
-                    {tinter.IsActive ? (
-                      <span className="text-green-700 font-semibold">
-                        Active
-                      </span>
-                    ) : (
-                      <span className="text-red-500 font-semibold">
-                        Inactive
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-2">
-                    {getUsernamebyUserId(tinter.UpdatedBy)}
-                  </td>
-                  <td className="px-4 py-2">
-                    {tinter.UpdatedAt
-                      ? formatUtcToLocal(tinter.UpdatedAt)
-                      : "--"}
-                  </td>
-                  <td className="px-4 py-2">
-                    <button
-                      onClick={() => {
-                        setSelectedTinter(tinter);
-                        setShowBatchForm(true);
-                      }}
-                      className="p-1 mx-2 text-green-700 hover:text-green-900"
-                    >
-                      <IoIosAddCircleOutline />
-                    </button>
-                  </td>
-                  <td className="px-4 py-2">
-                    <div className="flex items-center gap-5">
+                <Fragment key={tinter.TinterId}>
+                  <tr
+                    key={tinter.TinterId}
+                    className="border-t cursor-pointer border-green-100 hover:bg-green-50 transition"
+                    onClick={() => toggleAccordion(tinter.TinterId)}
+                  >
+                    <td className="px-4 py-2">{tinter.TinterCode}</td>
+                    <td className="px-4 py-2">
+                      {tinter.IsActive ? (
+                        <span className="text-green-700 font-semibold">
+                          Active
+                        </span>
+                      ) : (
+                        <span className="text-red-500 font-semibold">
+                          Inactive
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2">
+                      {getUsernamebyUserId(tinter.UpdatedBy)}
+                    </td>
+                    <td className="px-4 py-2">
+                      {tinter.UpdatedAt
+                        ? formatUtcToLocal(tinter.UpdatedAt)
+                        : "--"}
+                    </td>
+                    <td className="px-4 py-2">
                       <button
-                        onClick={() => handleDeleteTinter(tinter.TinterId)}
-                        className="p-1 mx-2 text-green-700 hover:text-green-900"
-                      >
-                        <MdDelete />
-                      </button>
-                      <button
-                        className="p-1 mx-2 text-green-700 hover:text-green-900"
                         onClick={() => {
-                          setEditingTinter(tinter);
-                          setShowEditModal(true);
+                          setSelectedTinter(tinter);
+                          setShowBatchForm(true);
                         }}
+                        className="p-1 mx-2 text-green-700 hover:text-green-900"
                       >
-                        <FaEdit />
+                        <IoIosAddCircleOutline />
                       </button>
-                    </div>
-                  </td>
-                </tr>
+                    </td>
+                    <td className="px-4 py-2">
+                      <div className="flex items-center gap-5">
+                        <button
+                          onClick={() => handleDeleteTinter(tinter.TinterId)}
+                          className="p-1 mx-2 text-green-700 hover:text-green-900"
+                        >
+                          <MdDelete />
+                        </button>
+                        <button
+                          className="p-1 mx-2 text-green-700 hover:text-green-900"
+                          onClick={() => {
+                            setEditingTinter(tinter);
+                            setShowEditModal(true);
+                          }}
+                        >
+                          <FaEdit />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {/* Accordion row */}
+                  {expandedTinterId === tinter.TinterId && (
+                    <tr>
+                      <td colSpan={6} className="p-2 bg-gray-50">
+                        <TinterBatchTable
+                          tinterId={tinter.TinterId}
+                          tinterCode={tinter.TinterCode}
+                          userId={user?.UserId}
+                          batches={batches[tinter.TinterId] || []}
+                        />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               ))
             )}
           </tbody>

@@ -31,14 +31,11 @@ const Login = ({ setUser }) => {
   };
 
   return (
-    <div
-      className="min-h-screen bg-cover bg-center flex items-center justify-center"
-      style={{ backgroundImage: `url(${heroBg})` }}
-    >
+    <div className="min-h-screen bg-[#3dcd58]/20 flex items-center justify-center">
       {/* Container for Image + Form */}
-      <div className="flex bg-white/30 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden max-w-4xl w-full animate-fadeIn">
+      <div className="flex bg-white rounded-3xl shadow-2xl overflow-hidden max-w-4xl w-full animate-fadeIn border border-[#3dcd58]/30">
         {/* Left Image Section */}
-        <div className="hidden md:flex items-center justify-center p-8 w-1/2">
+        <div className="hidden md:flex items-center justify-center p-8 w-1/2 bg-[#3dcd58]/10">
           <img
             src={BatchOptLogin}
             alt="BatchOpt Login"
@@ -48,14 +45,14 @@ const Login = ({ setUser }) => {
 
         {/* Right Form Section */}
         <div className="w-full md:w-1/2 p-10">
-          <h1 className="text-4xl font-extrabold text-white text-center mb-4 drop-shadow-lg">
+          <h1 className="text-4xl font-extrabold text-[#3dcd58] text-center mb-4 drop-shadow">
             Welcome Back
           </h1>
 
           {/* Error Message */}
           <div className="h-8 mb-6 flex items-center justify-center">
             {error ? (
-              <p className="text-red-600 bg-white/70 backdrop-blur px-3 py-1 rounded-lg text-sm font-medium shadow">
+              <p className="text-red-600 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-sm font-medium shadow">
                 {error}
               </p>
             ) : (
@@ -70,7 +67,7 @@ const Login = ({ setUser }) => {
               placeholder="Email"
               value={login.email}
               onChange={(e) => setLogin({ ...login, email: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/40 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:bg-white/30 transition"
+              className="w-full px-4 py-3 rounded-xl bg-[#3dcd58]/10 border border-[#3dcd58]/30 text-[#3dcd58] placeholder-[#3dcd58] focus:outline-none focus:ring-2 focus:ring-[#3dcd58] focus:bg-white transition"
             />
 
             <input
@@ -78,7 +75,7 @@ const Login = ({ setUser }) => {
               placeholder="Password"
               value={login.password}
               onChange={(e) => setLogin({ ...login, password: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/40 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:bg-white/30 transition"
+              className="w-full px-4 py-3 rounded-xl bg-[#3dcd58]/10 border border-[#3dcd58]/30 text-[#3dcd58] placeholder-[#3dcd58] focus:outline-none focus:ring-2 focus:ring-[#3dcd58] focus:bg-white transition"
             />
 
             <button
@@ -86,8 +83,8 @@ const Login = ({ setUser }) => {
               disabled={loading}
               className={`w-full ${
                 loading
-                  ? "bg-cyan-300 cursor-not-allowed"
-                  : "bg-cyan-400 hover:bg-cyan-500 hover:scale-[1.02]"
+                  ? "bg-[#3dcd58]/70 cursor-not-allowed"
+                  : "bg-[#3dcd58] hover:bg-[#32b84a] hover:scale-[1.02]"
               } text-white font-bold py-3 rounded-xl shadow-md transition transform`}
             >
               {loading ? "Logging in..." : "Login"}

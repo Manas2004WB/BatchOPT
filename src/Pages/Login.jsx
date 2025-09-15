@@ -33,7 +33,7 @@ const Login = ({ setUser }) => {
   return (
     <div className="min-h-screen bg-[#3dcd58]/20 flex items-center justify-center">
       {/* Container for Image + Form */}
-      <div className="flex bg-white rounded-3xl shadow-2xl overflow-hidden max-w-4xl w-full animate-fadeIn border border-[#3dcd58]/30">
+      <div className="flex bg-white  shadow-2xl overflow-hidden max-w-4xl w-full animate-fadeIn border border-[#3dcd58]/30">
         {/* Left Image Section */}
         <div className="hidden md:flex items-center justify-center p-8 w-1/2 bg-[#3dcd58]/10">
           <img
@@ -52,7 +52,7 @@ const Login = ({ setUser }) => {
           {/* Error Message */}
           <div className="h-8 mb-6 flex items-center justify-center">
             {error ? (
-              <p className="text-red-600 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-sm font-medium shadow">
+              <p className="text-red-600 bg-white/90 backdrop-blur px-3 py-1 text-sm font-medium shadow">
                 {error}
               </p>
             ) : (
@@ -67,7 +67,7 @@ const Login = ({ setUser }) => {
               placeholder="Email"
               value={login.email}
               onChange={(e) => setLogin({ ...login, email: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl bg-[#3dcd58]/10 border border-[#3dcd58]/30 text-[#3dcd58] placeholder-[#3dcd58] focus:outline-none focus:ring-2 focus:ring-[#3dcd58] focus:bg-white transition"
+              className="w-full px-4 py-3  bg-[#3dcd58]/10 border border-[#3dcd58]/30 text-[#3dcd58] placeholder-[#3dcd58] focus:outline-none focus:ring-2 focus:ring-[#3dcd58] focus:bg-white transition"
             />
 
             <input
@@ -75,7 +75,7 @@ const Login = ({ setUser }) => {
               placeholder="Password"
               value={login.password}
               onChange={(e) => setLogin({ ...login, password: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl bg-[#3dcd58]/10 border border-[#3dcd58]/30 text-[#3dcd58] placeholder-[#3dcd58] focus:outline-none focus:ring-2 focus:ring-[#3dcd58] focus:bg-white transition"
+              className="w-full px-4 py-3  bg-[#3dcd58]/10 border border-[#3dcd58]/30 text-[#3dcd58] placeholder-[#3dcd58] focus:outline-none focus:ring-2 focus:ring-[#3dcd58] focus:bg-white transition"
             />
 
             <button
@@ -85,7 +85,7 @@ const Login = ({ setUser }) => {
                 loading
                   ? "bg-[#3dcd58]/70 cursor-not-allowed"
                   : "bg-[#3dcd58] hover:bg-[#32b84a] hover:scale-[1.02]"
-              } text-white font-bold py-3 rounded-xl shadow-md transition transform`}
+              } text-white font-bold py-3  shadow-md transition transform`}
             >
               {loading ? "Logging in..." : "Login"}
             </button>

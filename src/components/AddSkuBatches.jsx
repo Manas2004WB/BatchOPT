@@ -43,16 +43,23 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto rounded-lg">
       <Toaster position="top-right" richColors />
-      <div className="mb-4 flex items-cente justify-center gap-2">
-        <span className="text-lg font-semibold text-white">Plant:</span>
-        <span className="text-lg font-bold text-cyan-600 bg-cyan-100 px-3 py-1 rounded shadow-sm">
-          {plantName || "Unknown Plant"}
+      <div className="flex items-center justify-center gap-2">
+        <span className="text-lg font-semibold text-[#3dcd58]">Plant:</span>
+        <span className="text-lg font-bold text-[#3dcd58] bg-green-100 px-3 py-1 rounded shadow-sm">
+          {plantName}
         </span>
       </div>
+
+      <button
+        onClick={() => setShowAddBatchModal(true)}
+        className="mb-4 bg-[#3dcd58] hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
+      >
+        + Add Batches
+      </button>
       {showAddBatchModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-5xl relative">
             {/* Close button */}
             <button
@@ -70,15 +77,9 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
           </div>
         </div>
       )}
-      <button
-        onClick={() => setShowAddBatchModal(true)}
-        className="mb-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded"
-      >
-        + Add Batches
-      </button>
-      <div className="overflow-x-auto overflow-y-auto max-h-[350px] border border-white/30 rounded">
-        <table className="min-w-full text-centre border border-white/30 backdrop-blur">
-          <thead className="bg-cyan-700 text-white sticky top-0 z-10">
+      <div className="overflow-x-auto overflow-y-auto max-h-[500px] border border-green-100 rounded">
+        <table className="min-w-full text-centre border border-green-100 backdrop-blur">
+          <thead className="bg-[#3dcd58] text-white sticky top-0 z-10">
             <tr>
               <th className="px-4 py-2 ">#</th>
               <th className="px-4 py-2 ">Batch Code</th>
@@ -90,7 +91,7 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
               <th className="px-4 py-2 ">Shots</th>
             </tr>
           </thead>
-          <tbody className="bg-white/60 ">
+          <tbody className="bg-emerald-50/60">
             {batchList.length === 0 ? (
               <tr>
                 <td colSpan="9" className="text-center py-4 text-gray-500">
@@ -101,7 +102,7 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
               batchList.map((batch, index) => (
                 <tr
                   key={batch.BatchId}
-                  className="border-t border-white/30 hover:bg-white/80 transition"
+                  className="border-t border-green-100 hover:bg-green-50 transition"
                 >
                   <td className="px-4 py-2 ">{index + 1}</td>
                   <td className="px-4 py-2 ">{batch.BatchCode}</td>
@@ -125,7 +126,7 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
                   </td>
                   <td className="px-4 py-2 text-center">
                     <button
-                      className="bg-cyan-700 p-1 rounded-xl text-white"
+                      className="bg-[#3dcd58]  p-1 rounded-xl text-white"
                       onClick={() =>
                         navigate(`/shots/${batch.BatchId}`, {
                           state: { batch, plantId },

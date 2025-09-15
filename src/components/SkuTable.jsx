@@ -62,13 +62,13 @@ const SkuTable = ({ user, plantId, plantName }) => {
       )}
 
       <div className="max-h-[500px] overflow-y-auto scrollbar-thin overflow-x-hidden">
-        <table className="min-w-full border border-white/30 shadow-2xl rounded-2xl bg-white/60 backdrop-blur">
+        <table className="min-w-full border shadow-2xl rounded-2xl border-green-100 bg-white/60 backdrop-blur">
           <thead className="bg-[#3dcd58] text-white sticky top-[-2px] z-10 shadow-md">
             <tr>
               <th className="px-4 py-2">Sr. No</th>
               <th className="px-4 py-2">SKU Revision</th>
               <th className="px-4 py-2">SKU Code</th>
-              <th className="px-4 py-2">Batches</th>
+              <th className="px-4 py-2">Batches Count</th>
               <th className="px-4 py-2">
                 <div className="flex flex-col item-centre gap-2">
                   <span>Liquid Color</span>
@@ -135,7 +135,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
               <th className="px-4 py-2">Comments</th>
             </tr>
           </thead>
-          <tbody className="bg-white">
+          <tbody className="bg-emerald-50/30">
             {skus.length > 0 ? (
               skus.map((sku, skuIdx) => {
                 if (sku.SkuVersions && sku.SkuVersions.length > 0) {

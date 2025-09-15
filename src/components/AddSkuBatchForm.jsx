@@ -207,7 +207,7 @@ const AddSkuBatchForm = ({ plantId, user, onAddBatch, fetchBatches }) => {
               type="number"
               value={batchSize}
               onChange={(e) => setBatchSize(e.target.value)}
-              className="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-blue-500"
+              className="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-[#3dcd58]"
               required
             />
           </div>
@@ -217,7 +217,7 @@ const AddSkuBatchForm = ({ plantId, user, onAddBatch, fetchBatches }) => {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="px-5 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition"
+            className="px-5 py-2 bg-[#3dcd58] text-white font-medium rounded-lg shadow hover:bg-emerald-600 transition"
           >
             Add Batch
           </button>

@@ -11,6 +11,7 @@ import { users } from "../Data/Data";
 import { formatUtcToLocal } from "../utility/utc2ist";
 import TinterBatchTable from "./TinterBatchTable";
 import tinterBatchService from "../services/tinterBatchService";
+import { motion, AnimatePresence } from "framer-motion";
 
 const TinterTable = ({ plantId, user, plantName }) => {
   console.log("TinterTable props - PlantId:", plantId);
@@ -240,7 +241,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto overflow-y-auto max-h-[500px] border border-green-100 rounded">
+      <div className="overflow-x-auto overflow-y-auto max-h-[90vh] border border-green-100 rounded">
         <table className="min-w-full text-left border border-green-100 backdrop-blur">
           <thead className="bg-[#3dcd58] text-white sticky top-0 z-10">
             <tr>
@@ -319,18 +320,26 @@ const TinterTable = ({ plantId, user, plantName }) => {
                     </td>
                   </tr>
                   {/* Accordion row */}
-                  {expandedTinterId === tinter.TinterId && (
-                    <tr>
-                      <td colSpan={6} className="p-2 bg-gray-50">
-                        <TinterBatchTable
-                          tinterId={tinter.TinterId}
-                          tinterCode={tinter.TinterCode}
-                          userId={user?.UserId}
-                          batches={batches[tinter.TinterId] || []}
-                        />
-                      </td>
-                    </tr>
-                  )}
+                  <AnimatePresence>
+                    {expandedTinterId === tinter.TinterId && (
+                      <motion.tr
+                        key={tinter.TinterId}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                      >
+                        <td colSpan={6} className="p-2 bg-gray-50">
+                          <TinterBatchTable
+                            tinterId={tinter.TinterId}
+                            tinterCode={tinter.TinterCode}
+                            userId={user?.UserId}
+                            batches={batches[tinter.TinterId] || []}
+                          />
+                        </td>
+                      </motion.tr>
+                    )}
+                  </AnimatePresence>
                 </Fragment>
               ))
             )}

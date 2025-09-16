@@ -77,11 +77,11 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
         </select>
       </div>
       <div className="flex w-full max-w-4xl items-center gap-x-6">
-        <label className="w-1/3 text-lg font-medium dark:text-white">
+        <label className="w-1/3 text-lg font-medium text-black">
           Daily Calibration Values
         </label>
         <div className="flex items-center gap-x-3 ">
-          <span className="text-white">L</span>
+          <span className="text-black">L</span>
           <input
             type="number"
             value={entryValues.lValue}
@@ -91,7 +91,7 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
             className="w-16 p-1 rounded bg-white border"
             disabled={loading}
           />
-          <span className="text-white">A</span>
+          <span className="text-black">A</span>
           <input
             type="number"
             value={entryValues.aValue}
@@ -101,7 +101,7 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
             className="w-16 p-1 rounded bg-white border"
             disabled={loading}
           />
-          <span className="text-white">B</span>
+          <span className="text-black">B</span>
           <input
             type="number"
             value={entryValues.bValue}
@@ -114,7 +114,7 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
           <button
             className={
               buttonState !== "Re-Check"
-                ? "bg-cyan-700 text-white px-3 py-1 ml-2 flex items-center justify-center min-w-[70px]"
+                ? "bg-green-700 text-white px-3 py-1 ml-2 flex items-center justify-center min-w-[70px]"
                 : "bg-gray-400 text-white px-3 py-1 ml-2 flex items-center justify-center min-w-[70px]"
             }
             onClick={handleFetch}
@@ -153,7 +153,7 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
       </div>
       {/* Comment */}
       <div className="flex w-full max-w-4xl items-center gap-x-6">
-        <label className="w-1/3 text-lg font-medium dark:text-white">
+        <label className="w-1/3 text-lg font-medium dark:text-black">
           Comment if any
         </label>
         <textarea
@@ -183,7 +183,7 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
               setButtonState("Save");
             }
           }}
-          className="bg-cyan-700 px-3 py-1 text-white"
+          className="bg-green-500 px-3 py-1 text-white"
         >
           {buttonState}
         </button>

@@ -25,13 +25,17 @@ const SkuTable = ({ user, plantId, plantName }) => {
   }, [plantId]);
 
   if (loading)
-    return <p className="text-center text-gray-600">Loading SKUs...</p>;
+    return (
+      <div className="flex  justify-center items-center-safe">
+        <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   let srNo = 1;
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto ">
       <Toaster position="top-right" richColors />
       <div className=" flex items-center justify-center gap-2">
         <span className="text-lg font-semibold text-white">Plant:</span>
@@ -61,7 +65,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
         />
       )}
 
-      <div className="max-h-[500px] overflow-y-auto scrollbar-thin overflow-x-hidden">
+      <div className="max-h-[70vh] overflow-y-auto scrollbar-thin overflow-x-hidden">
         <table className="min-w-full border shadow-2xl rounded-2xl border-green-100 bg-white/60 backdrop-blur">
           <thead className="bg-[#3dcd58] text-white sticky top-[-2px] z-10 shadow-md">
             <tr>

@@ -21,7 +21,7 @@ const Calibration = ({ plantId }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full space-y-6 p-1 pt-12 bg-emerald-50/50">
+    <div className="flex flex-col items-center  min-h-[70vh] justify-center w-full space-y-6 p-1 pt-12 bg-emerald-50/50">
       {/* Calibration Type Row */}
       <div className="flex w-full max-w-4xl items-center h-0 gap-x-6">
         <label className="w-1/3 text-lg font-medium text-[#3dcd58] ">
@@ -44,7 +44,7 @@ const Calibration = ({ plantId }) => {
       </div>
 
       {/* Conditional Form Display */}
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-4xl max-h-[70vh]">
         {selectedType === "Calibration" ? (
           <CalibrationForm onSave={onSave} calibrationList={calibrationList} />
         ) : selectedType === "Daily Calibration check" ? (

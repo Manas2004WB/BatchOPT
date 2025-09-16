@@ -4,7 +4,7 @@ const DishCleanCheckTable = ({ calibrationList }) => {
   return (
     <div className="overflow-x-auto rounded-lg shadow-lg max-h-75 overflow-y-auto">
       <table className="min-w-full bg-white/80 text-sm rounded-lg backdrop-blur-md">
-        <thead className="bg-cyan-600 text-white sticky top-0 z-10">
+        <thead className="bg-green-600 text-white sticky top-0 z-10">
           <tr>
             <th className="px-3 py-2 border">Sr. No</th>
             <th className="px-3 py-2 border">Date Time</th>
@@ -17,7 +17,7 @@ const DishCleanCheckTable = ({ calibrationList }) => {
           {calibrationList.map((row, idx) => (
             <tr
               key={row.calibration_id}
-              className="border-b hover:bg-cyan-50 transition"
+              className="border-b hover:bg-green-50 transition"
             >
               <td className="px-3 py-2 border text-center">{idx + 1}</td>
               <td className="px-3 py-2 border text-center">

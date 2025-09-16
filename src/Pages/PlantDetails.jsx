@@ -88,7 +88,7 @@ const PlantDetails = ({ user, handleLogout }) => {
       />
 
       <div className="bg-cover bg-center px-4 pt-20  flex justify-center ">
-        <div className="w-full max-w-full bg-white/60 backdrop-blur-xl shadow-2xl rounded-2xl p-4 border border-green-100">
+        <div className="w-full max-w-full min-h-[85vh] bg-white/60 backdrop-blur-xl shadow-2xl rounded-2xl p-4 border border-green-100">
           {renderTabContent()}
         </div>
       </div>

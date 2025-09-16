@@ -64,10 +64,10 @@ const DishCleanCheckForm = ({ onSave, calibrationList }) => {
     <div className="flex flex-col items-center justify-center w-full min-h-[30px] space-y-2">
       {/* Calibration Source */}
       <div className="flex w-full max-w-4xl items-center gap-x-6">
-        <label className="w-1/3 text-lg font-medium text-gray-900 dark:text-white">
+        <label className="w-1/3 text-lg font-medium text-gray-900 dark:text-black">
           Calibration Source Used
         </label>
-        <select className="flex-1 bg-cyan-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 p-2.5">
+        <select className="flex-1 bg-green-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 p-2.5">
           <option value="">Card 1</option>
           <option value="">Card 2</option>
           <option value="">Card 3</option>
@@ -76,11 +76,11 @@ const DishCleanCheckForm = ({ onSave, calibrationList }) => {
 
       {/* Dish Clean Check Values */}
       <div className="flex w-full max-w-4xl items-center gap-x-6">
-        <label className="w-1/3 text-lg font-medium dark:text-white">
+        <label className="w-1/3 text-lg font-medium dark:text-black">
           Dish Clean Check Values
         </label>
         <div className="flex items-center gap-x-3 ">
-          <span className="text-white">L</span>
+          <span className="text-black">L</span>
           <input
             type="number"
             value={entryValues.lValue}
@@ -89,7 +89,7 @@ const DishCleanCheckForm = ({ onSave, calibrationList }) => {
             }
             className="w-16 p-1 rounded bg-white border"
           />
-          <span className="text-white">A</span>
+          <span className="text-black">A</span>
           <input
             type="number"
             value={entryValues.aValue}
@@ -98,7 +98,7 @@ const DishCleanCheckForm = ({ onSave, calibrationList }) => {
             }
             className="w-16 p-1 rounded bg-white border"
           />
-          <span className="text-white">B</span>
+          <span className="text-black">B</span>
           <input
             type="number"
             value={entryValues.bValue}
@@ -109,7 +109,7 @@ const DishCleanCheckForm = ({ onSave, calibrationList }) => {
           />
           <button
             onClick={handleFetch}
-            className="bg-cyan-700 rounded-lg text-white px-3 py-1 ml-2"
+            className="bg-green-600 rounded-lg text-white px-3 py-1 ml-2"
           >
             Check
           </button>
@@ -118,7 +118,7 @@ const DishCleanCheckForm = ({ onSave, calibrationList }) => {
 
       {/* Comment */}
       <div className="flex w-full max-w-4xl items-center gap-x-6">
-        <label className="w-1/3 text-lg font-medium dark:text-white">
+        <label className="w-1/3 text-lg font-medium dark:text-black">
           Comment if any
         </label>
         <textarea
@@ -136,7 +136,7 @@ const DishCleanCheckForm = ({ onSave, calibrationList }) => {
           disabled={
             !entryValues.lValue || !entryValues.aValue || !entryValues.bValue
           }
-          className="bg-cyan-700 rounded-lg text-white px-3 py-1 ml-2"
+          className="bg-green-600 rounded-lg text-white px-3 py-1 ml-2"
         >
           Save
         </button>

@@ -55,10 +55,10 @@ const CalibrationForm = ({ onSave, calibrationList }) => {
     <div className="flex flex-col items-center justify-center w-full min-h-[30px] space-y-2">
       {/* Calibration Source Used */}
       <div className="flex w-full max-w-4xl items-center gap-x-6">
-        <label className="w-1/3 text-lg font-medium text-gray-900 dark:text-white">
+        <label className="w-1/3 text-lg font-medium text-[#3dcd58] ">
           Calibration Source Used
         </label>
-        <select className="flex-1 bg-cyan-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 p-2.5">
+        <select className="flex-1 bg-emerald-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#3dcd58] focus:border-[#3dcd58] p-2.5">
           <option value="">White Reference Tile</option>
           <option value="">White Reference Tile 2</option>
           <option value="">White Reference Tile 3</option>
@@ -67,9 +67,11 @@ const CalibrationForm = ({ onSave, calibrationList }) => {
 
       {/* Auto Modulation Section */}
       <div className="flex justify-between w-full max-w-4xl items-center gap-x-6 bg-white p-4 rounded-lg">
-        <span className="text-lg font-medium text-black">Auto Modulation</span>
+        <span className="text-lg font-medium text-[#3dcd58]">
+          Auto Modulation
+        </span>
         <button
-          className={`bg-cyan-600 text-white px-3 py-1 hover:bg-cyan-700 transition ${
+          className={`bg-[#3dcd58] text-white px-3 py-1 hover:bg-emerald-700 transition ${
             autoModStarted ? "opacity-50 cursor-not-allowed" : ""
           }`}
           onClick={handleAutoModBegin}
@@ -104,7 +106,7 @@ const CalibrationForm = ({ onSave, calibrationList }) => {
           </span>
           <button
             onClick={handleEntrySave}
-            className="bg-cyan-600 text-white px-3 py-1  hover:bg-cyan-700 transition flex items-center justify-center min-w-[70px]"
+            className="bg-[#3dcd58] text-white px-3 py-1  hover:bg-emerald-700 transition flex items-center justify-center min-w-[70px]"
             disabled={loading}
           >
             {loading ? (

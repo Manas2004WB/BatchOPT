@@ -241,7 +241,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto overflow-y-auto max-h-[90vh] border border-green-100 rounded">
+      <div className="overflow-x-auto overflow-y-auto max-h-[500px] border border-green-100 rounded">
         <table className="min-w-full text-left border border-green-100 backdrop-blur">
           <thead className="bg-[#3dcd58] text-white sticky top-0 z-10">
             <tr>

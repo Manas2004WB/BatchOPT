@@ -87,7 +87,7 @@ const PlantDetails = ({ user, handleLogout }) => {
         setActiveTab={setActiveTab}
       />
 
-      <div className="bg-cover bg-center px-4 pt-20 w-full h-screen flex justify-center ">
+      <div className="bg-cover bg-center px-4 pt-20  flex justify-center ">
         <div className="w-full max-w-full bg-white/60 backdrop-blur-xl shadow-2xl rounded-2xl p-4 border border-green-100">
           {renderTabContent()}
         </div>

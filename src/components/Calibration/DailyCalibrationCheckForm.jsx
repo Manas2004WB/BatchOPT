@@ -67,10 +67,10 @@ const DailyCalibrationCheckForm = ({ calibrationList, onSave }) => {
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-[30px] space-y-2">
       <div className="flex w-full max-w-4xl items-center gap-x-6">
-        <label className="w-1/3 text-lg font-medium text-gray-900 dark:text-white">
+        <label className="w-1/3 text-lg font-medium text-gray-900">
           Source
         </label>
-        <select className="flex-1 bg-cyan-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 p-2.5">
+        <select className="flex-1 bg-emerald-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 p-2.5">
           <option value="">White Reference Tile</option>
           <option value="">White Reference Tile 2</option>
           <option value="">White Reference Tile 3</option>

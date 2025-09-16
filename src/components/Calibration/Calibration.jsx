@@ -21,14 +21,14 @@ const Calibration = ({ plantId }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full space-y-6 p-1">
+    <div className="flex flex-col items-center justify-center w-full space-y-6 p-1 pt-12 bg-emerald-50/50">
       {/* Calibration Type Row */}
       <div className="flex w-full max-w-4xl items-center h-0 gap-x-6">
-        <label className="w-1/3 text-lg font-medium text-gray-900 dark:text-white">
+        <label className="w-1/3 text-lg font-medium text-[#3dcd58] ">
           Calibration Type
         </label>
         <select
-          className="flex-1 bg-cyan-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 p-2.5"
+          className="flex-1 bg-emerald-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 p-2.5"
           value={selectedType}
           onChange={(e) => setSelectedType(e.target.value)}
         >

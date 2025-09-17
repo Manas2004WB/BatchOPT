@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import heroBg from "../assets/hero-bg.jpg";
 import TinterTable from "../components/TinterTable";
-import SkuTable from "../components/SkuTable";
+import SkuTable from "../components/Sku/SkuTable";
 import NavbarPlantDetails from "../components/NavbarPlantDetails";
 import AddSkuBatches from "../components/AddSkuBatches";
 import Calibration from "../components/Calibration/Calibration";

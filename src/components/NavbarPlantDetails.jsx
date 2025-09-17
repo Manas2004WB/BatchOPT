@@ -29,7 +29,7 @@ const NavbarTop = ({ handleLogout }) => {
         </button>
         <button
           onClick={doLogout}
-          className="px-2 py-1 bg-green-700 hover:bg-green-800 text-white rounded-md transition-colors"
+          className="px-2 py-1 bg-[#3dcd58] hover:bg-green-700 text-white rounded-md transition-colors"
         >
           Logout
         </button>

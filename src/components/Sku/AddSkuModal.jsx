@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { postSkuWithVersionMeasurements } from "../services/skuService";
-import { getSkusWithVersionMeasurements } from "../services/skuService";
-import { getTinterByPlantId } from "../services/tinterService"; // fetch tinters by plant
+import { postSkuWithVersionMeasurements } from "../../services/skuService";
+import { getSkusWithVersionMeasurements } from "../../services/skuService";
+import { getTinterByPlantId } from "../../services/tinterService"; // fetch tinters by plant
 import { Toaster, toast } from "sonner";
 
 const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
@@ -184,7 +184,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
         <h2 className="text-lg font-bold mb-2">
           {skuMode === "select" ? "Create new SKU Version" : "Create new SKU"}
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-1">
           {/* SKU Code Dropdown/Input Toggle */}
           <div className="flex items-center gap-2 mb-3">
             <label className="font-semibold">SKU Code:</label>

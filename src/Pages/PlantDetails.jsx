@@ -6,6 +6,7 @@ import SkuTable from "../components/SkuTable";
 import NavbarPlantDetails from "../components/NavbarPlantDetails";
 import AddSkuBatches from "../components/AddSkuBatches";
 import Calibration from "../components/Calibration/Calibration";
+import NavbarTabs from "../components/NavTabs";
 
 const PlantDetails = ({ user, handleLogout }) => {
   const { id: plantId } = useParams();
@@ -80,15 +81,17 @@ const PlantDetails = ({ user, handleLogout }) => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-green-50 bg-cover bg-center">
+    <div className="w-full min-h-screen bg-green-50 bg-cover bg-center flex flex-col">
       <NavbarPlantDetails
         handleLogout={handleLogout}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
 
-      <div className="bg-cover bg-center px-4 pt-20  flex justify-center ">
-        <div className="w-full max-w-full min-h-[85vh] bg-white/60 backdrop-blur-xl shadow-2xl rounded-2xl p-4 border border-green-100">
+      <NavbarTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+
+      <div className="flex-1 flex justify-center px-4">
+        <div className="w-full max-w-full max-h-[85vh] bg-white/60 backdrop-blur-xl shadow-2xl rounded-2xl p-4 border border-green-100">
           {renderTabContent()}
         </div>
       </div>

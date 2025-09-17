@@ -1,42 +1,24 @@
 import React, { useState } from "react";
+// NavbarTop.jsx
 import { MdArrowBackIos } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-const NavbarPlantDetails = ({ activeTab, setActiveTab, handleLogout }) => {
+
+const NavbarTop = ({ handleLogout }) => {
   const navigate = useNavigate();
+
   const doLogout = () => {
     handleLogout();
     navigate("/login");
   };
 
   return (
-    <nav className="w-full bg-white/70 backdrop-blur-md shadow-lg px-8 py-3 fixed top-0 left-0  flex justify-between items-center border-b border-green-200">
-      {/* Left Section: Title + Tabs */}
-      <div className="flex items-center gap-10">
-        {/* Title */}
-        <h1 className="text-3xl font-semibold text-[#3dcd58] tracking-wide">
-          Plant Details
-        </h1>
+    <nav className="w-full bg-white/70 backdrop-blur-md px-8 py-3 flex justify-between items-center z-20">
+      {/* Title */}
+      <h1 className="text-3xl font-semibold text-[#3dcd58] tracking-wide">
+        Plant Details
+      </h1>
 
-        {/* Tabs */}
-        <ul className="flex gap-6 text-[#3dcd58] font-medium text-sm tracking-wide">
-          {["sku", "batches", "tinter", "calibration"].map((tab) => (
-            <li key={tab}>
-              <button
-                onClick={() => setActiveTab(tab)}
-                className={`transition duration-200 pb-1 border-b-2 ${
-                  activeTab === tab
-                    ? "border-green-500 text-green-600"
-                    : "border-transparent hover:border-green-400 hover:text-green-600"
-                }`}
-              >
-                {tab.toUpperCase()}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Right Section: Back Button */}
+      {/* Right Side */}
       <div className="flex items-center gap-4">
         <button
           onClick={() => window.history.back()}
@@ -56,4 +38,4 @@ const NavbarPlantDetails = ({ activeTab, setActiveTab, handleLogout }) => {
   );
 };
 
-export default NavbarPlantDetails;
+export default NavbarTop;

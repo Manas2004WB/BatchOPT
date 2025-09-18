@@ -12,6 +12,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
   const [error, setError] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [expandedRows, setExpandedRows] = useState({});
+  const [loadingRows, setLoadingRows] = useState({});
 
   useEffect(() => {
     const fetchSkus = async () => {
@@ -48,6 +49,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
       });
     } else {
       try {
+        setLoadingRows((prev) => ({ ...prev, [skuId]: true })); // start loader
         const olderVersions = await GetOlderVersionsMeasurements(skuId);
         setExpandedRows((prev) => ({
           ...prev,
@@ -55,6 +57,12 @@ const SkuTable = ({ user, plantId, plantName }) => {
         }));
       } catch (err) {
         console.error("Error fetching older versions:", err);
+      } finally {
+        setLoadingRows((prev) => {
+          const copy = { ...prev };
+          delete copy[skuId];
+          return copy;
+        });
       }
     }
   };
@@ -181,12 +189,15 @@ const SkuTable = ({ user, plantId, plantName }) => {
                       />
                       {/* Accordion content */}
                       {expandedRows[sku.SkuId] &&
-                        expandedRows[sku.SkuId].length > 0 && (
-                          <OldVersionRow
-                            expandedRows={expandedRows}
-                            sku={sku}
-                          />
-                        )}
+                      expandedRows[sku.SkuId].length > 0 ? (
+                        <OldVersionRow expandedRows={expandedRows} sku={sku} />
+                      ) : loadingRows[sku.SkuId] ? (
+                        <tr>
+                          <td colSpan={11} className="p-4 text-center">
+                            <span className="animate-spin rounded-full h-6 w-6 border-2 border-green-600 border-t-transparent inline-block"></span>
+                          </td>
+                        </tr>
+                      ) : null}
                     </React.Fragment>
                   );
                 }

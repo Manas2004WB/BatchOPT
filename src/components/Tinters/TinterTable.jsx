@@ -1,16 +1,16 @@
 import React, { Fragment, useEffect, useState } from "react";
 import AddTinterForm from "./AddTinterForm";
 import UpdateTinterForm from "./UpdateTinterForm";
-import TinterBatchForm from "./TinterBatchForm";
+import TinterBatchForm from "../Tinters/TinterBatches/TinterBatchForm";
 import { FaEdit } from "react-icons/fa";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import tinterService from "../services/tinterService";
+import tinterService from "../../services/tinterService";
 import { MdDelete } from "react-icons/md";
 import { Toaster, toast } from "sonner";
-import { users } from "../Data/Data";
-import { formatUtcToLocal } from "../utility/utc2ist";
-import TinterBatchTable from "./TinterBatchTable";
-import tinterBatchService from "../services/tinterBatchService";
+import { users } from "../../Data/Data";
+import { formatUtcToLocal } from "../../utility/utc2ist";
+import TinterBatchTable from "../Tinters/TinterBatches/TinterBatchTable";
+import tinterBatchService from "../../services/tinterBatchService";
 import { motion, AnimatePresence } from "framer-motion";
 
 const TinterTable = ({ plantId, user, plantName }) => {

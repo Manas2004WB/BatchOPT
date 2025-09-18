@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import tinterService from "../services/tinterService";
+import tinterService from "../../services/tinterService";
 import { toast } from "sonner";
-import { formatUtcToLocal } from "../utility/utc2ist";
 
 const UpdateTinterForm = ({ tinterToEdit, onUpdate, plantId, user }) => {
   const [tinter, setTinter] = useState({

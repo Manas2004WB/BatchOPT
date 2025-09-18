@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import tinterService from "../services/tinterService";
+import tinterService from "../../services/tinterService";
 import { Toaster, toast } from "sonner";
 
 const AddTinterForm = ({ onAdd, plantId }) => {

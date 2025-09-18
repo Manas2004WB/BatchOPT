@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { tinters } from "../Data/TinterData";
+import { tinters } from "../../Data/TinterData";
 import Select from "react-select";
 
 const UpdateSkuForm = ({ plantId, skuToEdit, onUpdate }) => {

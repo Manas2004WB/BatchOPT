@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import tinterBatchService from "../services/tinterBatchService";
-import { Toaster, toast } from "sonner";
-import { formatUtcToLocal } from "../utility/utc2ist";
-import TinterBatchTable from "./TinterBatchTable";
+import tinterBatchService from "../../../services/tinterBatchService";
+import { toast } from "sonner";
+
 const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
   const [batches, setBatches] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -7,6 +7,7 @@ import NavbarPlantDetails from "../components/NavbarPlantDetails";
 import AddSkuBatches from "../components/AddSkuBatches";
 import Calibration from "../components/Calibration/Calibration";
 import NavbarTabs from "../components/NavTabs";
+import MainComponent from "../components/Master/MainComponent";
 
 const PlantDetails = ({ user, handleLogout }) => {
   const { id: plantId } = useParams();
@@ -66,6 +67,14 @@ const PlantDetails = ({ user, handleLogout }) => {
       case "calibration":
         return (
           <Calibration
+            user={user}
+            plantId={Number(plantId)}
+            plantName={plantName}
+          />
+        );
+      case "settings":
+        return (
+          <MainComponent
             user={user}
             plantId={Number(plantId)}
             plantName={plantName}

@@ -24,7 +24,7 @@ const Dashboard = ({ user, handleLogout }) => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userId = storedUser?.UserId;
   console.log("User ID from localStorage:", userId);
-  const hasFullAccess = userId === 6;
+  const hasFullAccess = userId !== 9;
   const [plantList, setPlantList] = useState([]);
   const [confirmDelete, setConfirmDelete] = useState({
     open: false,

@@ -73,13 +73,22 @@ const PlantDetails = ({ user, handleLogout }) => {
           />
         );
       case "settings":
-        return (
-          <MainComponent
-            user={user}
-            plantId={Number(plantId)}
-            plantName={plantName}
-          />
-        );
+        if (user?.Role === "Admin") {
+          return (
+            <MainComponent
+              user={user}
+              plantId={Number(plantId)}
+              plantName={plantName}
+            />
+          );
+        } else {
+          return (
+            <div className="text-center text-red-600 py-10">
+              You are not authorized to view Settings.
+            </div>
+          );
+        }
+
       default:
         return (
           <div className="text-center text-gray-600 py-10">
@@ -97,7 +106,11 @@ const PlantDetails = ({ user, handleLogout }) => {
         setActiveTab={setActiveTab}
       />
 
-      <NavbarTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      <NavbarTabs
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        user={user}
+      />
 
       <div className="flex-1 flex justify-center px-4">
         <div className="w-full max-w-full max-h-[85vh] bg-white/60 backdrop-blur-xl shadow-2xl rounded-2xl p-4 border border-green-100">

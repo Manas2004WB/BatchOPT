@@ -57,7 +57,7 @@ const BatchStatusMaster = () => {
         />
         <button
           type="submit"
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           Add Calibration Type
         </button>
@@ -80,8 +80,12 @@ const BatchStatusMaster = () => {
           <tbody>
             {calibrationTypes.map((status) => (
               <tr key={status.CalibrationTypeId}>
-                <td className="border p-2">{status.CalibrationTypeId}</td>
-                <td className="border p-2">{status.CalibrationTypeName}</td>
+                <td className="border p-2 text-center">
+                  {status.CalibrationTypeId}
+                </td>
+                <td className="border p-2 text-center">
+                  {status.CalibrationTypeName}
+                </td>
               </tr>
             ))}
           </tbody>

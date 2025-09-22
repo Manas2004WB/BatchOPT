@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import userRoleService from "../../../services/userRoleService";
+import { formatUtcToLocal } from "../../../utility/utc2ist";
 
 const UserRolesMaster = () => {
   const [roles, setRoles] = useState([]);
@@ -70,7 +71,7 @@ const UserRolesMaster = () => {
 
         <button
           type="submit"
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           Add Role
         </button>
@@ -85,10 +86,12 @@ const UserRolesMaster = () => {
       ) : (
         <table className="w-full border-collapse border text-left">
           <thead>
-            <tr className="bg-gray-100">
+            <tr className="bg-[#3dcd58] text-white">
               <th className="border p-2">ID</th>
               <th className="border p-2">Role Name</th>
               <th className="border p-2">Active</th>
+              <th className="border p-2">Created By</th>
+              <th className="border p-2">Updated At</th>
             </tr>
           </thead>
           <tbody>
@@ -98,6 +101,10 @@ const UserRolesMaster = () => {
                 <td className="border p-2">{role.RoleName}</td>
                 <td className="border p-2">
                   {role.IsActive ? "🟢 Yes" : "🔴 No"}
+                </td>
+                <td className="border p-2">{role.CreatedBy}</td>
+                <td className="border p-2">
+                  {formatUtcToLocal(role.UpdatedAt)}
                 </td>
               </tr>
             ))}

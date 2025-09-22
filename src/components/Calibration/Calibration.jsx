@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { calibrationType } from "../../Data/Calibration/CalibrationType";
+import React, { useState, useEffect } from "react";
 import CalibrationForm from "./CalibrationForm";
 import DailyCalibrationCheckForm from "./DailyCalibrationCheckForm";
 import DishCleanCheckForm from "./DishCleanCheckForm";
@@ -7,19 +6,31 @@ import { calibrationData } from "../../Data/Calibration/calibrationData";
 import CalibrationTable from "./Tables/CalibrationTable";
 import DailyCalibrationTable from "./Tables/DailyCalibrationTable";
 import DishCleanCheckTable from "./Tables/DishCleanCheckTable";
-import { plants } from "../../Data/PlantData";
+import calibrationTypeService from "../../services/calibrationTypeService";
 
 const Calibration = ({ plantId }) => {
   const [selectedType, setSelectedType] = useState("Calibration");
+  const [calibrationTypes, setCalibrationTypes] = useState([]);
   const [calibrationList, setCalibrationList] = useState(calibrationData);
+  const [loading, setLoading] = useState(false);
   const onSave = (newData) => {
     setCalibrationList((prevList) => [...prevList, newData]);
   };
-  const getPlantNameById = (plant_Id) => {
-    const plant = plants.find((p) => Number(p.plant_id) === Number(plant_Id));
-    return plant ? plant.plant_name : "Unknown Plant";
-  };
+  useEffect(() => {
+    fetchTypes();
+  }, []);
 
+  const fetchTypes = async () => {
+    try {
+      setLoading(true);
+      const data = await calibrationTypeService.getCalibrationTypes();
+      setCalibrationTypes(data);
+    } catch (error) {
+      console.error("Error fetching roles:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex flex-col items-center  min-h-[70vh] justify-center w-full space-y-6 p-1 pt-12 bg-emerald-50/50">
       {/* Calibration Type Row */}
@@ -32,12 +43,12 @@ const Calibration = ({ plantId }) => {
           value={selectedType}
           onChange={(e) => setSelectedType(e.target.value)}
         >
-          {calibrationType.map((type) => (
+          {calibrationTypes.map((type) => (
             <option
-              key={type.calibration_type_id}
-              value={type.calibration_type_name}
+              key={type.CalibrationTypeId}
+              value={type.CalibrationTypeName}
             >
-              {type.calibration_type_name}
+              {type.CalibrationTypeName}
             </option>
           ))}
         </select>
@@ -47,7 +58,7 @@ const Calibration = ({ plantId }) => {
       <div className="w-full max-w-4xl max-h-[70vh]">
         {selectedType === "Calibration" ? (
           <CalibrationForm onSave={onSave} calibrationList={calibrationList} />
-        ) : selectedType === "Daily Calibration check" ? (
+        ) : selectedType === "Daily Calibration Check" ? (
           <DailyCalibrationCheckForm
             onSave={onSave}
             calibrationList={calibrationList}

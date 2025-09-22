@@ -57,7 +57,7 @@ const BatchStatusMaster = () => {
         />
         <button
           type="submit"
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           Add BatchStatus
         </button>
@@ -72,7 +72,7 @@ const BatchStatusMaster = () => {
       ) : (
         <table className="w-full border-collapse border text-left">
           <thead>
-            <tr className="bg-gray-100">
+            <tr className="bg-[#3dcd58] text-white">
               <th className="border p-2">ID</th>
               <th className="border p-2">Status Name</th>
               <th className="border p-2">Created By</th>

@@ -12,22 +12,20 @@ const NavbarShots = ({ batch }) => {
     return sku?.sku_name || "-";
   };
   return (
-    <div className="bg-white/60 backdrop-blur-md p-4 flex justify-between items-center text-black font-semibold shadow-md">
+    <div className="bg-[#3dcd58] backdrop-blur-md p-4 flex justify-between items-center text-black font-semibold shadow-md">
       <div>
         Batch Code:{" "}
-        <span className="text-cyan-800 text-2xl">
-          {batch?.batch_code || "-"}
-        </span>
+        <span className="text-white text-2xl">{batch?.batch_code || "-"}</span>
       </div>
       <div>
         SKU Name:{" "}
-        <span className="text-cyan-800 text-xl">
+        <span className="text-white text-xl">
           {getSkuByVersionId(batch?.sku_version_id || "-")}
         </span>
       </div>
       <div>
         Batch Size:{" "}
-        <span className="text-cyan-800">{batch?.batch_size || "-"}</span>
+        <span className="text-white">{batch?.batch_size || "-"}</span>
       </div>
       <div>
         <button

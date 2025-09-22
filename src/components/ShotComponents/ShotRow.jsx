@@ -67,7 +67,7 @@ const ShotRow = ({
           {shot.id > 0 ? (
             <div>
               <button
-                className="bg-cyan-600 text-white px-2 py-1 rounded mr-2 mb-1"
+                className="bg-[#3dcd58] text-white px-2 py-1 rounded mr-2 mb-1"
                 onClick={() => handleOpenTinterModal(shot.id)}
                 disabled={shot.ended}
               >
@@ -152,7 +152,7 @@ const ShotRow = ({
             <span>{shot.values.deltaE_colorimeter ?? "-"}</span>
             {!shot.ended && (
               <button
-                className="bg-cyan-700 text-white px-2 py-1 rounded"
+                className="bg-[#3dcd58] text-white px-2 py-1 rounded"
                 onClick={() => showSection("colorimeter")}
               >
                 Calculate ΔE
@@ -175,7 +175,7 @@ const ShotRow = ({
             <button
               className={
                 !shot.ended
-                  ? "bg-cyan-700 text-white px-2 py-1 rounded"
+                  ? "bg-[#3dcd58] text-white px-2 py-1 rounded"
                   : "invisible"
               }
               onClick={() => showSection("liquid")}
@@ -186,7 +186,7 @@ const ShotRow = ({
             <button
               className={
                 !shot.ended
-                  ? "bg-cyan-700 text-white px-2 py-1 rounded"
+                  ? "bg-[#3dcd58] text-white px-2 py-1 rounded"
                   : "invisible"
               }
               onClick={() => showSection("panel")}
@@ -208,7 +208,7 @@ const ShotRow = ({
               </button>
             )}
             {shot.ended && (
-              <span className="text-green-600 font-semibold text-xs">
+              <span className="text-green-800 font-semibold text-xs">
                 Shot Ended
               </span>
             )}
@@ -218,7 +218,7 @@ const ShotRow = ({
       {(visibleSections.liquid ||
         visibleSections.panel ||
         visibleSections.colorimeter) && (
-        <tr className="h-5">
+        <tr className="h-5 border">
           <td className="border-l px-2 py-1 bg-white/70"></td>
           <td className="px-2 py-1 bg-white/70"></td>
 

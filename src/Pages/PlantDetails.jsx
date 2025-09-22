@@ -7,7 +7,7 @@ import NavbarPlantDetails from "../components/NavbarPlantDetails";
 import AddSkuBatches from "../components/AddSkuBatches";
 import Calibration from "../components/Calibration/Calibration";
 import NavbarTabs from "../components/NavTabs";
-import MainComponent from "../components/Master/MainComponent";
+import MainComponent from "./MainComponent";
 
 const PlantDetails = ({ user, handleLogout }) => {
   const { id: plantId } = useParams();
@@ -72,23 +72,6 @@ const PlantDetails = ({ user, handleLogout }) => {
             plantName={plantName}
           />
         );
-      case "settings":
-        if (user?.Role === "Admin") {
-          return (
-            <MainComponent
-              user={user}
-              plantId={Number(plantId)}
-              plantName={plantName}
-            />
-          );
-        } else {
-          return (
-            <div className="text-center text-red-600 py-10">
-              You are not authorized to view Settings.
-            </div>
-          );
-        }
-
       default:
         return (
           <div className="text-center text-gray-600 py-10">

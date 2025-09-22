@@ -21,7 +21,9 @@ const NavbarTop = ({ handleLogout }) => {
       {/* Right Side */}
       <div className="flex items-center gap-4">
         <button
-          onClick={() => window.history.back()}
+          onClick={() => {
+            navigate(`/dashboard`);
+          }}
           className="flex items-center gap-1 bg-white text-green-800 font-medium text-sm px-4 py-1.5 rounded-md shadow hover:bg-green-50 transition duration-200"
         >
           <MdArrowBackIos className="text-base" />

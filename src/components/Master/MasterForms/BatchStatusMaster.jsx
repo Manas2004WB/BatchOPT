@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { formatUtcToLocal } from "../../../utility/utc2ist";
 import batchStatusService from "../../../services/batchStatusService";
+import { fetchUsernames } from "../../../utility/userNameHelper";
 
 const BatchStatusMaster = () => {
   const [statuses, setStatuses] = useState([]);
   const [statusName, setStatusName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [usernames, setUsernames] = useState({}); // store id -> username map
 
   useEffect(() => {
     fetchStatuses();
   }, []);
 
+  // fetch all statuses
   const fetchStatuses = async () => {
     try {
       setLoading(true);
       const data = await batchStatusService.getBatchStatus();
       setStatuses(data);
+
+      // Use utility here
+      const userMap = await fetchUsernames(data.map((s) => s.CreatedBy));
+      setUsernames(userMap);
     } catch (error) {
-      console.error("Error fetching roles:", error);
+      console.error("Error fetching statuses:", error);
     } finally {
       setLoading(false);
     }
@@ -63,12 +70,12 @@ const BatchStatusMaster = () => {
         </button>
       </form>
 
-      {/* Roles Table */}
+      {/* Status Table */}
       <h3 className="text-lg font-semibold mb-2">Existing Statuses</h3>
       {loading ? (
         <p>Loading...</p>
       ) : statuses.length === 0 ? (
-        <p>No Status FOund.</p>
+        <p>No Status Found.</p>
       ) : (
         <table className="w-full border-collapse border text-left">
           <thead>
@@ -84,7 +91,9 @@ const BatchStatusMaster = () => {
               <tr key={status.BatchStatusId}>
                 <td className="border p-2">{status.BatchStatusId}</td>
                 <td className="border p-2">{status.StatusName}</td>
-                <td className="border p-2">{status.CreatedBy}</td>
+                <td className="border p-2">
+                  {usernames[status.CreatedBy] || "Loading..."}
+                </td>
                 <td className="border p-2">
                   {status.UpdatedAt ? formatUtcToLocal(status.UpdatedAt) : "--"}
                 </td>

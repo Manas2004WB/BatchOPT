@@ -4,11 +4,6 @@ const NavbarTabs = ({ activeTab, setActiveTab, user }) => {
   // base tabs visible to everyone
   const tabs = ["sku", "batches", "tinter", "calibration"];
 
-  // add settings tab only for Admin
-  if (user?.Role === "Admin") {
-    tabs.push("settings");
-  }
-
   return (
     <nav className="w-full bg-green-100/60 backdrop-blur-md shadow px-8 py-2 border-b border-green-200 z-10">
       <ul className="flex gap-8 text-[#3dcd58] font-medium text-sm tracking-wide">

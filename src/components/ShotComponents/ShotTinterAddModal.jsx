@@ -102,7 +102,7 @@ const TinterSelectionModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 bg-black/40 bg-opacity-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-6 w-[600px] max-h-[80vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">Select Tinters and Batches</h2>

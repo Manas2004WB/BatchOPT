@@ -230,15 +230,14 @@ const ShotsPage = ({ user }) => {
 
   const isCompleted = batch?.batch_status_id === 2;
   return (
-    <div
-      className="w-full min-h-screen overflow-hidden bg-cover bg-center "
-      style={{ backgroundImage: `url(${heroBg})` }}
-    >
+    <div className="w-full min-h-screen overflow-hidden bg-cover bg-center bg-white ">
       <NavbarShots batch={batch} />
-      <h2 className="text-xl font-bold mx-6 my-2 text-white">Shots Table</h2>
+      <h2 className="text-xl font-bold mx-6 my-2 text-[#3dcd58]">
+        Shots Table
+      </h2>
       <div className="max-h-[70vh] p-2 overflow-y-auto rounded-lg">
         <table className="min-w-full text-centre border-none backdrop-blur">
-          <thead className="bg-cyan-700 text-white">
+          <thead className="bg-[#3dcd58] text-white">
             <tr className="">
               <th className=" px-2 py-1">#</th>
               <th className=" px-2 py-1">Tinters</th>
@@ -289,7 +288,7 @@ const ShotsPage = ({ user }) => {
               colorimeterB={colorimeterB}
             />
             {shots.length > 0 && (
-              <tr className="border-b border-white/30 bg-cyan-700 text-white sticky top-0 z-10 text-center">
+              <tr className="border-b border-white/30 bg-[#3dcd58] text-white sticky top-0 z-10 text-center">
                 <td className="border px-2 py-1"></td>
                 <td className="border px-2 py-1"></td>
                 <td className="border px-2 py-1">ΔL</td>
@@ -345,7 +344,7 @@ const ShotsPage = ({ user }) => {
                   Cancel
                 </button>
                 <button
-                  className="bg-cyan-600 text-white px-4 py-2 rounded"
+                  className="bg-[#3dcd58] text-white px-4 py-2 rounded"
                   onClick={() => {
                     handleCloseShot(batchId, "Abondon");
                     setShowCloseModal(false);
@@ -354,7 +353,7 @@ const ShotsPage = ({ user }) => {
                   Abandon
                 </button>
                 <button
-                  className="bg-cyan-600 text-white px-4 py-2 rounded"
+                  className="bg-[#3dcd58] text-white px-4 py-2 rounded"
                   onClick={() => {
                     handleCloseShot(batchId, "Complete");
                     setShowCloseModal(false);
@@ -371,7 +370,7 @@ const ShotsPage = ({ user }) => {
       {/* Add Next Shot - only if not completed */}
       {!isCompleted && (shots.length === 0 || shots[shots.length - 1].ended) ? (
         <button
-          className="mx-6 my-2 bg-cyan-600 text-white px-4 py-2 rounded"
+          className="mx-6 my-2 bg-[#3dcd58] text-white px-4 py-2 rounded"
           onClick={handleAddShot}
         >
           Add Shot
@@ -381,7 +380,7 @@ const ShotsPage = ({ user }) => {
       {/* Close Batch - only if not completed */}
       {!isCompleted && (shots.length === 0 || shots[shots.length - 1].ended) ? (
         <button
-          className="mx-6 my-2 bg-cyan-600 text-white px-4 py-2 rounded"
+          className="mx-6 my-2 bg-[#3dcd58] text-white px-4 py-2 rounded"
           onClick={() => setShowCloseModal(true)}
         >
           Close Batch

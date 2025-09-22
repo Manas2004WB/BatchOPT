@@ -293,6 +293,11 @@ const Dashboard = ({ user, handleLogout }) => {
                   <tr
                     key={plant.PlantId || "N/A"}
                     className="border-t border-gray-200 hover:bg-green-50 transition"
+                    onClick={() => {
+                      if (plant.IsActive) {
+                        navigate(`/plant/${plant.PlantId}`);
+                      }
+                    }}
                   >
                     <td className="px-4 py-2">{plant.PlantName}</td>
                     <td className="px-4 py-2">
@@ -338,7 +343,8 @@ const Dashboard = ({ user, handleLogout }) => {
                         <>
                           <button
                             className="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded sm"
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setSelectedPlant(plant);
                               setShowUpdateModal(true);
                             }}
@@ -348,7 +354,10 @@ const Dashboard = ({ user, handleLogout }) => {
 
                           <button
                             className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm "
-                            onClick={() => handleDeletePlant(plant.PlantId)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeletePlant(plant.PlantId);
+                            }}
                           >
                             <MdDelete />
                           </button>

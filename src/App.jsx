@@ -9,6 +9,7 @@ import {
 import Dashboard from "./Pages/Dashboard";
 import PlantDetails from "./Pages/PlantDetails";
 import ShotsPage from "./Pages/ShotsPage";
+import MainComponent from "./Pages/MainComponent";
 
 const App = () => {
   // ✅ Initialize directly from localStorage
@@ -69,6 +70,16 @@ const App = () => {
           path="/shots/:batchId"
           element={
             user ? <ShotsPage user={user} /> : <Navigate to="/login" replace />
+          }
+        />
+        <Route
+          path="/setting"
+          element={
+            user.UserId === 10 ? (
+              <MainComponent user={user} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         />
 

@@ -37,7 +37,7 @@ const ShotZeroRow = ({ skuVersionId, measurements, comments }) => {
   const deltaE = getMeasured("target_delta_e");
 
   return (
-    <tr className="bg-blue-50">
+    <tr className="bg-green-50 border">
       <td className="border p-2 text-center font-semibold">Shot 0</td>
       <td className="border p-2 text-center">-</td>
       {/* Liquid */}

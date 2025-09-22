@@ -72,7 +72,7 @@ const StandardRow = ({
         <td className="border px-2 py-1"></td>
         <td className="border px-2 py-1"></td>
       </tr>
-      <tr className="h-5">
+      <tr className="h-5 border">
         <td className="border-l px-2 py-1 bg-white/70"></td>
         <td className=" px-2 py-1 bg-white/70"></td>
         {/* //Liquid */}

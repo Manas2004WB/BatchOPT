@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import userRoleService from "../../../services/userRoleService";
 import { formatUtcToLocal } from "../../../utility/utc2ist";
+import { fetchUsernames } from "../../../utility/userNameHelper";
 
 const UserRolesMaster = () => {
   const [roles, setRoles] = useState([]);
   const [roleName, setRoleName] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
-
+  const [usernames, setUsernames] = useState({});
   // Fetch roles on mount
   useEffect(() => {
     fetchRoles();
@@ -18,6 +19,8 @@ const UserRolesMaster = () => {
       setLoading(true);
       const data = await userRoleService.getUserRoles();
       setRoles(data);
+      const userMap = await fetchUsernames(data.map((s) => s.CreatedBy));
+      setUsernames(userMap);
     } catch (error) {
       console.error("Error fetching roles:", error);
     } finally {
@@ -99,10 +102,8 @@ const UserRolesMaster = () => {
               <tr key={role.userRoleId}>
                 <td className="border p-2">{role.UserRoleId}</td>
                 <td className="border p-2">{role.RoleName}</td>
-                <td className="border p-2">
-                  {role.IsActive ? "🟢 Yes" : "🔴 No"}
-                </td>
-                <td className="border p-2">{role.CreatedBy}</td>
+                <td className="border p-2">{role.IsActive ? "Yes" : "No"}</td>
+                <td className="border p-2">{usernames[role.CreatedBy]}</td>
                 <td className="border p-2">
                   {formatUtcToLocal(role.UpdatedAt)}
                 </td>

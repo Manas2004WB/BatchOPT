@@ -45,6 +45,7 @@ const BatchStatusMaster = () => {
       alert("Failed to create status.");
     }
   };
+  let srNo = 1;
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -80,7 +81,7 @@ const BatchStatusMaster = () => {
         <table className="w-full border-collapse border text-left">
           <thead>
             <tr className="bg-[#3dcd58] text-white">
-              <th className="border p-2">ID</th>
+              <th className="border p-2">Sr.No</th>
               <th className="border p-2">Status Name</th>
               <th className="border p-2">Created By</th>
               <th className="border p-2">Updated At</th>
@@ -89,7 +90,7 @@ const BatchStatusMaster = () => {
           <tbody>
             {statuses.map((status) => (
               <tr key={status.BatchStatusId}>
-                <td className="border p-2">{status.BatchStatusId}</td>
+                <td className="border p-2">{srNo++}</td>
                 <td className="border p-2">{status.StatusName}</td>
                 <td className="border p-2">
                   {usernames[status.CreatedBy] || "Loading..."}

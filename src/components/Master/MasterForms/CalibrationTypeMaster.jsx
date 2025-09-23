@@ -6,6 +6,8 @@ const BatchStatusMaster = () => {
   const [calibrationTypeName, setCalibrationTypeName] = useState("");
   const [loading, setLoading] = useState(false);
 
+  let srNo = 1;
+
   useEffect(() => {
     fetchTypes();
   }, []);
@@ -73,16 +75,14 @@ const BatchStatusMaster = () => {
         <table className="w-full border-collapse border text-centre">
           <thead>
             <tr className="bg-[#3dcd58] text-white">
-              <th className="border p-2">ID</th>
+              <th className="border p-2">Sr.No</th>
               <th className="border p-2">Calibration Types</th>
             </tr>
           </thead>
           <tbody>
             {calibrationTypes.map((status) => (
               <tr key={status.CalibrationTypeId}>
-                <td className="border p-2 text-center">
-                  {status.CalibrationTypeId}
-                </td>
+                <td className="border p-2 text-center">{srNo++}</td>
                 <td className="border p-2 text-center">
                   {status.CalibrationTypeName}
                 </td>

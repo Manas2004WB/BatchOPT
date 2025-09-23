@@ -13,7 +13,7 @@ const UserRolesMaster = () => {
   useEffect(() => {
     fetchRoles();
   }, []);
-
+  let srNo = 1;
   const fetchRoles = async () => {
     try {
       setLoading(true);
@@ -90,7 +90,7 @@ const UserRolesMaster = () => {
         <table className="w-full border-collapse border text-left">
           <thead>
             <tr className="bg-[#3dcd58] text-white">
-              <th className="border p-2">ID</th>
+              <th className="border p-2">Sr.No</th>
               <th className="border p-2">Role Name</th>
               <th className="border p-2">Active</th>
               <th className="border p-2">Created By</th>
@@ -100,7 +100,7 @@ const UserRolesMaster = () => {
           <tbody>
             {roles.map((role) => (
               <tr key={role.userRoleId}>
-                <td className="border p-2">{role.UserRoleId}</td>
+                <td className="border p-2">{srNo++}</td>
                 <td className="border p-2">{role.RoleName}</td>
                 <td className="border p-2">{role.IsActive ? "Yes" : "No"}</td>
                 <td className="border p-2">{usernames[role.CreatedBy]}</td>

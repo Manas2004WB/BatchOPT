@@ -38,6 +38,19 @@ export const users = [
     updated_at: "2025-07-02T04:36:15.2310751",
     updated_by: 1,
   },
+  {
+    user_id: 10,
+    username: "PlantAdmin",
+    password_hash:
+      "$2b$12$24RDDUHPOsjWC0JAAUoDFe0XFI7I2Iei7I5jAlIuFXX6ipALzgw9C",
+    email: "admin26@gmail.com",
+    user_role_id: 3,
+    is_active: 1,
+    created_at: "2025-07-02T04:36:15.2310751",
+    created_by: 1,
+    updated_at: "2025-07-02T04:36:15.2310751",
+    updated_by: 1,
+  },
 ];
 
 {

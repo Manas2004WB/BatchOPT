@@ -75,7 +75,7 @@ const App = () => {
         <Route
           path="/setting"
           element={
-            user.UserId === 10 ? (
+            user?.UserId === 10 ? (
               <MainComponent user={user} />
             ) : (
               <Navigate to="/login" replace />

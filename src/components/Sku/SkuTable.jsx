@@ -70,9 +70,9 @@ const SkuTable = ({ user, plantId, plantName }) => {
   return (
     <div className="overflow-x-auto ">
       <Toaster position="top-right" richColors />
-      <div className=" flex items-center justify-center gap-2">
-        <span className="text-lg font-semibold text-white">Plant:</span>
-        <span className="text-lg font-bold text-white bg-[#3dcd58] px-3 py-1 rounded shadow-sm">
+      <div className="flex items-center justify-center gap-2">
+        <span className="text-lg font-semibold text-[#3dcd58]">Plant:</span>
+        <span className="text-lg font-bold text-[#3dcd58] bg-green-100 px-3 py-1 rounded shadow-sm">
           {plantName}
         </span>
       </div>

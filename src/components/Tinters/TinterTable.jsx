@@ -290,8 +290,8 @@ const TinterTable = ({ plantId, user, plantName }) => {
                     </td>
                     <td className="px-4 py-2">
                       <button
-                        onClick={() => {
-                          setSelectedTinter(tinter);
+                        onClick={(e) => {
+                          e.stopPropagation(), setSelectedTinter(tinter);
                           setShowBatchForm(true);
                         }}
                         className="p-1 mx-2 text-green-700 hover:text-green-900"
@@ -302,15 +302,18 @@ const TinterTable = ({ plantId, user, plantName }) => {
                     <td className="px-4 py-2">
                       <div className="flex items-center gap-5">
                         <button
-                          onClick={() => handleDeleteTinter(tinter.TinterId)}
+                          onClick={(e) => {
+                            e.stopPropagation(),
+                              handleDeleteTinter(tinter.TinterId);
+                          }}
                           className="p-1 mx-2 text-green-700 hover:text-green-900"
                         >
                           <MdDelete />
                         </button>
                         <button
                           className="p-1 mx-2 text-green-700 hover:text-green-900"
-                          onClick={() => {
-                            setEditingTinter(tinter);
+                          onClick={(e) => {
+                            e.stopPropagation(), setEditingTinter(tinter);
                             setShowEditModal(true);
                           }}
                         >

@@ -9,7 +9,7 @@ const TinterBatchTable = ({ tinterId, tinterCode, userId, batches }) => {
       ) : (
         <div className="max-h-[300px] overflow-y-auto border border-gray-300 rounded">
           <table className="w-full text-sm text-left border-collapse">
-            <thead className="bg-[#6dc97e] text-white">
+            <thead className="bg-[#5ac76e] text-white">
               <tr>
                 <th className="border px-2 py-1">Batch Code</th>
                 <th className="border px-2 py-1">Name</th>

@@ -5,16 +5,16 @@ const NavbarTabs = ({ activeTab, setActiveTab, user }) => {
   const tabs = ["sku", "batches", "tinter", "calibration"];
 
   return (
-    <nav className="w-full bg-green-100/60 backdrop-blur-md shadow px-8 py-2 border-b border-green-200 z-10">
-      <ul className="flex gap-8 text-[#3dcd58] font-medium text-sm tracking-wide">
+    <nav className="w-full bg-[#3dcd58] backdrop-blur-md shadow px-8 py-2 border-b border-green-500 z-10">
+      <ul className="flex gap-6 text-white font-medium text-sm tracking-wide">
         {tabs.map((tab) => (
           <li key={tab}>
             <button
               onClick={() => setActiveTab(tab)}
-              className={`transition duration-200 pb-1 border-b-2 ${
+              className={`cursor-pointer px-2 pb-1 border-b-2 transition-all duration-200 ${
                 activeTab === tab
-                  ? "border-amber-500 text-amber-600"
-                  : "border-transparent hover:border-green-400 hover:text-green-600"
+                  ? "border-[#14532d] text-white font-semibold"
+                  : "border-transparent text-[#d1fae5] hover:border-[#bbf7d0] hover:text-white hover:scale-105"
               }`}
             >
               {tab.toUpperCase()}

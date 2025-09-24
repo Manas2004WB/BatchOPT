@@ -17,8 +17,7 @@ const Navbar = ({ user, onLogout }) => {
             className="text-white flex flex-row gap-1 justify-center items-center"
             onClick={() => navigate(`/setting`)}
           >
-            <IoSettings />
-            <span>Setting</span>
+            <span className="bg-green-600 px-2 py-1 rounded-md">Setting</span>
           </button>
         ) : null}
         <button

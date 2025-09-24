@@ -119,12 +119,15 @@ const Dashboard = ({ user, handleLogout }) => {
     try {
       const created = await createPlant(newPlant);
       setPlantList((prev) => {
-        const updated = [...prev, created];
-        return updated.sort(
-          (a, b) => new Date(b.UpdatedAt) - new Date(a.UpdatedAt)
-        );
+        const updated = [created, ...prev]; // put new one at front
+        return updated.sort((a, b) => {
+          const dateA = new Date(a.UpdatedAt || a.CreatedAt);
+          const dateB = new Date(b.UpdatedAt || b.CreatedAt);
+          return dateB - dateA;
+        });
       });
 
+      setCurrentPage(1);
       toast.success("Plant added successfully!");
     } catch (err) {
       console.error("Failed to create plant", err);
@@ -245,7 +248,7 @@ const Dashboard = ({ user, handleLogout }) => {
             </div>
           )}
 
-          <div className="overflow-x-auto rounded-lg min-h-[508px] max-h-[508px] overflow-y-auto border border-gray-200">
+          <div className="overflow-x-auto rounded-lg min-h-[516px] max-h-[516px]  border border-gray-200">
             <table className="min-w-full text-left border border-gray-200 backdrop-blur">
               <thead className="bg-[#3dcd58] text-white sticky top-0 z-10">
                 <tr>
@@ -300,12 +303,12 @@ const Dashboard = ({ user, handleLogout }) => {
                     }}
                   >
                     <td className="px-4 py-2">{plant.PlantName}</td>
-                    <td className="px-4 py-2">
+                    <td className="">
                       <div className="flex flex-row gap-4">
-                        <span className="px-2 py-1 bg-green-300 rounded-2xl">
+                        <span className="px-1 py-1 bg-green-300 rounded-2xl">
                           SKUS:{plant.Skus.length}
                         </span>
-                        <span className="px-2 py-1 bg-green-300 rounded-2xl">
+                        <span className="px-1 py-1 bg-green-300 rounded-2xl">
                           Tinters:
                           {plant.Tinters.length}
                         </span>
@@ -325,7 +328,7 @@ const Dashboard = ({ user, handleLogout }) => {
 
                     <td className="px-4 py-2 space-x-2">
                       <button
-                        className={`px-4 py-2 rounded text-sm ${
+                        className={`px-2 py-1 rounded text-sm ${
                           plant.IsActive
                             ? "bg-amber-300 hover:bg-amber-500 text-white"
                             : "bg-gray-400 cursor-not-allowed text-white"
@@ -337,7 +340,7 @@ const Dashboard = ({ user, handleLogout }) => {
                           }
                         }}
                       >
-                        <MdRemoveRedEye />
+                        view
                       </button>
                       {hasFullAccess && (
                         <>
@@ -369,8 +372,12 @@ const Dashboard = ({ user, handleLogout }) => {
                 {Array.from({
                   length: plantPerPage - currentPlants.length,
                 }).map((_, idx) => (
-                  <tr key={"empty-" + idx} className="border-t border-gray-200">
+                  <tr
+                    key={"empty-" + idx}
+                    className="border-t border-gray-200 h-[47.5px]"
+                  >
                     <td className="px-4 py-2">&nbsp;</td>
+                    <td className="px-4 py-2"></td>
                     <td className="px-4 py-2"></td>
                     <td className="px-4 py-2"></td>
                   </tr>

@@ -102,7 +102,9 @@ const UserRolesMaster = () => {
               <tr key={role.userRoleId}>
                 <td className="border p-2">{srNo++}</td>
                 <td className="border p-2">{role.RoleName}</td>
-                <td className="border p-2">{role.IsActive ? "Yes" : "No"}</td>
+                <td className="border p-2">
+                  {role.IsActive ? "Active" : "In-Active"}
+                </td>
                 <td className="border p-2">{usernames[role.CreatedBy]}</td>
                 <td className="border p-2">
                   {formatUtcToLocal(role.UpdatedAt)}

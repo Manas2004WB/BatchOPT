@@ -8,5 +8,26 @@ export const getUserNameById = async (userId) => {
   const res = await axios.get(`${API_BASE}/${userId}/GetUernameByID`, {
     headers: authHeader(),
   });
-  return res.data; // returns string username
+  return res.data;
+};
+// post user
+export const postUser = async (userData) => {
+  const res = await axios.post(API_BASE, userData, {
+    headers: authHeader(),
+  });
+  return res.data;
+};
+
+// ✅ Get all users
+export const getAllUsers = async () => {
+  const res = await axios.get(API_BASE, {
+    headers: authHeader(),
+  });
+  return res.data; // this will be an array of users
+};
+
+export default {
+  getUserNameById,
+  postUser,
+  getAllUsers,
 };

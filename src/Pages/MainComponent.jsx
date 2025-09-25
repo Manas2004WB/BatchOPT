@@ -3,11 +3,13 @@ import UserRolesMatser from "../components/Master/MasterForms/UserRolesMaster";
 import BatchStatusMaster from "../components/Master/MasterForms/BatchStatusMaster";
 import CalibrationTypeMaster from "../components/Master/MasterForms/CalibrationTypeMaster";
 import { MdArrowBackIos } from "react-icons/md";
+import UserMasters from "../components/Master/MasterForms/UserMasters";
 
 const mastersList = [
   { key: "user-role", label: "User Roles" },
   { key: "calibration types", label: "Calibration Types" },
   { key: "batchStatus", label: "Batch Status" },
+  { key: "users", label: "Users" },
 ];
 
 const MainComponent = () => {
@@ -22,6 +24,8 @@ const MainComponent = () => {
         return <CalibrationTypeMaster />;
       case "batchStatus":
         return <BatchStatusMaster />;
+      case "users":
+        return <UserMasters />;
       default:
         return <div>Select a master from the sidebar</div>;
     }

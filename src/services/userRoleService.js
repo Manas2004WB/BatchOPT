@@ -16,8 +16,15 @@ export const postUserRoles = async (data) => {
   });
   return res.data;
 };
+export const getUserRolesById = async (id) => {
+  const res = await axios.get(`${API_BASE}/RolenameById/${id}`, {
+    headers: authHeader(),
+  });
+  return res.data;
+};
 
 export default {
   getUserRoles,
   postUserRoles,
+  getUserRolesById,
 };

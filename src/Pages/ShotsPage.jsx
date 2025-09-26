@@ -8,7 +8,7 @@ import { tinters } from "../Data/TinterData";
 import { batches } from "../Data/Batches";
 import { useLocation, useParams } from "react-router-dom";
 import heroBg from "../assets/hero-bg.jpg";
-import NavbarShots from "../components/NavbarShots";
+import NavbarShots from "../components/ShotComponents/NavbarShots";
 import { tinterBatches } from "../Data/TinterBatches";
 import StandardRow from "../components/ShotComponents/StandardRow";
 import ShotRow from "../components/ShotComponents/ShotRow";

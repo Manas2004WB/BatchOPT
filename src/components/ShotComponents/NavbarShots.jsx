@@ -1,7 +1,7 @@
 import React from "react";
 import { MdArrowBackIos } from "react-icons/md";
-import { skuVersions } from "../Data/SkuVersionData";
-import { skuData } from "../Data/SkuData";
+import { skuVersions } from "../../Data/SkuVersionData";
+import { skuData } from "../../Data/SkuData";
 
 const NavbarShots = ({ batch }) => {
   const getSkuByVersionId = (versionId) => {

@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import AddPlantForm from "../components/AddPlantForm";
-import UpdatePlantForm from "../components/UpdateForm";
-import SearchBar from "../components/SearchBar";
-import Pagination from "../components/Pagination";
+import AddPlantForm from "../components/Plants/AddPlantForm";
+import UpdatePlantForm from "../components/Plants/UpdateForm";
+import SearchBar from "../components/Plants/SearchBar";
+import Pagination from "../components/Plants/Pagination";
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import { FaSortUp, FaSortDown, FaSort } from "react-icons/fa";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/Plants/Navbar";
 import { Toaster, toast } from "sonner";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
@@ -170,13 +170,14 @@ const Dashboard = ({ user, handleLogout }) => {
       <div className="max-h-screen bg-cover bg-center flex items-center justify-center pt-12 overflow-y-hidden">
         <div className="w-full max-w-full bg-white backdrop-blur-md  rounded-2xl p-8 overflow-hidden">
           <div className="flex flex-row gap-10 justify-between mt-1.5">
-            <button
-              onClick={() => setShowModal(true)}
-              className="mb-4 bg-[#3dcd58] hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
-            >
-              + Add Plant
-            </button>
-
+            {canAction && (
+              <button
+                onClick={() => setShowModal(true)}
+                className="mb-4 bg-[#3dcd58] hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
+              >
+                + Add Plant
+              </button>
+            )}
             <SearchBar
               query={searchQuery}
               setQuery={setSearchQuery}
@@ -204,130 +205,134 @@ const Dashboard = ({ user, handleLogout }) => {
             </div>
           )}
 
-          <div className="overflow-x-auto rounded-lg border border-gray-200">
-            <table className="min-w-full text-left border border-gray-200 backdrop-blur">
-              <thead className="bg-[#3dcd58] text-white sticky top-0 z-10">
-                <tr>
-                  <th
-                    className="px-4 py-2 cursor-pointer"
-                    onClick={() => handleSort("PlantName")}
-                  >
-                    <div className="flex items-center gap-1">
-                      Plant Name
-                      {sortConfig.key === "PlantName" ? (
-                        sortConfig.direction === "asc" ? (
-                          <FaSortUp />
+          <div className="overflow-x-auto rounded-lg border border-gray-200 ">
+            {/* SCROLLABLE AREA only if needed */}
+            <div className="max-h-[466px] overflow-y-auto">
+              <table className="min-w-full text-left border border-gray-200 backdrop-blur">
+                <thead className="bg-[#3dcd58] text-white sticky top-0 z-10">
+                  <tr>
+                    <th
+                      className="px-4 py-2 cursor-pointer"
+                      onClick={() => handleSort("PlantName")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Plant Name
+                        {sortConfig.key === "PlantName" ? (
+                          sortConfig.direction === "asc" ? (
+                            <FaSortUp />
+                          ) : (
+                            <FaSortDown />
+                          )
                         ) : (
-                          <FaSortDown />
-                        )
-                      ) : (
-                        <FaSort className="text-white/70" />
-                      )}
-                    </div>
-                  </th>
-                  <th className="px-4 py-2">SKU Tinter Count</th>
-                  <th
-                    className="px-4 py-2 cursor-pointer"
-                    onClick={() => handleSort("IsActive")}
-                  >
-                    <div className="flex items-center gap-1">
-                      Status
-                      {sortConfig.key === "IsActive" ? (
-                        sortConfig.direction === "asc" ? (
-                          <FaSortUp />
-                        ) : (
-                          <FaSortDown />
-                        )
-                      ) : (
-                        <FaSort className="text-white/70" />
-                      )}
-                    </div>
-                  </th>
-                  {canAction && <th className="px-4 py-2">Action</th>}
-                </tr>
-              </thead>
-              <tbody className="bg-white/80" style={{ height: "420px" }}>
-                {currentPlants.map((plant) => (
-                  <tr
-                    key={plant.PlantId || "N/A"}
-                    className="border-t border-gray-200 hover:bg-green-100 cursor-pointer transition"
-                    onClick={() => {
-                      if (plant.IsActive) {
-                        navigate(`/plant/${plant.PlantId}`);
-                      }
-                    }}
-                  >
-                    <td className="px-4 py-2 text-black hover:text-blue-600 hover:underline cursor-pointer">
-                      {plant.PlantName}
-                    </td>
-                    <td>
-                      <div className="flex flex-row gap-4">
-                        <span className="px-2 py-1 bg-green-300 rounded-2xl">
-                          SKUS:{plant.Skus.length}
-                        </span>
-                        <span className="px-2 py-1 bg-green-300 rounded-2xl">
-                          Tinters:{plant.Tinters.length}
-                        </span>
+                          <FaSort className="text-white/70" />
+                        )}
                       </div>
-                    </td>
-                    <td className="px-4 py-2">
-                      {plant.IsActive ? (
-                        <span className="text-green-700 font-semibold">
-                          Active
-                        </span>
-                      ) : (
-                        <span className="text-red-500 font-semibold">
-                          Inactive
-                        </span>
-                      )}
-                    </td>
-
-                    {canAction && (
-                      <td className="px-4 py-2">
-                        <div className="flex items-center space-x-3">
-                          <button
-                            className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedPlant(plant);
-                              setShowUpdateModal(true);
-                            }}
-                          >
-                            <FaEdit />
-                          </button>
-                          <button
-                            className="flex items-center justify-center bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeletePlant(plant.PlantId);
-                            }}
-                          >
-                            <MdDelete />
-                          </button>
+                    </th>
+                    <th className="px-4 py-2">SKU Tinter Count</th>
+                    <th
+                      className="px-4 py-2 cursor-pointer"
+                      onClick={() => handleSort("IsActive")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Status
+                        {sortConfig.key === "IsActive" ? (
+                          sortConfig.direction === "asc" ? (
+                            <FaSortUp />
+                          ) : (
+                            <FaSortDown />
+                          )
+                        ) : (
+                          <FaSort className="text-white/70" />
+                        )}
+                      </div>
+                    </th>
+                    {canAction && <th className="px-4 py-2">Action</th>}
+                  </tr>
+                </thead>
+                <tbody className="bg-white/80 ">
+                  {currentPlants.map((plant) => (
+                    <tr
+                      key={plant.PlantId || "N/A"}
+                      className="border-t border-gray-200 hover:bg-green-100 cursor-pointer transition"
+                      onClick={() => {
+                        if (plant.IsActive) {
+                          navigate(`/plant/${plant.PlantId}`);
+                        }
+                      }}
+                    >
+                      <td className="px-4 py-2 text-black hover:text-blue-600 hover:underline cursor-pointer">
+                        {plant.PlantName}
+                      </td>
+                      <td>
+                        <div className="flex flex-row gap-4">
+                          <span className="px-2 py-1 bg-green-300 rounded-2xl">
+                            SKUS:{plant.Skus.length}
+                          </span>
+                          <span className="px-2 py-1 bg-green-300 rounded-2xl">
+                            Tinters:{plant.Tinters.length}
+                          </span>
                         </div>
                       </td>
-                    )}
-                  </tr>
-                ))}
+                      <td className="px-4 py-2">
+                        {plant.IsActive ? (
+                          <span className="text-green-700 font-semibold">
+                            Active
+                          </span>
+                        ) : (
+                          <span className="text-red-500 font-semibold">
+                            Inactive
+                          </span>
+                        )}
+                      </td>
 
-                {/* filler rows */}
-                {Array.from({
-                  length: plantPerPage - currentPlants.length,
-                }).map((_, idx) => (
-                  <tr
-                    key={"empty-" + idx}
-                    className="border-t border-gray-200"
-                    style={{ height: "42px" }} // match row height
-                  >
-                    <td className="px-4 py-2">&nbsp;</td>
-                    <td className="px-4 py-2"></td>
-                    <td className="px-4 py-2"></td>
-                    {hasFullAccess && <td className="px-4 py-2"></td>}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      {canAction && (
+                        <td className="px-4 py-2">
+                          <div className="flex items-center space-x-3">
+                            <button
+                              className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedPlant(plant);
+                                setShowUpdateModal(true);
+                              }}
+                            >
+                              <FaEdit />
+                            </button>
+                            <button
+                              className="flex items-center justify-center bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeletePlant(plant.PlantId);
+                              }}
+                            >
+                              <MdDelete />
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
 
+                  {/* filler rows */}
+                  {currentPlants.length < plantPerPage &&
+                    totalPages > 1 &&
+                    Array.from({
+                      length: plantPerPage - currentPlants.length,
+                    }).map((_, idx) => (
+                      <tr
+                        key={"empty-" + idx}
+                        className="border-t border-gray-200"
+                        style={{ height: "42px" }}
+                      >
+                        <td className="px-4 py-2">&nbsp;</td>
+                        <td className="px-4 py-2"></td>
+                        <td className="px-4 py-2"></td>
+                        {canAction && <td className="px-4 py-2"></td>}
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
             {showUpdateModal && (
               <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex items-center justify-center z-50">
                 <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">

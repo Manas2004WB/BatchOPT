@@ -4,7 +4,7 @@ import heroBg from "../assets/hero-bg.jpg";
 import TinterTable from "../components/Tinters/TinterTable";
 import SkuTable from "../components/Sku/SkuTable";
 import NavbarPlantDetails from "../components/NavbarPlantDetails";
-import AddSkuBatches from "../components/AddSkuBatches";
+import AddSkuBatches from "../components/SkuBatches/AddSkuBatches";
 import Calibration from "../components/Calibration/Calibration";
 import NavbarTabs from "../components/NavTabs";
 import MainComponent from "./MainComponent";

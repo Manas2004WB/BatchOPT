@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { GetOlderVersionsMeasurements } from "../../services/skuService";
 import UpdatedVersionRow from "./UpdatedVersionRow";
 import OldVersionRow from "./OldVersionRow";
+import { hasFullAccess } from "../../utility/authUtils";
 
 const SkuTable = ({ user, plantId, plantName }) => {
   const [skus, setSkus] = useState([]);
@@ -13,7 +14,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [expandedRows, setExpandedRows] = useState({});
   const [loadingRows, setLoadingRows] = useState({});
-
+  const canAction = hasFullAccess();
   useEffect(() => {
     const fetchSkus = async () => {
       try {
@@ -70,19 +71,24 @@ const SkuTable = ({ user, plantId, plantName }) => {
   return (
     <div className="overflow-x-auto ">
       <Toaster position="top-right" richColors />
-      <div className="flex items-center justify-center gap-2">
+      <div
+        className={`flex items-center justify-center gap-2 ${
+          canAction ? "" : "mb-4"
+        }`}
+      >
         <span className="text-lg font-semibold text-[#3dcd58]">Plant:</span>
         <span className="text-lg font-bold text-[#3dcd58] bg-green-100 px-3 py-1 rounded shadow-sm">
           {plantName}
         </span>
       </div>
-
-      <button
-        onClick={() => setShowAddModal(true)}
-        className="mb-4 bg-[#3dcd58] hover:bg-emerald-600 text-white font-semibold px-4 py-2 rounded"
-      >
-        + Add SKU
-      </button>
+      {canAction && (
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="mb-4 bg-[#3dcd58] hover:bg-emerald-600 text-white font-semibold px-4 py-2 rounded"
+        >
+          + Add SKU
+        </button>
+      )}
 
       {/* Modal */}
       {showAddModal && (

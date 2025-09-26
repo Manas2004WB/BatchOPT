@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import AddSkuBatchForm from "./AddSkuBatchForm";
-import { users } from "../Data/Data";
+import AddSkuBatchForm from "../SkuBatches/AddSkuBatchForm";
+import { users } from "../../Data/Data";
 import { useNavigate } from "react-router-dom";
-import { formatUtcToLocal } from "../utility/utc2ist";
-import { getBatchesByPlantId, postBatch } from "../services/batchService";
+import { formatUtcToLocal } from "../../utility/utc2ist";
+import { getBatchesByPlantId, postBatch } from "../../services/batchService";
 import { Toaster, toast } from "sonner";
+import { hasFullAccess } from "../../utility/authUtils";
 
 const AddSkuBatches = ({ user, plantId, plantName }) => {
   const navigate = useNavigate();
   const [batchList, setBatchList] = useState([]);
   const [showAddBatchModal, setShowAddBatchModal] = useState(false);
-
+  const canAction = hasFullAccess();
   const fetchBatches = async () => {
     try {
       const data = await getBatchesByPlantId(plantId);
@@ -45,19 +46,25 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
   return (
     <div className="overflow-x-auto rounded-lg">
       <Toaster position="top-right" richColors />
-      <div className="flex items-center justify-center gap-2">
+      <div
+        className={`flex items-center justify-center gap-2 ${
+          canAction ? "" : "mb-4"
+        }`}
+      >
         <span className="text-lg font-semibold text-[#3dcd58]">Plant:</span>
         <span className="text-lg font-bold text-[#3dcd58] bg-green-100 px-3 py-1 rounded shadow-sm">
           {plantName}
         </span>
       </div>
+      {canAction && (
+        <button
+          onClick={() => setShowAddBatchModal(true)}
+          className="mb-4 bg-[#3dcd58] hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
+        >
+          + Add Batches
+        </button>
+      )}
 
-      <button
-        onClick={() => setShowAddBatchModal(true)}
-        className="mb-4 bg-[#3dcd58] hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
-      >
-        + Add Batches
-      </button>
       {showAddBatchModal && (
         <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-5xl relative">
@@ -88,7 +95,7 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
               <th className="px-4 py-2 ">Status </th>
               <th className="px-4 py-2 ">Updated On</th>
               <th className="px-4 py-2 ">Updated By</th>
-              <th className="px-4 py-2 ">Shots</th>
+              {canAction && <th className="px-4 py-2 ">Shots</th>}
             </tr>
           </thead>
           <tbody className="bg-emerald-50/60">
@@ -124,18 +131,20 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
                   <td className="px-4 py-2 text-center">
                     {getUsernamebyUserId(batch.UpdatedBy)}
                   </td>
-                  <td className="px-4 py-2 text-center">
-                    <button
-                      className="bg-[#3dcd58]  p-1 rounded-xl text-white"
-                      onClick={() =>
-                        navigate(`/shots/${batch.BatchId}`, {
-                          state: { batch, plantId },
-                        })
-                      }
-                    >
-                      Shots
-                    </button>
-                  </td>
+                  {canAction && (
+                    <td className="px-4 py-2 text-center">
+                      <button
+                        className="bg-[#3dcd58]  p-1 rounded-xl text-white"
+                        onClick={() =>
+                          navigate(`/shots/${batch.BatchId}`, {
+                            state: { batch, plantId },
+                          })
+                        }
+                      >
+                        Shots
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))
             )}

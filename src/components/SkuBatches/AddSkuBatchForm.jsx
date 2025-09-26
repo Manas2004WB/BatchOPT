@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { authHeader } from "../services/authHeader";
+import { authHeader } from "../../services/authHeader";
 import { Toaster, toast } from "sonner";
 const API_BASE = "https://localhost:7130/api";
 

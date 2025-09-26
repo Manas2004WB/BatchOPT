@@ -12,9 +12,11 @@ import { formatUtcToLocal } from "../../utility/utc2ist";
 import TinterBatchTable from "../Tinters/TinterBatches/TinterBatchTable";
 import tinterBatchService from "../../services/tinterBatchService";
 import { motion, AnimatePresence } from "framer-motion";
+import { hasFullAccess } from "../../utility/authUtils";
 
 const TinterTable = ({ plantId, user, plantName }) => {
   console.log("TinterTable props - PlantId:", plantId);
+  const canAction = hasFullAccess();
   const [editingTinter, setEditingTinter] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -134,19 +136,24 @@ const TinterTable = ({ plantId, user, plantName }) => {
   return (
     <div className="overflow-x-auto rounded-lg">
       <Toaster position="top-right" richColors />
-      <div className="flex items-center justify-center gap-2">
+      <div
+        className={`flex items-center justify-center gap-2 ${
+          canAction ? "" : "mb-4"
+        }`}
+      >
         <span className="text-lg font-semibold text-[#3dcd58]">Plant:</span>
         <span className="text-lg font-bold text-[#3dcd58] bg-green-100 px-3 py-1 rounded shadow-sm">
           {plantName}
         </span>
       </div>
-
-      <button
-        className="mb-4 bg-[#3dcd58] hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
-        onClick={() => setShowAddModal(true)}
-      >
-        + Add Tinter
-      </button>
+      {canAction && (
+        <button
+          className="mb-4 bg-[#3dcd58] hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
+          onClick={() => setShowAddModal(true)}
+        >
+          + Add Tinter
+        </button>
+      )}
 
       {/* Add Modal */}
       {showAddModal && (
@@ -249,8 +256,8 @@ const TinterTable = ({ plantId, user, plantName }) => {
               <th className="px-4 py-2">Status</th>
               <th className="px-4 py-2">Updated By</th>
               <th className="px-4 py-2">Updated At</th>
-              <th className="px-4 py-2">Add Batches</th>
-              <th className="px-4 py-2">Actions</th>
+              {canAction && <th className="px-4 py-2">Add Batches</th>}
+              {canAction && <th className="px-4 py-2">Actions</th>}
             </tr>
           </thead>
           <tbody className="bg-emerald-50/60">
@@ -288,39 +295,43 @@ const TinterTable = ({ plantId, user, plantName }) => {
                         ? formatUtcToLocal(tinter.UpdatedAt)
                         : "--"}
                     </td>
-                    <td className="px-4 py-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation(), setSelectedTinter(tinter);
-                          setShowBatchForm(true);
-                        }}
-                        className="p-1 mx-2 text-green-700 hover:text-green-900"
-                      >
-                        <IoIosAddCircleOutline />
-                      </button>
-                    </td>
-                    <td className="px-4 py-2">
-                      <div className="flex items-center gap-5">
+                    {canAction && (
+                      <td className="px-4 py-2">
                         <button
                           onClick={(e) => {
-                            e.stopPropagation(),
-                              handleDeleteTinter(tinter.TinterId);
+                            e.stopPropagation(), setSelectedTinter(tinter);
+                            setShowBatchForm(true);
                           }}
                           className="p-1 mx-2 text-green-700 hover:text-green-900"
                         >
-                          <MdDelete />
+                          <IoIosAddCircleOutline />
                         </button>
-                        <button
-                          className="p-1 mx-2 text-green-700 hover:text-green-900"
-                          onClick={(e) => {
-                            e.stopPropagation(), setEditingTinter(tinter);
-                            setShowEditModal(true);
-                          }}
-                        >
-                          <FaEdit />
-                        </button>
-                      </div>
-                    </td>
+                      </td>
+                    )}
+                    {canAction && (
+                      <td className="px-4 py-2">
+                        <div className="flex items-center gap-5">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(),
+                                handleDeleteTinter(tinter.TinterId);
+                            }}
+                            className="p-1 mx-2 text-green-700 hover:text-green-900"
+                          >
+                            <MdDelete />
+                          </button>
+                          <button
+                            className="p-1 mx-2 text-green-700 hover:text-green-900"
+                            onClick={(e) => {
+                              e.stopPropagation(), setEditingTinter(tinter);
+                              setShowEditModal(true);
+                            }}
+                          >
+                            <FaEdit />
+                          </button>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                   {/* Accordion row */}
                   <AnimatePresence>

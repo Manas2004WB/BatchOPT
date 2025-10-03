@@ -207,16 +207,13 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
   if (loading) return <p>Loading batches...</p>;
 
   return (
-    <div className="p-4 bg-white/60 shadow rounded-2xl max-h-[550px] border border-green-100">
+    <div className="p-4 shadow  max-h-[550px] ">
       <h2 className="text-xl font-bold text-green-800 mb-4">
         Tinter Batches for {tinterCode}
       </h2>
 
-      {/* ✅ Add Batch Form */}
-      <form
-        onSubmit={handleAddBatch}
-        className="mb-2 flex flex-col gap-4 p-4 border border-green-100 rounded-lg bg-green-50"
-      >
+      {/* Add Batch Form */}
+      <form onSubmit={handleAddBatch} className="mb-2 flex flex-col gap-4 p-4">
         {/* Top Row */}
         <div className="grid grid-cols-6 gap-3">
           <input
@@ -225,6 +222,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             value={newBatch.TinterBatchCode}
             onChange={handleInputChange}
             placeholder="Batch Code"
+            title="Enter the unique batch code"
             className="col-span-2 border border-gray-300 px-2 py-1 rounded w-full text-sm"
             required
           />
@@ -234,10 +232,10 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             value={newBatch.BatchTinterName}
             onChange={handleInputChange}
             placeholder="Tinter Batch Name"
+            title="Enter the name of the tinter batch"
             className="col-span-2 border border-gray-300 px-2 py-1 rounded w-full text-sm"
             required
           />
-
           <input
             type="number"
             step="0.01"
@@ -245,6 +243,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
             value={newBatch.Strength}
             onChange={handleInputChange}
             placeholder="Strength"
+            title="Enter the strength value"
             className="col-span-1 border border-gray-300 px-2 py-1 rounded w-full text-sm"
           />
           <label className="col-span-1 flex items-center justify-center text-sm text-green-800">
@@ -254,6 +253,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
               checked={newBatch.IsActive}
               onChange={handleInputChange}
               className="mr-1 accent-green-600"
+              title="Mark as active batch"
             />
             Active
           </label>
@@ -265,6 +265,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
           value={newBatch.Comments}
           onChange={handleInputChange}
           placeholder="Comments"
+          title="Add any comments related to this batch"
           className="border border-gray-300 px-2 py-1 rounded w-full resize-none text-sm"
         />
 
@@ -279,6 +280,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
               value={newBatch.Measurements[name]}
               onChange={handleInputChange}
               placeholder={`Panel ${name.split("_")[1].toUpperCase()}`}
+              title={`Panel ${name.split("_")[1].toUpperCase()}`}
               className="border border-gray-300 px-2 py-1 rounded w-full text-sm"
               disabled
             />
@@ -293,6 +295,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
                 ? "bg-green-200 text-green-800 hover:bg-green-300 border-green-300"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
             }`}
+            title="Fetch panel measurements"
           >
             Fetch
           </button>
@@ -309,6 +312,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
               value={newBatch.Measurements[name]}
               onChange={handleInputChange}
               placeholder={`Liquid ${name.split("_")[1].toUpperCase()}`}
+              title={`Liquid ${name.split("_")[1].toUpperCase()}`}
               className="border border-gray-300 px-2 py-1 rounded w-full text-sm"
               disabled
             />
@@ -324,6 +328,7 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
                 ? "bg-green-200 text-green-800 hover:bg-green-300 border-green-300"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed border-gray-300"
             }`}
+            title="Fetch liquid measurements"
           >
             Fetch
           </button>
@@ -334,11 +339,15 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
           <button
             type="submit"
             className="bg-green-700 text-white px-6 py-2 rounded-lg hover:bg-green-800 text-sm"
+            title="Add the new batch"
           >
             Add Batch
           </button>
         </div>
       </form>
+
+      {/* Pagination / Content Section */}
+      <div className="mt-2">{/* Implement pagination content here */}</div>
     </div>
   );
 };

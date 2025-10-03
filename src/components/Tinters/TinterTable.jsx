@@ -272,7 +272,12 @@ const TinterTable = ({ plantId, user, plantName }) => {
                 <Fragment key={tinter.TinterId}>
                   <tr
                     key={tinter.TinterId}
-                    className="border-t cursor-pointer border-green-100 hover:bg-green-50 transition"
+                    className={`cursor-pointer transition
+                      ${
+                        expandedTinterId === tinter.TinterId
+                          ? "border-t border-green-300 bg-green-50" // expanded state
+                          : "border-t border-green-100 hover:bg-green-50"
+                      }`}
                     onClick={() => toggleAccordion(tinter.TinterId)}
                   >
                     <td className="px-4 py-2">{tinter.TinterCode}</td>
@@ -302,7 +307,7 @@ const TinterTable = ({ plantId, user, plantName }) => {
                             e.stopPropagation(), setSelectedTinter(tinter);
                             setShowBatchForm(true);
                           }}
-                          className="p-1 mx-2 text-green-700 hover:text-green-900"
+                          className="p-1 mx-2 text-md text-green-700 hover:text-green-900"
                         >
                           <IoIosAddCircleOutline />
                         </button>
@@ -333,17 +338,19 @@ const TinterTable = ({ plantId, user, plantName }) => {
                       </td>
                     )}
                   </tr>
-                  {/* Accordion row */}
                   <AnimatePresence>
                     {expandedTinterId === tinter.TinterId && (
                       <motion.tr
-                        key={tinter.TinterId}
+                        key={`${tinter.TinterId}-expanded`}
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className=" bg-green-50 border-b-1 border-green-300" // merge borders with main row
                       >
-                        <td colSpan={6} className="p-2 bg-gray-50">
+                        <td colSpan={6} className="p-0">
+                          {" "}
+                          {/* remove extra padding */}
                           <TinterBatchTable
                             tinterId={tinter.TinterId}
                             tinterCode={tinter.TinterCode}

@@ -1,23 +1,22 @@
 import React from "react";
 
 const NavbarTabs = ({ activeTab, setActiveTab, user }) => {
-  // base tabs visible to everyone
   const tabs = ["sku", "batches", "tinter", "calibration"];
 
   return (
-    <nav className="w-full bg-[#3dcd58] backdrop-blur-md shadow px-8 py-2 border-b border-green-500 z-10">
-      <ul className="flex gap-6 text-white font-medium text-sm tracking-wide">
+    <nav className="w-full bg-[#3dcd58] backdrop-blur-md shadow-md px-6 py-1.5 border-b border-green-500 z-10">
+      <ul className="flex gap-4 font-medium tracking-wide text-md text-white">
         {tabs.map((tab) => (
           <li key={tab}>
             <button
               onClick={() => setActiveTab(tab)}
-              className={`cursor-pointer px-2 pb-1 border-b-2 transition-all duration-200 ${
+              className={`px-3 py-1.5  uppercase  transition-colors duration-150 ${
                 activeTab === tab
-                  ? "border-[#14532d] text-white font-semibold"
-                  : "border-transparent text-[#d1fae5] hover:border-[#bbf7d0] hover:text-white hover:scale-105"
+                  ? "bg-white text-[#3dcd58]" // active
+                  : "text-white/80 hover:text-white hover:bg-white/10"
               }`}
             >
-              {tab.toUpperCase()}
+              {tab}
             </button>
           </li>
         ))}

@@ -3,10 +3,12 @@ import React from "react";
 const OldVersionRow = ({ expandedRows, sku }) => {
   return (
     <>
-      {expandedRows[sku.SkuId].map((version) => (
+      {expandedRows[sku.SkuId].map((version, idx) => (
         <tr
           key={version.SkuVersionId}
-          className="border-t text-white border-gray-200 bg-[#3dcd58]"
+          className={`border-l border-r border-b border-green-300 bg-green-100 ${
+            idx === expandedRows[sku.SkuId].length - 1 ? "rounded-b-lg" : ""
+          }`}
         >
           <td className="px-4 py-2 text-center">-</td>
           <td className="px-4 py-2 text-center">{version.SkuRevision}</td>

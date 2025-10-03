@@ -178,7 +178,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-gray-400/10 backdrop-blur-sm flex justify-center items-center z-50">
       <Toaster position="top-right" richColors />
       <div className="bg-white rounded-lg shadow-lg p-6 w-[900px]">
         <h2 className="text-lg font-bold mb-2">
@@ -245,7 +245,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
               <button
                 type="button"
                 onClick={fetchRandomLiquid}
-                className="ml-2 px-3 py-1 bg-emerald-500 text-white rounded hover:bg-emerald-700 text-xs font-semibold border border-emerald-700"
+                className="ml-2 px-3 py-1 bg-[#3dcd58] text-white rounded hover:bg-green-700 text-xs font-semibold border border-green-700"
               >
                 Fetch
               </button>
@@ -272,7 +272,7 @@ const AddSkuModal = ({ plantId, user, onClose, onSuccess }) => {
               <button
                 type="button"
                 onClick={fetchRandomPanel}
-                className="ml-2 px-3 py-1 bg-emerald-500 text-white rounded hover:bg-emerald-700 text-xs font-semibold border border-emerald-700"
+                className="ml-2 px-3 py-1 bg-[#3dcd58] text-white rounded hover:bg-green-700 text-xs font-semibold border border-green-700"
               >
                 Fetch
               </button>

@@ -7,11 +7,18 @@ const UpdatedVersionRow = ({
   sku,
   srNo,
 }) => {
+  const isExpanded =
+    expandedRows[sku.SkuId] && expandedRows[sku.SkuId].length > 0;
   return (
     <tr
-      className={`border-t border-white/30 transition cursor-pointer ${
-        expandedRows[sku.SkuId] ? "bg-[#ddfee4]" : "hover:bg-white/80"
-      }`}
+      className={`
+        cursor-pointer transition
+        ${
+          isExpanded
+            ? "bg-green-200 border-t border-l border-r border-green-300 rounded-t-lg"
+            : "hover:bg-green-50 border-t border-green-200"
+        }
+      `}
       onClick={() => handleToggleExpand(sku.SkuId)}
     >
       <td className="px-4 py-2 text-center">{srNo++}</td>

@@ -345,9 +345,6 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
           </button>
         </div>
       </form>
-
-      {/* Pagination / Content Section */}
-      <div className="mt-2">{/* Implement pagination content here */}</div>
     </div>
   );
 };

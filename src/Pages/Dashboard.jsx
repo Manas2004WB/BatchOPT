@@ -173,7 +173,7 @@ const Dashboard = ({ user, handleLogout }) => {
             {canAction && (
               <button
                 onClick={() => setShowModal(true)}
-                className="mb-4 bg-[#3dcd58] hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
+                className="mb-4 bg-[#3dcd58] shadow-md hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
               >
                 + Add Plant
               </button>
@@ -186,29 +186,23 @@ const Dashboard = ({ user, handleLogout }) => {
           </div>
 
           {showModal && (
-            <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex items-center justify-center z-50">
-              <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-xl"
-                >
-                  &times;
-                </button>
-
-                <AddPlantForm
-                  onAdd={(plant) => {
-                    handleAddPlant(plant);
-                    setShowModal(false);
-                  }}
-                />
-              </div>
+            <div className="fixed inset-0 bg-gray-400/10 backdrop-blur-sm flex items-center justify-center z-50">
+              <AddPlantForm
+                onAdd={(plant) => {
+                  handleAddPlant(plant);
+                  setShowModal(false);
+                }}
+                onClose={() => {
+                  setShowModal(false);
+                }}
+              />
             </div>
           )}
 
           <div className="overflow-x-auto rounded-lg border border-gray-200 ">
             {/* SCROLLABLE AREA only if needed */}
             <div className="max-h-[466px] overflow-y-auto">
-              <table className="min-w-full text-left border border-gray-200 backdrop-blur">
+              <table className="min-w-full text-left border font-normal border-gray-200 backdrop-blur">
                 <thead className="bg-[#3dcd58] text-white sticky top-0 z-10">
                   <tr>
                     <th
@@ -265,10 +259,10 @@ const Dashboard = ({ user, handleLogout }) => {
                       </td>
                       <td>
                         <div className="flex flex-row gap-4">
-                          <span className="px-2 py-1 bg-green-300 rounded-2xl">
+                          <span className="px-2 py-1 bg-green-100 rounded-2xl">
                             SKUS:{plant.Skus.length}
                           </span>
-                          <span className="px-2 py-1 bg-green-300 rounded-2xl">
+                          <span className="px-2 py-1 bg-green-100 rounded-2xl">
                             Tinters:{plant.Tinters.length}
                           </span>
                         </div>
@@ -289,7 +283,7 @@ const Dashboard = ({ user, handleLogout }) => {
                         <td className="px-4 py-2">
                           <div className="flex items-center space-x-3">
                             <button
-                              className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm"
+                              className="flex items-center shadow-md justify-center bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setSelectedPlant(plant);
@@ -299,7 +293,7 @@ const Dashboard = ({ user, handleLogout }) => {
                               <FaEdit />
                             </button>
                             <button
-                              className="flex items-center justify-center bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-sm"
+                              className="flex items-center justify-center bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-sm shadow-md"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleDeletePlant(plant.PlantId);
@@ -335,26 +329,20 @@ const Dashboard = ({ user, handleLogout }) => {
             </div>
             {showUpdateModal && (
               <div className="fixed inset-0 bg-gray-300/10 backdrop-blur-sm flex items-center justify-center z-50">
-                <div className="bg-white rounded-xl p-6 shadow-lg w-full max-w-md relative">
-                  <button
-                    onClick={() => setShowUpdateModal(false)}
-                    className="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-xl"
-                  >
-                    &times;
-                  </button>
-
-                  <UpdatePlantForm
-                    plant={selectedPlant}
-                    onUpdate={(updatedPlant) => {
-                      handleUpdatePlant(updatedPlant);
-                      setShowUpdateModal(false);
-                    }}
-                  />
-                </div>
+                <UpdatePlantForm
+                  plant={selectedPlant}
+                  onUpdate={(updatedPlant) => {
+                    handleUpdatePlant(updatedPlant);
+                    setShowUpdateModal(false);
+                  }}
+                  onClose={() => {
+                    setShowUpdateModal(false);
+                  }}
+                />
               </div>
             )}
             {confirmDelete.open && (
-              <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+              <div className="fixed inset-0 bg-gray-300/10  backdrop-blur-sm flex items-center justify-center z-50">
                 <div className="bg-white rounded-lg shadow-lg p-6 w-[350px]">
                   <h2 className="text-lg font-bold mb-2 text-red-700">
                     Delete Plant?
@@ -376,7 +364,7 @@ const Dashboard = ({ user, handleLogout }) => {
                       Cancel
                     </button>
                     <button
-                      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                      className="px-4 py-2 shadow-md bg-red-600 text-white rounded hover:bg-red-700"
                       onClick={confirmDeletePlant}
                     >
                       Delete

@@ -85,7 +85,7 @@ const AddSkuBatches = ({ user, plantId, plantName }) => {
         </div>
       )}
       <div className="overflow-x-auto overflow-y-auto max-h-[500px] border border-green-100 rounded">
-        <table className="min-w-full text-centre border border-green-100 backdrop-blur">
+        <table className="min-w-full text-centre border border-green-100 backdrop-blur  font-normal">
           <thead className="bg-[#3dcd58] text-white sticky top-0 z-10">
             <tr>
               <th className="px-4 py-2 ">#</th>

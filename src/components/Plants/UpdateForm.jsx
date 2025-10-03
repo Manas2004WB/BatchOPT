@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-const UpdatePlantForm = ({ plant, onUpdate }) => {
+
+const UpdatePlantForm = ({ plant, onUpdate, onClose }) => {
   const [updatedPlant, setUpdatedPlant] = useState({ ...plant });
   const [error, setError] = useState("");
 
@@ -17,7 +18,6 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
       toast.error("Plant name must be between 3 and 30 characters");
       return false;
     }
-    // only letters, numbers, spaces, and hyphens allowed
     if (!/^(?! )[A-Za-z0-9 -]+(?<! )$/.test(name)) {
       toast.error(
         "Plant name can only contain letters, numbers, spaces, and hyphens (no special symbols)"
@@ -28,16 +28,23 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // <-- also missing to prevent page reload
-    if (!validatePlantName(plant.PlantName)) return;
+    e.preventDefault();
+    if (!validatePlantName(updatedPlant.PlantName)) return;
     onUpdate(updatedPlant);
     setError("");
+    if (onClose) onClose(); // close modal after saving
+  };
+
+  const handleDiscard = () => {
+    setUpdatedPlant({ ...plant }); // reset to original
+    setError("");
+    if (onClose) onClose(); // just close modal
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-6 rounded-xl shadow-xl border border-gray-200"
+      className="bg-white p-6 rounded-xl shadow-2xl border border-gray-200 w-full max-w-md"
     >
       <h2 className="text-xl font-bold text-green-800 mb-4">Update Plant</h2>
 
@@ -57,7 +64,7 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
         className="w-full px-4 py-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600"
       />
 
-      <label className="flex items-center mb-4 text-green-800">
+      <label className="flex items-center mb-6 text-green-800">
         <input
           type="checkbox"
           checked={updatedPlant.IsActive}
@@ -69,12 +76,22 @@ const UpdatePlantForm = ({ plant, onUpdate }) => {
         Active
       </label>
 
-      <button
-        type="submit"
-        className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-2 rounded transition-colors"
-      >
-        Save Changes
-      </button>
+      {/* Action buttons */}
+      <div className="flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={handleDiscard}
+          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded font-medium transition-colors"
+        >
+          Discard
+        </button>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-green-700 hover:bg-green-800 text-white font-semibold rounded transition-colors"
+        >
+          Save
+        </button>
+      </div>
     </form>
   );
 };

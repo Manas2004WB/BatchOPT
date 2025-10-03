@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Toaster, toast } from "sonner";
 
-const AddPlantForm = ({ onAdd }) => {
+const AddPlantForm = ({ onAdd, onClose }) => {
   const [plant, setPlant] = useState({
     PlantName: "",
     IsActive: true,
@@ -17,7 +17,6 @@ const AddPlantForm = ({ onAdd }) => {
       toast.error("Plant name must be between 3 and 30 characters");
       return false;
     }
-    // only letters, numbers, spaces, and hyphens allowed
     if (!/^(?! )[A-Za-z0-9 -]+(?<! )$/.test(name)) {
       toast.error(
         "Plant name can only contain letters, numbers, spaces, and hyphens (no special symbols)"
@@ -28,17 +27,24 @@ const AddPlantForm = ({ onAdd }) => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // <-- also missing to prevent page reload
+    e.preventDefault();
     if (!validatePlantName(plant.PlantName)) return;
     onAdd(plant);
     setPlant({ PlantName: "", IsActive: true });
     setError("");
+    if (onClose) onClose(); // close popup after save
+  };
+
+  const handleDiscard = () => {
+    setPlant({ PlantName: "", IsActive: true });
+    setError("");
+    if (onClose) onClose(); // just close popup
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-6 rounded-xl shadow-xl mb-8 max-w-lg w-full border border-gray-200"
+      className="bg-white p-6 rounded-xl shadow-2xl w-full max-w-md border border-gray-200"
     >
       <h2 className="text-xl font-bold text-green-800 mb-4">Add New Plant</h2>
 
@@ -56,7 +62,7 @@ const AddPlantForm = ({ onAdd }) => {
         className="w-full px-4 py-2 mb-4 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600"
       />
 
-      <label className="text-green-800 flex items-center mb-4">
+      <label className="text-green-800 flex items-center mb-6">
         <input
           type="checkbox"
           checked={plant.IsActive}
@@ -66,12 +72,22 @@ const AddPlantForm = ({ onAdd }) => {
         Active
       </label>
 
-      <button
-        type="submit"
-        className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-2 rounded transition-colors"
-      >
-        Add Plant
-      </button>
+      {/* Action buttons */}
+      <div className="flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={handleDiscard}
+          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded font-medium transition-colors"
+        >
+          Discard
+        </button>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-green-700 hover:bg-green-800 text-white font-semibold rounded transition-colors"
+        >
+          Save
+        </button>
+      </div>
     </form>
   );
 };

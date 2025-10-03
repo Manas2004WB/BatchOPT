@@ -12,15 +12,13 @@ import ShotsPage from "./Pages/ShotsPage";
 import MainComponent from "./Pages/MainComponent";
 
 const App = () => {
-  // ✅ Initialize directly from localStorage
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
   const handleLogout = () => {
-    // Clear user session (e.g., remove token from localStorage)
     localStorage.clear();
-    setUser(null); // Update user state in App component
+    setUser(null);
   };
 
   return (
@@ -29,7 +27,6 @@ const App = () => {
         {/* Login route */}
         <Route path="/login" element={<Login setUser={setUser} />} />
 
-        {/* Root route → redirect if logged in */}
         <Route
           path="/"
           element={

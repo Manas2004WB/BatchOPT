@@ -105,7 +105,7 @@ const SkuTable = ({ user, plantId, plantName }) => {
       )}
 
       <div className="max-h-[70vh] overflow-y-auto scrollbar-thin overflow-x-hidden ">
-        <table className="min-w-full border shadow-2xl rounded-2xl border-green-100 bg-white/60 backdrop-blur">
+        <table className="min-w-full border shadow-2xl rounded-2xl border-green-100 bg-white/60 backdrop-blur  font-normal">
           <thead className="bg-[#3dcd58] text-white sticky top-[-2px] z-10 shadow-md">
             <tr>
               <th className="px-4 py-2">Sr. No</th>

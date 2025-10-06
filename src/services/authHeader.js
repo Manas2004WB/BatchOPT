@@ -1,8 +1,8 @@
-// authHeader.js
+// src/utils/authHeader.js
 export function authHeader() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (user && user.Token) {
-    return { Authorization: `Bearer ${user.Token}` };
+  const token = localStorage.getItem("token"); // only store the JWT now
+  if (token) {
+    return { Authorization: `Bearer ${token}` };
   } else {
     return {};
   }

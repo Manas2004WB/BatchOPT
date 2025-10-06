@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../services/authService";
-import heroBg from "../assets/hero-bg.jpg";
 import BatchOptLogin from "../assets/BatchOptLogin.png";
-
+import { getStoredUser } from "../utility/authUtils";
 const Login = ({ setUser }) => {
   const [login, setLogin] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -19,9 +18,10 @@ const Login = ({ setUser }) => {
       const data = await loginUser(login.email, login.password);
 
       localStorage.setItem("token", data.Token);
-      localStorage.setItem("user", JSON.stringify(data));
 
-      setUser(data);
+      // 2. decode token and set user state
+      const decodedUser = getStoredUser();
+      setUser(decodedUser);
       navigate("/dashboard");
     } catch (err) {
       setError(typeof err === "string" ? err : "Invalid credentials");

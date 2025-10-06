@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import userService from "../../../services/userService";
 import userRoleService from "../../../services/userRoleService";
+import { getStoredUser } from "../../../utility/authUtils";
+
 const UserMasters = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -14,8 +16,9 @@ const UserMasters = () => {
   });
 
   // get current user id (CreatedBy)
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const currentUserId = currentUser.UserId || 0;
+  const currentUser = getStoredUser();
+  const currentUserId = currentUser?.id;
+  console.log("Current User:", currentUser);
 
   useEffect(() => {
     fetchUsers();

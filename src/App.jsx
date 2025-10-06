@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Login from "./Pages/Login";
+import { getStoredUser } from "./utility/authUtils";
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -12,10 +14,8 @@ import ShotsPage from "./Pages/ShotsPage";
 import MainComponent from "./Pages/MainComponent";
 
 const App = () => {
-  const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
+  // ✅ Initialize user state from secure JWT, not localStorage.user
+  const [user, setUser] = useState(() => getStoredUser());
   const handleLogout = () => {
     localStorage.clear();
     setUser(null);
@@ -72,7 +72,7 @@ const App = () => {
         <Route
           path="/setting"
           element={
-            user?.UserId === 10 ? (
+            getStoredUser()?.role === "Admin" ? (
               <MainComponent user={user} />
             ) : (
               <Navigate to="/login" replace />

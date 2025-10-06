@@ -24,14 +24,14 @@ const Navbar = ({ user, onLogout }) => {
       {/* Left side: Logo / Greeting */}
       <div className="flex items-center gap-4">
         <span className="text-white/90 text-lg">
-          | Welcome, {user.Username}
+          | Welcome, {user?.username}
         </span>
       </div>
 
       {/* Right side: User info & dropdown */}
       <div className="flex items-center gap-4">
         <div className="px-3 py-1 bg-white/30 text-white rounded-lg font-medium text-sm">
-          {user.Email}
+          {user?.email}
         </div>
 
         {/* Profile dropdown */}
@@ -45,7 +45,7 @@ const Navbar = ({ user, onLogout }) => {
 
           {open && (
             <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-              {user?.Role === "Admin" && (
+              {user?.role === "Admin" && (
                 <button
                   onClick={() => {
                     navigate("/setting");

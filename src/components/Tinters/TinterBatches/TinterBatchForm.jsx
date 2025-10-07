@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import tinterBatchService from "../../../services/tinterBatchService";
 import { toast } from "sonner";
 
-const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
+const TinterBatchForm = ({ tinterId, tinterCode, userId, onBatchCreated }) => {
   const [batches, setBatches] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -174,13 +174,22 @@ const TinterBatchForm = ({ tinterId, tinterCode, userId }) => {
         await tinterBatchService.createTinterBatchWithMeasurements(dto);
       toast.success("Batch created successfully");
 
-      // ✅ Add new batch to state
+      // ✅ Add new batch to local state
       setBatches((prev) => {
         const updated = [...prev, created];
         return updated.sort(
           (a, b) => new Date(b.UpdatedAt) - new Date(a.UpdatedAt)
         );
       });
+
+      // If parent provided a callback, notify it so parent can update its map/state
+      if (typeof onBatchCreated === "function") {
+        try {
+          onBatchCreated(created);
+        } catch (err) {
+          console.warn("onBatchCreated callback threw:", err);
+        }
+      }
 
       // ✅ Reset form
       setNewBatch({

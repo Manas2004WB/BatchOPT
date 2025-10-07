@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Login from "./Pages/Login";
 import { getStoredUser } from "./utility/authUtils";
-
 import {
   BrowserRouter as Router,
   Routes,
@@ -12,7 +11,7 @@ import Dashboard from "./Pages/Dashboard";
 import PlantDetails from "./Pages/PlantDetails";
 import ShotsPage from "./Pages/ShotsPage";
 import MainComponent from "./Pages/MainComponent";
-
+import Unauthorized from "./Pages/Errors/Unauthorized";
 const App = () => {
   // ✅ Initialize user state from secure JWT, not localStorage.user
   const [user, setUser] = useState(() => getStoredUser());
@@ -75,7 +74,7 @@ const App = () => {
             getStoredUser()?.role === "Admin" ? (
               <MainComponent user={user} />
             ) : (
-              <Navigate to="/login" replace />
+              <Unauthorized />
             )
           }
         />

@@ -211,6 +211,20 @@ const TinterTable = ({ plantId, user, plantName }) => {
               tinterId={selectedTinter.TinterId}
               tinterCode={selectedTinter.TinterCode}
               userId={user?.UserId}
+              onBatchCreated={(createdBatch) => {
+                // merge created batch into batches map for this tinter
+                setBatches((prev) => {
+                  const prevList = prev[selectedTinter.TinterId] || [];
+                  const updatedList = [createdBatch, ...prevList];
+                  return { ...prev, [selectedTinter.TinterId]: updatedList };
+                });
+
+                // ensure the tinter row is expanded so user sees the new batch
+                setExpandedTinterId(selectedTinter.TinterId);
+
+                // close the batch form modal
+                setShowBatchForm(false);
+              }}
             />
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React from "react";
 
 const OldVersionRow = ({ expandedRows, sku }) => {
+  console.log("HETETETTEYEYEYEY", expandedRows);
   return (
     <>
       {expandedRows[sku.SkuId].map((version, idx) => (

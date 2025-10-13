@@ -17,7 +17,7 @@ import {
   updatePlant,
   deletePlant,
 } from "../services/plantApi";
-
+import Fuse from "fuse.js";
 const Dashboard = ({ user, handleLogout }) => {
   console.log("Dashboard user prop:", user);
   const canAction = hasFullAccess();
@@ -37,6 +37,15 @@ const Dashboard = ({ user, handleLogout }) => {
 
   const navigate = useNavigate();
   // Remove doLogout indirection, use handleLogout directly
+
+  const fuse = useMemo(
+    () =>
+      new Fuse(plantList, {
+        keys: ["PlantName"],
+        threshold: 0.4, // smaller = stricter match
+      }),
+    [plantList]
+  );
 
   // ✅ Fetch plants on mount
   useEffect(() => {
@@ -60,9 +69,11 @@ const Dashboard = ({ user, handleLogout }) => {
     return () => debouncedSetQuery.cancel();
   }, [searchQuery, debouncedSetQuery]);
 
-  const filteredPlants = plantList.filter((plant) =>
-    plant.PlantName?.toLowerCase().includes(debouncedQuery.toLowerCase())
-  );
+  const filteredPlants = useMemo(() => {
+    if (!debouncedQuery) return plantList;
+    return fuse.search(debouncedQuery).map((r) => r.item);
+  }, [debouncedQuery, fuse]);
+
   const sortedPlants = useMemo(() => {
     if (!sortConfig.key) return filteredPlants;
 
@@ -201,7 +212,7 @@ const Dashboard = ({ user, handleLogout }) => {
 
           <div className="overflow-x-auto rounded-lg border border-gray-200 ">
             {/* SCROLLABLE AREA only if needed */}
-            <div className="max-h-[466px] overflow-y-auto">
+            <div className="max-h-[466px] min-h-[466px] overflow-y-auto">
               <table className="min-w-full text-left border font-normal border-gray-200 backdrop-blur">
                 <thead className="bg-[#3dcd58] text-white sticky top-0 z-10">
                   <tr>

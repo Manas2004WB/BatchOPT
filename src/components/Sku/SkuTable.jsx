@@ -30,12 +30,14 @@ const SkuTable = ({ user, plantId, plantName }) => {
     if (plantId) fetchSkus();
   }, [plantId]);
 
-  if (loading)
+  if (loading) {
     return (
-      <div className="flex  justify-center items-center-safe">
-        <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex justify-center items-center h-[60vh]">
+        <div className="w-10 h-10 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
+  }
+
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   let srNo = 1;
@@ -106,78 +108,68 @@ const SkuTable = ({ user, plantId, plantName }) => {
 
       <div className="max-h-[70vh] overflow-y-auto scrollbar-thin overflow-x-hidden ">
         <table className="min-w-full border shadow-2xl rounded-2xl border-green-100 bg-white/60 backdrop-blur  font-normal">
-          <thead className="bg-[#3dcd58] text-white sticky top-[-2px] z-10 shadow-md">
-            <tr>
-              <th className="px-4 py-2">Sr. No</th>
-              <th className="px-4 py-2">SKU Revision</th>
-              <th className="px-4 py-2">SKU Code</th>
-              <th className="px-4 py-2">Batches Count</th>
-              <th className="px-4 py-2">
-                <div className="flex flex-col item-centre gap-2">
-                  <span>Liquid Color</span>
-                  <table>
-                    <thead>
-                      <tr className="flex justify-between">
-                        <th className="px-2 py-1 bg-white  text-[#3dcd58] text-l">
-                          L
-                        </th>
-                        <th className="px-2 py-1  bg-white text-[#3dcd58] text-l">
-                          a
-                        </th>
-                        <th className="px-2 py-1  bg-white  text-[#3dcd58] text-l">
-                          b
-                        </th>
+          <thead className="bg-[#3dcd58] text-white sticky top-0 z-10 shadow-md">
+            <tr className="text-sm">
+              <th className="px-3 py-1">Sr. No</th>
+              <th className="px-3 py-1">SKU Revision</th>
+              <th className="px-3 py-1">SKU Code</th>
+              <th className="px-3 py-1">Batches Count</th>
+
+              {/* Liquid Color */}
+              <th className="px-3 py-1">
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-xs font-semibold">Liquid Color</span>
+                  <table className="w-full text-center border border-gray-200 rounded bg-white text-[#3dcd58] text-xs font-medium">
+                    <tbody>
+                      <tr>
+                        <td className="px-1 py-1 border">L</td>
+                        <td className="px-1 py-1 border">a</td>
+                        <td className="px-1 py-1 border">b</td>
                       </tr>
-                    </thead>
+                    </tbody>
                   </table>
                 </div>
               </th>
-              <th className="px-4 py-2">
-                <div className="flex flex-col item-centre gap-2">
-                  <span>Panel Color</span>
-                  <table>
-                    <thead>
-                      <tr className="flex justify-between">
-                        <th className="px-2 py-1 bg-white  text-[#3dcd58] text-l">
-                          L
-                        </th>
-                        <th className="px-2 py-1  bg-white text-[#3dcd58] text-l">
-                          a
-                        </th>
-                        <th className="px-2 py-1  bg-white  text-[#3dcd58] text-l">
-                          b
-                        </th>
+
+              {/* Panel Color */}
+              <th className="px-3 py-1">
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-xs font-semibold">Panel Color</span>
+                  <table className="w-full text-center border border-gray-200 rounded bg-white text-[#3dcd58] text-xs font-medium">
+                    <tbody>
+                      <tr>
+                        <td className="px-1 py-1 border">L</td>
+                        <td className="px-1 py-1 border">a</td>
+                        <td className="px-1 py-1 border">b</td>
                       </tr>
-                    </thead>
+                    </tbody>
                   </table>
                 </div>
               </th>
-              <th className="px-4 py-2">
-                <div className="flex flex-col item-centre gap-2">
-                  <span>Spectro Color</span>
-                  <table>
-                    <thead>
-                      <tr className="flex justify-between">
-                        <th className="px-2 py-1 bg-white  text-[#3dcd58] text-l">
-                          L
-                        </th>
-                        <th className="px-2 py-1  bg-white text-[#3dcd58] text-l">
-                          a
-                        </th>
-                        <th className="px-2 py-1  bg-white  text-[#3dcd58] text-l">
-                          b
-                        </th>
+
+              {/* Spectro Color */}
+              <th className="px-3 py-1">
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-xs font-semibold">Spectro Color</span>
+                  <table className="w-full text-center border border-gray-200 rounded bg-white text-[#3dcd58] text-xs font-medium">
+                    <tbody>
+                      <tr>
+                        <td className="px-1 py-1 border">L</td>
+                        <td className="px-1 py-1 border">a</td>
+                        <td className="px-1 py-1 border">b</td>
                       </tr>
-                    </thead>
+                    </tbody>
                   </table>
                 </div>
               </th>
-              <th className="px-4 py-2">Std. Tinters</th>
-              <th className="px-4 py-2">Target dE</th>
-              <th className="px-4 py-2">Last Updated</th>
-              <th className="px-4 py-2">Comments</th>
+
+              <th className="px-3 py-1">Std. Tinters</th>
+              <th className="px-3 py-1">Target dE</th>
+              <th className="px-3 py-1">Last Updated</th>
+              <th className="px-3 py-1">Comments</th>
             </tr>
           </thead>
+
           <tbody className="bg-emerald-50/30">
             {skus.length > 0 ? (
               skus.map((sku, skuIdx) => {
@@ -194,15 +186,14 @@ const SkuTable = ({ user, plantId, plantName }) => {
                         srNo={srNo++}
                       />
                       {/* Accordion content */}
-                      {expandedRows[sku.SkuId] &&
-                      expandedRows[sku.SkuId].length > 0 ? (
-                        <OldVersionRow expandedRows={expandedRows} sku={sku} />
-                      ) : loadingRows[sku.SkuId] ? (
+                      {loadingRows[sku.SkuId] ? (
                         <tr>
                           <td colSpan={11} className="p-4 text-center">
                             <span className="animate-spin rounded-full h-6 w-6 border-2 border-green-600 border-t-transparent inline-block"></span>
                           </td>
                         </tr>
+                      ) : expandedRows[sku.SkuId]?.length ? (
+                        <OldVersionRow expandedRows={expandedRows} sku={sku} />
                       ) : null}
                     </React.Fragment>
                   );

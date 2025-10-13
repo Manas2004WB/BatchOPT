@@ -1,4 +1,5 @@
 import React from "react";
+import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 
 const UpdatedVersionRow = ({
   expandedRows,
@@ -21,7 +22,16 @@ const UpdatedVersionRow = ({
       `}
       onClick={() => handleToggleExpand(sku.SkuId)}
     >
-      <td className="px-4 py-2 text-center">{srNo++}</td>
+      <td className="px-4 py-2 text-center ">
+        <div className="flex items-center justify-center gap-1">
+          {srNo++}
+          {isExpanded ? (
+            <MdKeyboardArrowUp className="inline-block text-gray-400" />
+          ) : (
+            <MdKeyboardArrowDown className="inline-block text-green-700" />
+          )}
+        </div>
+      </td>
       <td className="px-4 py-2 text-center">
         {latestVersion.SkuRevision ?? "-"}
       </td>
